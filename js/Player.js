@@ -9,7 +9,7 @@ function Player(scene){
 		wireframe:true
 	});
 	this.playerMesh = new THREE.Mesh(geometry, material);
-		scene.add(mesh);
+	scene.add(mesh);
 
 	this.velocity = UTIL.v3c(0 ,0, 0); // in cylindrical coord
 }
