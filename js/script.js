@@ -1,4 +1,6 @@
-/* Author: Troy Ferrell & Yang Su */
+/**
+ * @author Troy Ferrell & Yang Su
+ */
 
 var camera, scene, renderer, geometry, material, mesh;
 
