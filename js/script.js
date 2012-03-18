@@ -15,9 +15,8 @@ function init() {
                                          10000);
     camera.position.z = 100;
     scene.add(camera);
-    
+            
     tunnel = new Tunnel(scene);
-    tunnel.init();
 
     renderer = new THREE.CanvasRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
