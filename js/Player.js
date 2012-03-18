@@ -2,19 +2,22 @@
  * @author Troy Ferrell & Yang Su
  */
     
-function Player(){
+function Player(scene){
 
-	var geometry;
-	var material;
-	var mesh;
-	
-	//this.geometry = new THREE.
- 	var pos, vel; // in cylindrical coord
+	var geometry = new THREE.CubeGeometry(200, 200, 100);
+    var material = new THREE.MeshBasicMaterial({
+        color: 0xff0000,
+        wireframe:true
+    });
+    var playerMesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+    
+ 	var velocity = new v3c(); // in cylindrical coord
  	
  	function move(time){
- 		pos.radius += vel.radius * time;
- 		pos.theta += vel.theta * time;
- 		pos.z += vel.z * time;
+ 		playerMesh.x += velocity.radius * Math.cos(velocity.theta) * time;
+ 		playerMesh.y += velocity.radius * Math.sin(velocity.theta) * time;
+ 		playerMesh.z += velocity.z * time;
  	}
  	
  	function render(){
