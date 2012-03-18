@@ -3,6 +3,7 @@
  */
 
 function Tunnel(scene) {
+    this.scene = scene;
     this.tunnelSegments = [];
     this.numOfSegments = 30;
     this.tunnelMaterial = null;
@@ -16,7 +17,7 @@ function Tunnel(scene) {
     for(i = 0; i < this.numOfSegments; i += 1) {
         newTunnelSeg = new TunnelSegment(-i*10);
         newTunnelMesh = new THREE.Mesh(newTunnelSeg.geometry, this.tunnelMaterial);
-        scene.add(newTunnelMesh);
+        this.scene.add(newTunnelMesh);
 
         this.tunnelSegments[i] = newTunnelMesh;
     }
@@ -32,10 +33,10 @@ Tunnel.prototype.render = function(){
     var newTunnelSeg = CreateTunnelSegment(-this.numOfSegments*10);
 
     var newTunnelMesh = new THREE.Mesh(newTunnelSeg.geometry, this.tunnelMaterial);
-    scene.add(newTunnelMesh);
+    this.scene.add(newTunnelMesh);
 
     this.tunnelSegments.push(newTunnelMesh);
-}
+};
 
 function TunnelSegment(startZ)
 {
@@ -76,4 +77,4 @@ function TunnelSegment(startZ)
 
     this.geometry.computeFaceNormals();
     this.geometry.computeVertexNormals();
-}
+};

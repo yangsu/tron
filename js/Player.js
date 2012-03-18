@@ -3,13 +3,14 @@
  */
 
 function Player(scene){
+    this.scene = scene;
     this.geometry = new THREE.CubeGeometry(200, 200, 100);
     this.material = new THREE.MeshBasicMaterial({
         color: 0xff0000,
         wireframe:true
     });
     this.playerMesh = new THREE.Mesh(geometry, material);
-    scene.add(mesh);
+    this.scene.add(mesh);
 
     this.velocity = UTIL.v3c(0 ,0, 0); // in cylindrical coord
 }
