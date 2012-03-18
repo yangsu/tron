@@ -1,43 +1,25 @@
 /**
  * @author Troy Ferrell & Yang Su
  */
-    
+
 function Player(scene){
+	this.geometry = new THREE.CubeGeometry(200, 200, 100);
+	this.material = new THREE.MeshBasicMaterial({
+		color: 0xff0000,
+		wireframe:true
+	});
+	this.playerMesh = new THREE.Mesh(geometry, material);
+		scene.add(mesh);
 
-	var geometry = new THREE.CubeGeometry(200, 200, 100);
-    var material = new THREE.MeshBasicMaterial({
-        color: 0xff0000,
-        wireframe:true
-    });
-    var playerMesh = new THREE.Mesh(geometry, material);
-    scene.add(mesh);
-    
- 	var velocity = new v3c(); // in cylindrical coord
- 	
- 	function move(time){
- 		playerMesh.x += velocity.radius * Math.cos(velocity.theta) * time;
- 		playerMesh.y += velocity.radius * Math.sin(velocity.theta) * time;
- 		playerMesh.z += velocity.z * time;
- 	}
- 	
- 	function render(){
- 		// update pos????
- 	}
+	this.velocity = UTIL.v3c(0 ,0, 0); // in cylindrical coord
 }
 
-function v3 (x,y,z) {
-  return new THREE.Vertex(new THREE.Vector3(x,y,z));
+Player.prototype.move = function (time){
+	this.playerMesh.x += this.velocity.radius * Math.cos(this.velocity.theta) * time;
+	this.playerMesh.y += this.velocity.radius * Math.sin(this.velocity.theta) * time;
+	this.playerMesh.z += this.velocity.z * this.time;
 };
-    
-function v3c(_r, _th, _z){
-	this.radius = _r;
-	this.theta = _th;
-	this.z = _z;
-	
-	function ConvertToCartesian()
-	{
-		return new v3( radius*Math.cos(theta),
-					radius*Math.sin(theta),
-					z );
-	}
-}
+
+Player.prototype.render = function () {
+	// update pos????
+};
