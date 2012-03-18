@@ -2,18 +2,17 @@
  * @author Troy Ferrell
  */
 
-function Tunnel(scene){
-	
-	this.tunnelSegments = new Array();
-	this.numOfSegments = 30;
-	this.tunnelMaterial;
-	
-	// create new tunnel segments & add to array
-	var newTunnelSeg, newTunnelMesh, i;
-	this.tunnelMaterial = new THREE.MeshBasicMaterial({
-    							color: 0xFF0000,
-    							wireframe:true });
-	
+function Tunnel(scene) {
+    this.tunnelSegments = [];
+    this.numOfSegments = 30;
+    this.tunnelMaterial = null;
+
+    // create new tunnel segments & add to array
+    var newTunnelSeg, newTunnelMesh, i;
+    this.tunnelMaterial = new THREE.MeshBasicMaterial({
+                                color: 0xFF0000,
+                                wireframe:true });
+
     for(i = 0; i < this.numOfSegments; i += 1) {
         newTunnelSeg = new TunnelSegment(-i*10);
         newTunnelMesh = new THREE.Mesh(newTunnelSeg.geometry, this.tunnelMaterial);
@@ -23,13 +22,13 @@ function Tunnel(scene){
     }
 }
 
-Tunnel.prototype.render = function(){	
-	// Move Tunnel Along
-	_.each(this.tunnelSegments, function (segment) {
-	    segment.position.z += 5;
-	});
+Tunnel.prototype.render = function(){
+    // Move Tunnel Along
+    _.each(this.tunnelSegments, function (segment) {
+        segment.position.z += 5;
+    });
 
-	// Add new Segment to tunnel
+    // Add new Segment to tunnel
     var newTunnelSeg = CreateTunnelSegment(-this.numOfSegments*10);
 
     var newTunnelMesh = new THREE.Mesh(newTunnelSeg.geometry, this.tunnelMaterial);
@@ -37,7 +36,7 @@ Tunnel.prototype.render = function(){
 
     this.tunnelSegments.push(newTunnelMesh);
 }
-		
+
 function TunnelSegment(startZ)
 {
     this.geometry = new THREE.Geometry();
@@ -50,7 +49,7 @@ function TunnelSegment(startZ)
         theta, face,
         rcos, rsin, rcosd, rsind,
         temp;
-        
+
     // dynamically create quads for tunnel segment
     for (theta = 0; theta < 2*Math.PI; theta += deltaTheta){
         rcos = radius*Math.cos(theta);
@@ -78,5 +77,3 @@ function TunnelSegment(startZ)
     this.geometry.computeFaceNormals();
     this.geometry.computeVertexNormals();
 }
-	
-	

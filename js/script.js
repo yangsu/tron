@@ -15,7 +15,7 @@ function init() {
                                          10000);
     camera.position.z = 100;
     scene.add(camera);
-            
+
     tunnel = new Tunnel(scene);
 
     renderer = new THREE.CanvasRenderer();
@@ -31,7 +31,7 @@ function animate() {
 }
 
 function render() {
-	tunnel.render();
+    tunnel.render();
 
     renderer.render(scene, camera);
 }
