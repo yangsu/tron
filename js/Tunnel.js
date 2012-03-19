@@ -13,7 +13,8 @@ function Tunnel(scene) {
     this.tunnelMaterial = new THREE.MeshBasicMaterial({
                                 color: 0xFF0000,
                                 wireframe:true });
-
+	
+	var newTunnelSeg, newTunnelMesh;
     for(i = 0; i < this.numOfSegments; i += 1) {
         newTunnelSeg = new TunnelSegment(-i*10);
         newTunnelMesh = new THREE.Mesh(newTunnelSeg.geometry, this.tunnelMaterial);
@@ -30,9 +31,9 @@ Tunnel.prototype.render = function(){
     });
 
     // Add new Segment to tunnel
-    var newTunnelSeg = CreateTunnelSegment(-this.numOfSegments*10);
+    var newTunnelSeg = new TunnelSegment(-this.numOfSegments*10);
 
-    var newTunnelMesh = new THREE.Mesh(newTunnelSeg.geometry, this.tunnelMaterial);
+    var newTunnelMesh = new THREE.Mesh(newTunnelSeg.geometry, material);
     this.scene.add(newTunnelMesh);
 
     this.tunnelSegments.push(newTunnelMesh);
@@ -43,7 +44,7 @@ function TunnelSegment(startZ)
     this.geometry = new THREE.Geometry();
     this.geometry.dynamic = true;
 
-    var deltaTheta = Math.PI/6,
+    var deltaTheta = Math.PI/8,
         radius = 50,
         faceCounter = 0,
         depth = 10,

@@ -3,7 +3,7 @@
  */
 var camera, scene, renderer, geometry, material, mesh, segment;
 
-var tunnel;
+var tunnel, myPlayer;
 
 init();
 animate();
@@ -17,11 +17,15 @@ function init() {
     scene.add(camera);
 
     tunnel = new Tunnel(scene);
-
+	myPlayer = new Player(scene);
+	
     renderer = new THREE.CanvasRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
 
     document.body.appendChild(renderer.domElement);
+    
+    // bind key events
+    document.onkeypress = keyPressed;
 }
 
 function animate() {
@@ -32,6 +36,23 @@ function animate() {
 
 function render() {
     tunnel.render();
-
+	myPlayer.render();
+	
     renderer.render(scene, camera);
+}
+
+function keyPressed(e)
+{	
+	var code = e.charCode;
+	if(code == 100) // 'd'
+	{
+		//alert("pressed d");
+		myPlayer.moveRight();	
+	}
+	
+	if(code == 97) // 'a'
+	{
+		//alert("pressed a");
+		myPlayer.moveLeft();	
+	}
 }
