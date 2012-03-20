@@ -1,5 +1,5 @@
 /**
- * @author Troy Ferrell
+ * @author Troy Ferrell & Yang Su
  */
 
 function Tunnel(scene) {
@@ -31,7 +31,7 @@ Tunnel.prototype.update = function(){
     });
 
     // Add new Segment to tunnel
-    var newTunnelSeg = new TunnelSegment(-this.numOfSegments*10);
+    var newTunnelSeg = new TunnelSegment(-this.tunnelSegments.length*10);
 
     var newTunnelMesh = new THREE.Mesh(newTunnelSeg.geometry, this.tunnelMaterial);
     this.scene.add(newTunnelMesh);
