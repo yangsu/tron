@@ -32,15 +32,17 @@ $(document).ready(function () {
     }
 
     function animate() {
-        // note: three.js includes requestAnimationFrame shim
-        requestAnimationFrame(animate);
+        update();
         // Render scene
         renderer.render(scene, camera);
-        update();
+        // note: three.js includes requestAnimationFrame shim
+        requestAnimationFrame(animate);
     }
 
     function update() {
         // Call update methods to produce animation
+        tunnel.update();
+        myPlayer.update();
     }
 
     function keyPressed(e) {

@@ -41,6 +41,6 @@ Player.prototype.move = function (time) {
     this.playerMesh.z += this.velocity.z * this.time;
 };
 
-Player.prototype.render = function () {
+Player.prototype.update = function () {
     // update pos????
 };
