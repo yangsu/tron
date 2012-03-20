@@ -2,23 +2,28 @@
  * @author Troy Ferrell & Yang Su
  */
 $(document).ready(function () {
-    var camera, scene, renderer,
+    var WIDTH = window.innerWidth,
+        HEIGHT = window.innerHeight,
+        VIEW_ANGLE = 75,
+        ASPECT = WIDTH / HEIGHT,
+        NEAR = 0.1,
+        FAR = 10000,
+        INITIAL_Z_POS = 100,
+        camera, scene, renderer,
         tunnel, myPlayer;
 
     function init() {
+        camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
+        camera.position.z = INITIAL_Z_POS;
+
         scene = new THREE.Scene();
-        camera = new THREE.PerspectiveCamera(75,
-                                             window.innerWidth / window.innerHeight,
-                                             1,
-                                             10000);
-        camera.position.z = 100;
         scene.add(camera);
 
         tunnel = new Tunnel(scene);
         myPlayer = new Player(scene);
 
         renderer = new THREE.CanvasRenderer();
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setSize(WIDTH, HEIGHT);
 
         document.body.appendChild(renderer.domElement);
 
