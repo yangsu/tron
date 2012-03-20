@@ -2,8 +2,9 @@
  * @author Troy Ferrell & Yang Su
  */
 $(document).ready(function () {
-    var WIDTH = window.innerWidth,
-        HEIGHT = window.innerHeight,
+    var OFFSET = 6,
+        WIDTH = window.innerWidth - OFFSET,
+        HEIGHT = window.innerHeight - OFFSET,
         VIEW_ANGLE = 75,
         ASPECT = WIDTH / HEIGHT,
         NEAR = 0.1,
@@ -58,4 +59,15 @@ $(document).ready(function () {
     // Initialization
     init();
     animate();
+
+    var stats = new Stats(),
+        statsdom = stats.getDomElement();
+    // Align top-left
+    statsdom.style.position = 'absolute';
+    statsdom.style.left = '0px';
+    statsdom.style.top = '0px';
+    document.body.appendChild(statsdom);
+    setInterval( function () {
+        stats.update();
+    }, 1000 / 60 );
 });
