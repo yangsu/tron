@@ -10,7 +10,7 @@ function Tunnel(scene) {
 
     // create new tunnel segments & add to array
     this.tunnelMaterial = new THREE.MeshBasicMaterial({
-                            color: 0xFF0000,
+                            color: 0x47C5D8,
                             wireframe:true
                         });
 
@@ -33,7 +33,7 @@ Tunnel.prototype.update = function(){
     // Add new Segment to tunnel
     var newTunnelSeg = new TunnelSegment(-this.numOfSegments*10);
 
-    var newTunnelMesh = new THREE.Mesh(newTunnelSeg.geometry, material);
+    var newTunnelMesh = new THREE.Mesh(newTunnelSeg.geometry, this.tunnelMaterial);
     this.scene.add(newTunnelMesh);
 
     this.tunnelSegments.push(newTunnelMesh);
