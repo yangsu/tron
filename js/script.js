@@ -23,8 +23,10 @@ $(document).ready(function () {
         tunnel = new Tunnel(scene);
         myPlayer = new Player(scene);
 
-        renderer = new THREE.CanvasRenderer();
+        renderer = new THREE.WebGLRenderer({antialias: true});
         renderer.setSize(WIDTH, HEIGHT);
+        renderer.setClearColorHex(0x000000, 1.0);
+        renderer.clear();
 
         document.body.appendChild(renderer.domElement);
 
