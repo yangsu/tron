@@ -34,14 +34,13 @@ $(document).ready(function () {
     function animate() {
         // note: three.js includes requestAnimationFrame shim
         requestAnimationFrame(animate);
-        render();
+        // Render scene
+        renderer.render(scene, camera);
+        update();
     }
 
-    function render() {
-        tunnel.render();
-        myPlayer.render();
-
-        renderer.render(scene, camera);
+    function update() {
+        // Call update methods to produce animation
     }
 
     function keyPressed(e) {
