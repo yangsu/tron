@@ -9,12 +9,12 @@ function Tunnel(scene) {
     this.tunnelMaterial = null;
 
     // create new tunnel segments & add to array
-    var newTunnelSeg, newTunnelMesh, i;
     this.tunnelMaterial = new THREE.MeshBasicMaterial({
-                                color: 0xFF0000,
-                                wireframe:true });
-	
-	var newTunnelSeg, newTunnelMesh;
+                            color: 0xFF0000,
+                            wireframe:true
+                        });
+
+    var newTunnelSeg, newTunnelMesh, i;
     for(i = 0; i < this.numOfSegments; i += 1) {
         newTunnelSeg = new TunnelSegment(-i*10);
         newTunnelMesh = new THREE.Mesh(newTunnelSeg.geometry, this.tunnelMaterial);
@@ -39,8 +39,7 @@ Tunnel.prototype.render = function(){
     this.tunnelSegments.push(newTunnelMesh);
 };
 
-function TunnelSegment(startZ)
-{
+function TunnelSegment(startZ) {
     this.geometry = new THREE.Geometry();
     this.geometry.dynamic = true;
 
@@ -61,9 +60,9 @@ function TunnelSegment(startZ)
 
         // Create vertices for current quad in cylinder segment
         this.geometry.vertices.push(UTIL.v3(rcos, rsin, startZ),
-                          UTIL.v3(rcos, rsin, startZ - depth),
-                          UTIL.v3(rcosd, rsind, startZ - depth),
-                          UTIL.v3(rcosd, rsind, startZ));
+                                    UTIL.v3(rcos, rsin, startZ - depth),
+                                    UTIL.v3(rcosd, rsind, startZ - depth),
+                                    UTIL.v3(rcosd, rsind, startZ));
 
         // Define normals to point inward
         temp = faceCounter*4;
@@ -78,4 +77,4 @@ function TunnelSegment(startZ)
 
     this.geometry.computeFaceNormals();
     this.geometry.computeVertexNormals();
-};
+}
