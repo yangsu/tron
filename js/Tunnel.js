@@ -26,9 +26,9 @@ function Tunnel(scene) {
 
 Tunnel.prototype.update = function(){
     // Move Tunnel Along
-    _.each(this.tunnelSegments, function (segment) {
-        segment.position.z += 5;
-    });
+    // _.each(this.tunnelSegments, function (segment) {
+    //     segment.position.z += 5;
+    // });
 
     // Add new Segment to tunnel
     var newTunnelSeg = new TunnelSegment(-this.tunnelSegments.length*10);
