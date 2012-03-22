@@ -9,7 +9,15 @@ function Tunnel(scene) {
     this.counter = 0;
 
     // create new tunnel segments & add to array
-    this.tunnelMaterial = new THREE.MeshLambertMaterial(CONFIG.tunnelMaterial);
+    this.tunnelMaterial = [
+        new THREE.MeshLambertMaterial(CONFIG.tunnelMaterial),
+        new THREE.MeshLambertMaterial({
+            color: 0x000000,
+            opacity: 0.1,
+            shading: THREE.FlatShading
+        }),
+        new THREE.MeshFaceMaterial()
+    ];
     /*
     var texture = THREE.ImageUtils.loadTexture("tronTexture.jpg");
     texture.wrapS = texture.wrapT = THREE.ClampToEdgeWrapping;
@@ -20,14 +28,13 @@ function Tunnel(scene) {
     */
 
     this.tunnelLights = [];
-
     var newTunnelSeg, newTunnelMesh, newTunnelLight, i;
     for(i = 0; i < this.numOfSegments; i += 1) {
-        newTunnelSeg = new TunnelSegment(-i*CONFIG.tunnelSectionDepth);
-        newTunnelMesh = new THREE.Mesh(newTunnelSeg.geometry, this.tunnelMaterial);
-        this.scene.add(newTunnelMesh);
+        newTunnelSeg = new TunnelSegment(-i*CONFIG.tunnelSectionDepth, this.tunnelMaterial);
+        this.tunnelSegments.push(newTunnelSeg);
 
-        this.tunnelSegments[i] = newTunnelMesh;
+        newTunnelMesh = new THREE.Mesh(newTunnelSeg.geometry, this.tunnelMaterial[this.tunnelMaterial.length-1]);
+        this.scene.add(newTunnelMesh);
     }
 
     // Issue with lighting!!!!
@@ -46,10 +53,10 @@ Tunnel.prototype.update = function(playerZ){
             i = 0,
             startZ = -this.tunnelSegments.length*CONFIG.tunnelSectionDepth;
         for(; i < this.numOfSegments; i += 1) {
-            newTunnelSeg = new TunnelSegment(startZ - i*CONFIG.tunnelSectionDepth);
-            newTunnelMesh = new THREE.Mesh(newTunnelSeg.geometry, this.tunnelMaterial);
+            newTunnelSeg = new TunnelSegment(startZ - i*CONFIG.tunnelSectionDepth, this.tunnelMaterial);
+            this.tunnelSegments.push(newTunnelSeg);
 
-            this.tunnelSegments.push(newTunnelMesh);
+            newTunnelMesh = new THREE.Mesh(newTunnelSeg.geometry, this.tunnelMaterial[this.tunnelMaterial.length-1]);
             this.scene.add(newTunnelMesh);
         }
     }
@@ -97,9 +104,10 @@ LightRing.prototype.update = function(newZ){
     }
 };
 
-function TunnelSegment(startZ) {
+function TunnelSegment(startZ, materials) {
     this.geometry = new THREE.Geometry();
     this.geometry.dynamic = true;
+    this.geometry.materials = materials;
 
     var deltaTheta = 2*Math.PI/CONFIG.tunnelResolution,
         radius = CONFIG.tunnelRadius,
@@ -128,7 +136,7 @@ function TunnelSegment(startZ) {
                                temp + 2,
                                temp + 1,
                                temp);
-
+        face.materialIndex = Math.floor(Math.random() * (materials.length-1));
         this.geometry.faces.push(face);
         faceCounter += 1;
     }
