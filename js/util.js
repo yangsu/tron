@@ -8,10 +8,10 @@ var UTIL = {
             this.theta = _th;
             this.z = _z;
         };
-        Coord.prototype.ConvertToCartesian = function() {
-            return new v3(this.radius*Math.cos(this.theta),
-                          this.radius*Math.sin(this.theta),
-                          this.z);
+        Coord.prototype.convertToCartesian = function() {
+            return new UTIL.v3(this.radius*Math.cos(this.theta),
+                               this.radius*Math.sin(this.theta),
+                               this.z);
         };
         return new Coord(radius, theta, z);
     }
