@@ -119,26 +119,29 @@ function TunnelSegment(startZ, materials) {
 
     // dynamically create quads for tunnel segment
     for (theta = 0; theta < 2*Math.PI; theta += deltaTheta){
-        rcos = radius*Math.cos(theta);
-        rsin = radius*Math.sin(theta);
-        rcosd = radius*Math.cos(theta + deltaTheta);
-        rsind = radius*Math.sin(theta + deltaTheta);
+        if (Math.floor(Math.random() * (materials.length-1)) === 0) {
+            rcos = radius*Math.cos(theta);
+            rsin = radius*Math.sin(theta);
+            rcosd = radius*Math.cos(theta + deltaTheta);
+            rsind = radius*Math.sin(theta + deltaTheta);
 
-        // Create vertices for current quad in cylinder segment
-        this.geometry.vertices.push(UTIL.vtx3(rcos, rsin, startZ),
-                                    UTIL.vtx3(rcos, rsin, startZ - depth),
-                                    UTIL.vtx3(rcosd, rsind, startZ - depth),
-                                    UTIL.vtx3(rcosd, rsind, startZ));
+            // Create vertices for current quad in cylinder segment
+            this.geometry.vertices.push(UTIL.vtx3(rcos, rsin, startZ),
+                                        UTIL.vtx3(rcos, rsin, startZ - depth),
+                                        UTIL.vtx3(rcosd, rsind, startZ - depth),
+                                        UTIL.vtx3(rcosd, rsind, startZ));
 
-        // Define normals to point inward
-        temp = faceCounter*4;
-        face = new THREE.Face4(temp + 3,
-                               temp + 2,
-                               temp + 1,
-                               temp);
-        face.materialIndex = Math.floor(Math.random() * (materials.length-1));
-        this.geometry.faces.push(face);
-        faceCounter += 1;
+            // Define normals to point inward
+            temp = faceCounter*4;
+            face = new THREE.Face4(temp + 3,
+                                   temp + 2,
+                                   temp + 1,
+                                   temp);
+            face.materialIndex = 0;
+            this.geometry.faces.push(face);
+            faceCounter += 1;
+
+        }
     }
 
     this.geometry.computeFaceNormals();
