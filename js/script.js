@@ -5,11 +5,11 @@ $(document).ready(function () {
     var OFFSET = 6,
         WIDTH = window.innerWidth - OFFSET,
         HEIGHT = window.innerHeight - OFFSET,
-        VIEW_ANGLE = 75,
+        VIEW_ANGLE = CONSTANTS.cameraAngle,
         ASPECT = WIDTH / HEIGHT,
-        NEAR = 0.1,
-        FAR = 1000,
-        INITIAL_Z_POS = 100,
+        NEAR = CONSTANTS.cameraNear,
+        FAR = CONSTANTS.cameraFar,
+        INITIAL_Z_POS = CONSTANTS.cameraInitZ,
         camera, scene, renderer,
         tunnel, myPlayer;
 
@@ -23,9 +23,9 @@ $(document).ready(function () {
         tunnel = new Tunnel(scene);
         myPlayer = new Player(scene);
 
-        renderer = new THREE.WebGLRenderer({antialias: true});
+        renderer = new THREE.WebGLRenderer(CONSTANTS.renderer);
         renderer.setSize(WIDTH, HEIGHT);
-        renderer.setClearColorHex(0x000000, 1.0);
+        renderer.setClearColorHex(CONSTANTS.background, 1.0);
         renderer.clear();
 
         document.body.appendChild(renderer.domElement);

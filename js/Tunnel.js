@@ -10,11 +10,10 @@ function Tunnel(scene) {
 
     // create new tunnel segments & add to array
     this.tunnelMaterial = new THREE.MeshLambertMaterial({
-                            color: 0x47C5D8,
-                            wireframe:false
+                            color : CONSTANTS.tunnelColor,
+                            wireframe : false,
+                            transparent : false
                         });
-                        // material.transparent = true; for transparent effects later
-
     /*
     var texture = THREE.ImageUtils.loadTexture("tronTexture.jpg");
     texture.wrapS = texture.wrapT = THREE.ClampToEdgeWrapping;
@@ -25,11 +24,10 @@ function Tunnel(scene) {
     */
 
     this.tunnelLights = [];
-    this.tunnelLightSeparater = 15;
 
     var newTunnelSeg, newTunnelMesh, newTunnelLight, i;
     for(i = 0; i < this.numOfSegments; i += 1) {
-        newTunnelSeg = new TunnelSegment(-i*10);
+        newTunnelSeg = new TunnelSegment(-i*CONSTANTS.tunnelSectionDepth);
         newTunnelMesh = new THREE.Mesh(newTunnelSeg.geometry, this.tunnelMaterial);
         this.scene.add(newTunnelMesh);
 
@@ -39,22 +37,17 @@ function Tunnel(scene) {
     // Issue with lighting!!!!
     // Seems to restrict number of lights added to scene
     // thus, need to think of solution/debug
-    this.tunnelRing = new LightRing(-i*10, this.scene);
+    this.tunnelRing = new LightRing(-i*CONSTANTS.tunnelSectionDepth, this.scene);
 
 }
 
 Tunnel.prototype.update = function(playerZ){
-    // Move Tunnel Along
-    // _.each(this.tunnelSegments, function (segment) {
-    //     segment.position.z += 5;
-    // });
-
     // Dynamic tunnel generation based on player position
-    if(this.tunnelSegments.length*10 < Math.abs(playerZ) + 1000){
+    if(this.tunnelSegments.length*CONSTANTS.tunnelSectionDepth < Math.abs(playerZ) + CONSTANTS.cameraFar){
         log('in loop');
-        var newTunnelSeg, newTunnelMesh, i = 0, startZ = -this.tunnelSegments.length*10;
+        var newTunnelSeg, newTunnelMesh, i = 0, startZ = -this.tunnelSegments.length*CONSTANTS.tunnelSectionDepth;
         for(i = 0; i < this.numOfSegments; i += 1) {
-            newTunnelSeg = new TunnelSegment(startZ - i*10);
+            newTunnelSeg = new TunnelSegment(startZ - i*CONSTANTS.tunnelSectionDepth);
             newTunnelMesh = new THREE.Mesh(newTunnelSeg.geometry, this.tunnelMaterial);
             this.scene.add(newTunnelMesh);
 
@@ -65,7 +58,7 @@ Tunnel.prototype.update = function(playerZ){
     // Seems like THREE or WebGL limits number of pointlights in scene.
     // I think we can get at least 4 lights in. So we could rotate them. One in view, one in buffer to be placed further ahead
     if( Math.abs(this.tunnelRing.z) < Math.abs(playerZ) - 200){
-        this.tunnelRing.update(playerZ - 1000);
+        this.tunnelRing.update(playerZ - CONSTANTS.cameraFar);
     }
 };
 
@@ -74,7 +67,7 @@ function LightRing(startZ, scene){
     this.z = startZ;
 
     var deltaTheta = Math.PI,
-        radius = 50,
+        radius = CONSTANTS.tunnelRadius,
         theta, newTunnelLight;
 
     for (theta = 0; theta < 2*Math.PI; theta += deltaTheta){
@@ -101,10 +94,10 @@ function TunnelSegment(startZ) {
     this.geometry = new THREE.Geometry();
     this.geometry.dynamic = true;
 
-    var deltaTheta = Math.PI/15,
-        radius = 50,
+    var deltaTheta = 2*Math.PI/CONSTANTS.tunnelResolution,
+        radius = CONSTANTS.tunnelRadius,
         faceCounter = 0,
-        depth = 10,
+        depth = CONSTANTS.tunnelSectionDepth,
         theta, face,
         rcos, rsin, rcosd, rsind,
         temp;
