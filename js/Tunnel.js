@@ -6,11 +6,15 @@ function Tunnel(scene) {
     this.scene = scene;
     this.tunnelSegments = [];
     this.numOfSegments = CONFIG.tunnelInitialSectionCount;
-    this.counter = 0;
+
+	var texture = THREE.ImageUtils.loadTexture('img/WormHole.jpg');
+	texture.wrapT = THREE.RepeatWrapping;
 
     // create new tunnel segments & add to array
     this.tunnelMaterial = [
-        new THREE.MeshLambertMaterial(CONFIG.tunnelMaterial),
+    	new THREE.MeshLambertMaterial({ map: texture, 
+        							transparent : false}),
+        //new THREE.MeshLambertMaterial(CONFIG.tunnelMaterial),
         new THREE.MeshLambertMaterial({
             color: 0x000000,
             opacity: 0.1,
@@ -18,6 +22,16 @@ function Tunnel(scene) {
         }),
         new THREE.MeshFaceMaterial()
     ];
+    
+    /*
+    var geometry = new THREE.CylinderGeometry( 1, 1, 30, 32, 1, true );
+	texture = THREE.ImageUtils.loadTexture( "images/water.jpg" );
+	texture.wrapT = THREE.RepeatWrapping;
+
+	var material = new THREE.MeshLambertMaterial({color : 0xFFFFFF, map : texture});
+	var mesh = new THREE.Mesh( geometry, material );
+    */
+   
     /*
     var texture = THREE.ImageUtils.loadTexture("tronTexture.jpg");
     texture.wrapS = texture.wrapT = THREE.ClampToEdgeWrapping;
@@ -37,18 +51,19 @@ function Tunnel(scene) {
         this.scene.add(newTunnelMesh);
     }
 
-    // Issue with lighting!!!!
-    // Seems to restrict number of lights added to scene
-    // thus, need to think of solution/debug
-    this.tunnelRing = new LightRing(-this.numOfSegments*CONFIG.tunnelSectionDepth, this.scene);
-
+    var j, tunnelRing;
+    this.tunnelLights = new Array();
+    for(j = 0; j < 3; j += 1)
+    {
+    	tunnelRing = new LightRing(-this.numOfSegments*CONFIG.tunnelSectionDepth - CONFIG.cameraFar*j, this.scene);
+    	this.tunnelLights.push(tunnelRing);
+	}
 }
 
 Tunnel.prototype.update = function(playerZ){
     // Dynamic tunnel generation based on player position
     if(this.tunnelSegments.length*CONFIG.tunnelSectionDepth <
         Math.abs(playerZ) + CONFIG.cameraFar){
-        log('in loop');
         var newTunnelSeg, newTunnelMesh,
             i = 0,
             startZ = -this.tunnelSegments.length*CONFIG.tunnelSectionDepth;
@@ -61,10 +76,15 @@ Tunnel.prototype.update = function(playerZ){
         }
     }
 
-    // Seems like THREE or WebGL limits number of pointlights in scene.
-    // I think we can get at least 4 lights in. So we could rotate them. One in view, one in buffer to be placed further ahead
-    if( Math.abs(this.tunnelRing.z) < Math.abs(playerZ) - 200){
-        this.tunnelRing.update(playerZ - CONFIG.cameraFar);
+	// can't dynamically add lights to scene???
+	// maybe instead of splicing array up everytime
+	var firstLightRing = this.tunnelLights[0];
+    if( Math.abs(firstLightRing.z) < Math.abs(playerZ) - 300){ 
+    	var lastLightRing = this.tunnelLights[this.tunnelLights.length - 1];
+    	
+    	firstLightRing.update(lastLightRing.z - CONFIG.cameraFar);
+    	this.tunnelLights.splice(0, 1); // remove first element
+    	this.tunnelLights.push(firstLightRing); // add first element to element
     }
 };
 
@@ -119,7 +139,7 @@ function TunnelSegment(startZ, materials) {
 
     // dynamically create quads for tunnel segment
     for (theta = 0; theta < 2*Math.PI; theta += deltaTheta){
-        if (Math.floor(Math.random() * (materials.length-1)) === 0) {
+       // if (Math.floor(Math.random() * (materials.length-1)) === 0) {
             rcos = radius*Math.cos(theta);
             rsin = radius*Math.sin(theta);
             rcosd = radius*Math.cos(theta + deltaTheta);
@@ -140,8 +160,17 @@ function TunnelSegment(startZ, materials) {
             face.materialIndex = 0;
             this.geometry.faces.push(face);
             faceCounter += 1;
+            
+            // Configure UV Texturing coord data
+            var faceuv = [new THREE.UV(0,1),
+            			new THREE.UV(1,1),
+            			new THREE.UV(1,0),
+            			new THREE.UV(0,0)];
+            			
+            this.geometry.faceUvs[0].push(new THREE.UV(0,1));
+            this.geometry.faceVertexUvs[0].push(faceuv);
 
-        }
+        //}
     }
 
     this.geometry.computeFaceNormals();

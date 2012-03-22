@@ -11,7 +11,8 @@ $(document).ready(function () {
         FAR = CONFIG.cameraFar,
         INITIAL_Z_POS = CONFIG.cameraInitZ,
         camera, scene, renderer,
-        tunnel, myPlayer;
+        tunnel, myPlayer,
+        oldDate;
 
     function init() {
         camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
@@ -28,6 +29,8 @@ $(document).ready(function () {
         renderer.setClearColorHex(CONFIG.background, 1.0);
         renderer.clear();
 
+		oldDate = new Date();
+
         document.body.appendChild(renderer.domElement);
 
         // bind key events
@@ -43,10 +46,15 @@ $(document).ready(function () {
     }
 
     function update() {
+    	var now = new Date();
+    	var dt = (now.getTime() - oldDate.getTime())/1000;
+    	oldDate = now;
+    	log(dt);
+    	
         // Call update methods to produce animation
         tunnel.update(myPlayer.getZ());
-        myPlayer.update();
-        camera.position.z += CONFIG.cameraVel.z;
+        myPlayer.update(dt);
+        camera.position.z += CONFIG.cameraVel.z * dt;
     }
 
     function keyPressed(e) {

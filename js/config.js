@@ -3,6 +3,7 @@ var CONFIG = {
     'renderer' : {
         antialias: true,
         maxLights: 20
+        //antialias: true,	// to get smoother output
     },
     'background' : 0x000000,
 
@@ -11,11 +12,11 @@ var CONFIG = {
     'cameraNear' : 0.1,
     'cameraFar' : 1000,
     'cameraInitZ' : 100,
-    'cameraVel' : UTIL.v3c(0, 0, -2),
+    'cameraVel' : UTIL.v3c(0, 0, -350),
 
     // Player Settings
-    'playerPos' : UTIL.v3c(50, 1.5*Math.PI, 0),
-    'playerVel' : UTIL.v3c(0, Math.PI/80, -2),
+    'playerPos' : UTIL.v3c(40, 1.5*Math.PI, 0),
+    'playerVel' : UTIL.v3c(0, Math.PI/80, -350),
 
     // Tunnel Settings
     'tunnelRadius' : 50,
