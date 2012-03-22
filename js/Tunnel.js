@@ -61,6 +61,15 @@ Tunnel.prototype.update = function(playerZ){
     }
 };
 
+Tunnel.prototype.getFace = function(i, j) {
+    if (i <= this.tunnelSegments.length && i >= 0)
+        return this.tunnelSegments[i].getFace(j);
+    else {
+        console.log('Error: Tunnel getFace('+i+','+j+') index out of bounds');
+        return null;
+    }
+};
+
 function LightRing(startZ, scene){
     this.lights = [];
     this.z = startZ;
@@ -127,3 +136,12 @@ function TunnelSegment(startZ) {
     this.geometry.computeFaceNormals();
     this.geometry.computeVertexNormals();
 }
+
+TunnelSegment.prototype.getFace = function(i) {
+    if (i <= this.geometry.faces.length && i >= 0)
+        return this.geometry.faces[i];
+    else {
+        console.log('Error: TunnelSegment getFace('+i+') index out of bounds');
+        return null;
+    }
+};
