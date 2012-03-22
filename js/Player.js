@@ -22,13 +22,11 @@ function Player(scene) {
 
 
 Player.prototype.moveLeft = function () {
-    this.move();
     this.position.theta -= this.velocity.theta;
     this.updatePosition();
 };
 
 Player.prototype.moveRight = function () {
-    this.move();
     this.position.theta += this.velocity.theta;
     this.updatePosition();
 };
