@@ -7,7 +7,7 @@ function Tunnel(scene) {
     this.tunnelSegments = [];
     this.numOfSegments = CONFIG.tunnelInitialSectionCount;
 
-	var texture = THREE.ImageUtils.loadTexture('img/WormHole.jpg');
+	var texture = THREE.ImageUtils.loadTexture('img/HAND.jpg');
 	texture.wrapT = THREE.RepeatWrapping;
 
     // create new tunnel segments & add to array
