@@ -14,8 +14,8 @@ function Player(scene) {
     );
 
     this.position = CONSTANTS.playerPos;
-    this.updatePosition();
     this.velocity = CONSTANTS.playerVel;
+    this.updatePosition();
 
     this.scene.add(this.playerMesh);
 }
@@ -33,12 +33,12 @@ Player.prototype.moveRight = function () {
 
 Player.prototype.updatePosition = function () {
     var temp = this.position.convertToCartesian();
-    this.playerMesh.position.x = temp.position.x;
-    this.playerMesh.position.y = temp.position.y;
+    this.playerMesh.position = temp.position;
 };
 
 Player.prototype.move = function (vel) {
-    this.playerMesh.position.z += this.velocity.z;
+    this.position.z += this.velocity.z;
+    this.playerMesh.position.z = this.position.z;
 };
 
 Player.prototype.update = function () {
