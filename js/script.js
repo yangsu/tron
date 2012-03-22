@@ -8,7 +8,7 @@ $(document).ready(function () {
         VIEW_ANGLE = 75,
         ASPECT = WIDTH / HEIGHT,
         NEAR = 0.1,
-        FAR = 10000,
+        FAR = 1000,
         INITIAL_Z_POS = 100,
         camera, scene, renderer,
         tunnel, myPlayer;
@@ -44,7 +44,7 @@ $(document).ready(function () {
 
     function update() {
         // Call update methods to produce animation
-        tunnel.update();
+        tunnel.update(myPlayer.getZ());
         myPlayer.update();
         camera.position.z -= CONSTANTS.cameraVel.z;
     }
