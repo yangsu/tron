@@ -59,10 +59,10 @@ function TunnelSegment(startZ) {
         rsind = radius*Math.sin(theta + deltaTheta);
 
         // Create vertices for current quad in cylinder segment
-        this.geometry.vertices.push(UTIL.v3(rcos, rsin, startZ),
-                                    UTIL.v3(rcos, rsin, startZ - depth),
-                                    UTIL.v3(rcosd, rsind, startZ - depth),
-                                    UTIL.v3(rcosd, rsind, startZ));
+        this.geometry.vertices.push(UTIL.vtx3(rcos, rsin, startZ),
+                                    UTIL.vtx3(rcos, rsin, startZ - depth),
+                                    UTIL.vtx3(rcosd, rsind, startZ - depth),
+                                    UTIL.vtx3(rcosd, rsind, startZ));
 
         // Define normals to point inward
         temp = faceCounter*4;

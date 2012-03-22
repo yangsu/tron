@@ -32,8 +32,7 @@ Player.prototype.moveRight = function () {
 };
 
 Player.prototype.updatePosition = function () {
-    var temp = this.position.convertToCartesian();
-    this.playerMesh.position = temp.position;
+    this.playerMesh.position = this.position.convertToCartesian();
 };
 
 Player.prototype.move = function (vel) {
