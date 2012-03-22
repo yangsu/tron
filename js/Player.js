@@ -4,7 +4,7 @@
 
 function Player(scene) {
     this.scene = scene;
-    var texture = THREE.ImageUtils.loadTexture("../img/t.jpg");
+    var texture = THREE.ImageUtils.loadTexture('img/t.jpg');
     // texture.needsUpdate = true;
     this.material = new THREE.MeshBasicMaterial({
         map: texture
