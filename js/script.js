@@ -46,7 +46,7 @@ $(document).ready(function () {
         // Call update methods to produce animation
         tunnel.update(myPlayer.getZ());
         myPlayer.update();
-        camera.position.z -= CONSTANTS.cameraVel.z;
+        camera.position.z += CONSTANTS.cameraVel.z;
     }
 
     function keyPressed(e) {
