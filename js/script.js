@@ -5,11 +5,11 @@ $(document).ready(function () {
     var OFFSET = 6,
         WIDTH = window.innerWidth - OFFSET,
         HEIGHT = window.innerHeight - OFFSET,
-        VIEW_ANGLE = CONSTANTS.cameraAngle,
+        VIEW_ANGLE = CONFIG.cameraAngle,
         ASPECT = WIDTH / HEIGHT,
-        NEAR = CONSTANTS.cameraNear,
-        FAR = CONSTANTS.cameraFar,
-        INITIAL_Z_POS = CONSTANTS.cameraInitZ,
+        NEAR = CONFIG.cameraNear,
+        FAR = CONFIG.cameraFar,
+        INITIAL_Z_POS = CONFIG.cameraInitZ,
         camera, scene, renderer,
         tunnel, myPlayer;
 
@@ -23,9 +23,9 @@ $(document).ready(function () {
         tunnel = new Tunnel(scene);
         myPlayer = new Player(scene);
 
-        renderer = new THREE.WebGLRenderer(CONSTANTS.renderer);
+        renderer = new THREE.WebGLRenderer(CONFIG.renderer);
         renderer.setSize(WIDTH, HEIGHT);
-        renderer.setClearColorHex(CONSTANTS.background, 1.0);
+        renderer.setClearColorHex(CONFIG.background, 1.0);
         renderer.clear();
 
         document.body.appendChild(renderer.domElement);
@@ -46,7 +46,7 @@ $(document).ready(function () {
         // Call update methods to produce animation
         tunnel.update(myPlayer.getZ());
         myPlayer.update();
-        camera.position.z += CONSTANTS.cameraVel.z;
+        camera.position.z += CONFIG.cameraVel.z;
     }
 
     function keyPressed(e) {

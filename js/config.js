@@ -1,4 +1,4 @@
-var CONSTANTS = {
+var CONFIG = {
     // Renderer Settings
     'renderer' : {
         antialias: true

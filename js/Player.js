@@ -24,8 +24,8 @@ function Player(scene) {
         new THREE.CubeGeometry(10, 10, 20),
         this.material);
 
-    this.position = CONSTANTS.playerPos;
-    this.velocity = CONSTANTS.playerVel;
+    this.position = CONFIG.playerPos;
+    this.velocity = CONFIG.playerVel;
     this.updatePosition();
 
     this.scene.add(this.playerMesh);
