@@ -20,12 +20,17 @@ var CONFIG = {
     // Tunnel Settings
     'tunnelRadius' : 50,
     'tunnelSectionDepth' : 10,
-    'tunnelResolution' : 30,
-    'tunnelColor' : 0x47C5D8,
+    'tunnelResolution' : 10,
+    'tunnelInitialSectionCount' : 10,
+    'tunnelMaterial' : {
+        color : 0x47C5D8,
+        wireframe : true,
+        transparent : false
+    },
 
     // Light Ring Settings
     'lightRingCount' : 8,
     'lightColor' : 0xFFFFFF,
     'lightIntensity' : 0.55,
-    'lightRange' : 80
+    'lightRange' : 800
 };

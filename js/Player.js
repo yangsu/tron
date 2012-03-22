@@ -10,11 +10,6 @@ function Player(scene) {
         map: texture
     });
 
-    // this.material = new THREE.MeshBasicMaterial({
-    //     color: 0x0000FF,
-    //     wireframe:false
-    // });
-
     this.playerMesh = new THREE.Mesh(
         new THREE.CubeGeometry(10, 10, 20),
         this.material);

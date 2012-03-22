@@ -5,15 +5,11 @@
 function Tunnel(scene) {
     this.scene = scene;
     this.tunnelSegments = [];
-    this.numOfSegments = 30;
+    this.numOfSegments = CONFIG.tunnelInitialSectionCount;
     this.counter = 0;
 
     // create new tunnel segments & add to array
-    this.tunnelMaterial = new THREE.MeshLambertMaterial({
-                            color : CONFIG.tunnelColor,
-                            wireframe : false,
-                            transparent : false
-                        });
+    this.tunnelMaterial = new THREE.MeshLambertMaterial(CONFIG.tunnelMaterial);
     /*
     var texture = THREE.ImageUtils.loadTexture("tronTexture.jpg");
     texture.wrapS = texture.wrapT = THREE.ClampToEdgeWrapping;
