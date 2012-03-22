@@ -37,21 +37,24 @@ function Tunnel(scene) {
     // Issue with lighting!!!!
     // Seems to restrict number of lights added to scene
     // thus, need to think of solution/debug
-    this.tunnelRing = new LightRing(-i*CONFIG.tunnelSectionDepth, this.scene);
+    this.tunnelRing = new LightRing(-this.numOfSegments*CONFIG.tunnelSectionDepth, this.scene);
 
 }
 
 Tunnel.prototype.update = function(playerZ){
     // Dynamic tunnel generation based on player position
-    if(this.tunnelSegments.length*CONFIG.tunnelSectionDepth < Math.abs(playerZ) + CONFIG.cameraFar){
+    if(this.tunnelSegments.length*CONFIG.tunnelSectionDepth <
+        Math.abs(playerZ) + CONFIG.cameraFar){
         log('in loop');
-        var newTunnelSeg, newTunnelMesh, i = 0, startZ = -this.tunnelSegments.length*CONFIG.tunnelSectionDepth;
-        for(i = 0; i < this.numOfSegments; i += 1) {
+        var newTunnelSeg, newTunnelMesh,
+            i = 0,
+            startZ = -this.tunnelSegments.length*CONFIG.tunnelSectionDepth;
+        for(; i < this.numOfSegments; i += 1) {
             newTunnelSeg = new TunnelSegment(startZ - i*CONFIG.tunnelSectionDepth);
             newTunnelMesh = new THREE.Mesh(newTunnelSeg.geometry, this.tunnelMaterial);
-            this.scene.add(newTunnelMesh);
 
             this.tunnelSegments.push(newTunnelMesh);
+            this.scene.add(newTunnelMesh);
         }
     }
 
@@ -66,19 +69,18 @@ function LightRing(startZ, scene){
     this.lights = [];
     this.z = startZ;
 
-    var deltaTheta = Math.PI,
+    var deltaTheta = 2*Math.PI/CONFIG.lightRingCount,
         radius = CONFIG.tunnelRadius,
         theta, newTunnelLight;
 
     for (theta = 0; theta < 2*Math.PI; theta += deltaTheta){
-        newTunnelLight = new THREE.PointLight(0xFFFFFF);
+        newTunnelLight = new THREE.PointLight(CONFIG.lightColor, CONFIG.lightIntensity, CONFIG.lightRange);
         newTunnelLight.position.x = radius*Math.cos(theta);
         newTunnelLight.position.y = radius*Math.sin(theta);
         newTunnelLight.position.z = startZ;
 
-        scene.add(newTunnelLight);
-
         this.lights.push(newTunnelLight);
+        scene.add(newTunnelLight);
     }
 }
 

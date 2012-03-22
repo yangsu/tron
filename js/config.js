@@ -1,7 +1,8 @@
 var CONFIG = {
     // Renderer Settings
     'renderer' : {
-        antialias: true
+        antialias: true,
+        maxLights: 20
     },
     'background' : 0x000000,
 
@@ -20,5 +21,11 @@ var CONFIG = {
     'tunnelRadius' : 50,
     'tunnelSectionDepth' : 10,
     'tunnelResolution' : 30,
-    'tunnelColor' : 0x47C5D8
+    'tunnelColor' : 0x47C5D8,
+
+    // Light Ring Settings
+    'lightRingCount' : 8,
+    'lightColor' : 0xFFFFFF,
+    'lightIntensity' : 0.55,
+    'lightRange' : 80
 };
