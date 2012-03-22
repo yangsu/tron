@@ -4,21 +4,16 @@
 
 function Player(scene) {
     this.scene = scene;
-
-    this.materials = [
-        new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture("img/t.jpg")}), // right
-        new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture("img/t.jpg")}), // left
-        new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture("img/t.jpg")}), //top
-        new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture("img/t.jpg")}), // bottom
-        new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture("img/t.jpg")}), // back
-        new THREE.MeshBasicMaterial({map: THREE.ImageUtils.loadTexture("img/t.jpg")}) // front
-    ];
-    //this.material  = new THREE.MeshBasicMaterial( { map: texture } );
-
+    var texture = THREE.ImageUtils.loadTexture("../img/t.jpg");
+    // texture.needsUpdate = true;
     this.material = new THREE.MeshBasicMaterial({
-        color: 0x0000FF,
-        wireframe:false
+        map: texture
     });
+
+    // this.material = new THREE.MeshBasicMaterial({
+    //     color: 0x0000FF,
+    //     wireframe:false
+    // });
 
     this.playerMesh = new THREE.Mesh(
         new THREE.CubeGeometry(10, 10, 20),
