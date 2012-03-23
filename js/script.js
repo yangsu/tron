@@ -12,7 +12,7 @@ $(document).ready(function () {
         INITIAL_Z_POS = CONFIG.cameraInitZ,
         camera, scene, renderer,
         tunnel, myPlayer,
-        oldDate;
+        lastUpdate;
 
     function init() {
         camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
@@ -29,7 +29,7 @@ $(document).ready(function () {
         renderer.setClearColorHex(CONFIG.background, 1.0);
         renderer.clear();
 
-		oldDate = new Date();
+        lastUpdate = UTIL.now();
 
         document.body.appendChild(renderer.domElement);
 
@@ -46,11 +46,10 @@ $(document).ready(function () {
     }
 
     function update() {
-    	var now = new Date();
-    	var dt = (now.getTime() - oldDate.getTime())/1000;
-    	oldDate = now;
-    	log(dt);
-    	
+        var now = UTIL.now(),
+            dt = (now - lastUpdate)/1000;
+        lastUpdate = now;
+
         // Call update methods to produce animation
         tunnel.update(myPlayer.getZ());
         myPlayer.update(dt);

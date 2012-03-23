@@ -28,18 +28,17 @@ Player.prototype.getZ = function(){
 
 Player.prototype.moveLeft = function () {
     this.position.theta -= this.velocity.theta;
-    this.playerMesh.rotation.z -= this.velocity.theta;
     this.updatePosition();
 };
 
 Player.prototype.moveRight = function () {
     this.position.theta += this.velocity.theta;
-    this.playerMesh.rotation.z += this.velocity.theta;
     this.updatePosition();
 };
 
 Player.prototype.updatePosition = function () {
     this.playerMesh.position = this.position.convertToCartesian();
+    this.playerMesh.rotation.z = this.position.theta;
 };
 
 Player.prototype.moveForward = function (dt) {
