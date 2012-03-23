@@ -31,6 +31,23 @@ $(document).ready(function () {
 
 		oldDate = new Date();
 
+
+		window.ondevicemotion = function(event) {
+			
+			if(event.accelerationIncludingGravity.x > 0.75)
+			{
+				myPlayer.moveRight();
+			}
+			else if(event.accelerationIncludingGravity.x < -0.75)
+			{
+				myPlayer.moveLeft();
+			}
+			
+			// event.accelerationIncludingGravity.x
+			// event.accelerationIncludingGravity.y
+			// event.accelerationIncludingGravity.z
+		}
+
         document.body.appendChild(renderer.domElement);
 
         // bind key events
