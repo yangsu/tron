@@ -44,14 +44,17 @@ function Tunnel(scene) {
     */
 
     this.tunnelLights = [];
-    var newTunnelSeg, newTunnelMesh, newTunnelLight, i;
-    for(i = 0; i < this.numOfSegments; i += 1) {
+    var newTunnelSeg, newTunnelMesh, newTunnelLight, i, geometry;
+    newTunnelSeg = new TunnelSegment(-i*CONFIG.tunnelSectionDepth, this.tunnelMaterial);
+    geometry = newTunnelSeg.geometry;
+    this.tunnelSegments.push(newTunnelSeg);
+    for(i = 1; i < this.numOfSegments; i += 1) {
         newTunnelSeg = new TunnelSegment(-i*CONFIG.tunnelSectionDepth, this.tunnelMaterial);
         this.tunnelSegments.push(newTunnelSeg);
-
-        newTunnelMesh = new THREE.Mesh(newTunnelSeg.geometry, this.tunnelMaterial[this.tunnelMaterial.length-1]);
-        this.scene.add(newTunnelMesh);
+        THREE.GeometryUtils.merge(geometry, newTunnelSeg.geometry);
     }
+    newTunnelMesh = new THREE.Mesh(geometry, this.tunnelMaterial[this.tunnelMaterial.length-1]);
+    this.scene.add(newTunnelMesh);
 
     var j, tunnelRing;
     this.tunnelLights = [];
@@ -65,16 +68,20 @@ Tunnel.prototype.update = function(playerZ){
     // Dynamic tunnel generation based on player position
     if(this.tunnelSegments.length*CONFIG.tunnelSectionDepth <
         Math.abs(playerZ) + CONFIG.cameraFar){
-        var newTunnelSeg, newTunnelMesh,
-            i = 0,
-            startZ = -this.tunnelSegments.length*CONFIG.tunnelSectionDepth;
-        for(; i < this.numOfSegments; i += 1) {
-            newTunnelSeg = new TunnelSegment(startZ - i*CONFIG.tunnelSectionDepth, this.tunnelMaterial);
+        console.log('updated');
+        var i = 0,
+            startZ = -this.tunnelSegments.length*CONFIG.tunnelSectionDepth,
+            newTunnelSeg = new TunnelSegment(startZ - i*CONFIG.tunnelSectionDepth, this.tunnelMaterial),
+            geometry = newTunnelSeg.geometry,
+            newTunnelMesh;
+        this.tunnelSegments.push(newTunnelSeg);
+        for(i = 1; i < this.numOfSegments; i += 1) {
+            newTunnelSeg= new TunnelSegment(startZ - i*CONFIG.tunnelSectionDepth, this.tunnelMaterial);
             this.tunnelSegments.push(newTunnelSeg);
-
-            newTunnelMesh = new THREE.Mesh(newTunnelSeg.geometry, this.tunnelMaterial[this.tunnelMaterial.length-1]);
-            this.scene.add(newTunnelMesh);
+            THREE.GeometryUtils.merge(geometry, newTunnelSeg.geometry);
         }
+        newTunnelMesh = new THREE.Mesh(geometry, this.tunnelMaterial[this.tunnelMaterial.length-1]);
+        this.scene.add(newTunnelMesh);
     }
 
     // can't dynamically add lights to scene???
