@@ -44,9 +44,11 @@ function Tunnel(scene) {
     */
 
     this.tunnelLights = [];
-    var newTunnelSeg, newTunnelMesh, newTunnelLight, i, geometry;
-    newTunnelSeg = new TunnelSegment(-i*CONFIG.tunnelSectionDepth, this.tunnelMaterial);
-    geometry = newTunnelSeg.geometry;
+    var i = 0,
+        newTunnelSeg = new TunnelSegment(-i*CONFIG.tunnelSectionDepth, this.tunnelMaterial),
+        geometry = newTunnelSeg.geometry,
+        newTunnelMesh;
+
     this.tunnelSegments.push(newTunnelSeg);
     for(i = 1; i < this.numOfSegments; i += 1) {
         newTunnelSeg = new TunnelSegment(-i*CONFIG.tunnelSectionDepth, this.tunnelMaterial);
@@ -56,8 +58,8 @@ function Tunnel(scene) {
     newTunnelMesh = new THREE.Mesh(geometry, this.tunnelMaterial[this.tunnelMaterial.length-1]);
     this.scene.add(newTunnelMesh);
 
-    var j, tunnelRing;
     this.tunnelLights = [];
+    var j, tunnelRing;
     for(j = 0; j < 3; j += 1) {
         tunnelRing = new LightRing(-this.numOfSegments*CONFIG.tunnelSectionDepth - CONFIG.cameraFar*j, this.scene);
         this.tunnelLights.push(tunnelRing);
@@ -68,7 +70,6 @@ Tunnel.prototype.update = function(playerZ){
     // Dynamic tunnel generation based on player position
     if(this.tunnelSegments.length*CONFIG.tunnelSectionDepth <
         Math.abs(playerZ) + CONFIG.cameraFar){
-        console.log('updated');
         var i = 0,
             startZ = -this.tunnelSegments.length*CONFIG.tunnelSectionDepth,
             newTunnelSeg = new TunnelSegment(startZ - i*CONFIG.tunnelSectionDepth, this.tunnelMaterial),
