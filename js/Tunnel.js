@@ -79,12 +79,18 @@ Tunnel.prototype.update = function(playerZ){
 	// can't dynamically add lights to scene???
 	// maybe instead of splicing array up everytime
 	var firstLightRing = this.tunnelLights[0];
-    if( Math.abs(firstLightRing.z) < Math.abs(playerZ) - 300){ 
+    if( Math.abs(firstLightRing.z) < Math.abs(playerZ) - CONFIG.cameraFar){ 
     	var lastLightRing = this.tunnelLights[this.tunnelLights.length - 1];
     	
-    	firstLightRing.update(lastLightRing.z - CONFIG.cameraFar);
+    	firstLightRing.repositionLightRing(lastLightRing.z - CONFIG.cameraFar);
     	this.tunnelLights.splice(0, 1); // remove first element
     	this.tunnelLights.push(firstLightRing); // add first element to element
+    }
+    
+    // how the hell do you do the underscore each again???
+    var a = 0;
+    for(; a < this.tunnelLights.length; a++){
+    	this.tunnelLights[a].update();
     }
 };
 
@@ -99,6 +105,7 @@ Tunnel.prototype.getFace = function(i, j) {
 
 function LightRing(startZ, scene){
     this.lights = [];
+    this.rising = false;
     this.z = startZ;
 
     var deltaTheta = 2*Math.PI/CONFIG.lightRingCount,
@@ -116,7 +123,25 @@ function LightRing(startZ, scene){
     }
 }
 
-LightRing.prototype.update = function(newZ){
+LightRing.prototype.update = function(){
+	var i = 0, step = 0.05;
+	for(; i < this.lights.length; i += 1){
+		
+		if(this.lights[i].intensity >= step*10) this.rising = false;
+		else if(this.lights[i].intensity <= step*2) this.rising = true;
+		
+		log(this.lights[i].intensity);
+		
+		if(this.rising){ 
+			this.lights[i].intensity += step;
+		}
+		else{ 
+			this.lights[i].intensity -= step;
+		}
+	}
+}
+
+LightRing.prototype.repositionLightRing = function(newZ){
     var i = 0;
     this.z = newZ;
     for(; i < this.lights.length; i++){
@@ -139,7 +164,7 @@ function TunnelSegment(startZ, materials) {
 
     // dynamically create quads for tunnel segment
     for (theta = 0; theta < 2*Math.PI; theta += deltaTheta){
-       // if (Math.floor(Math.random() * (materials.length-1)) === 0) {
+        if (Math.floor(Math.random() * (materials.length-1)) === 0) {
             rcos = radius*Math.cos(theta);
             rsin = radius*Math.sin(theta);
             rcosd = radius*Math.cos(theta + deltaTheta);
@@ -170,7 +195,7 @@ function TunnelSegment(startZ, materials) {
             this.geometry.faceUvs[0].push(new THREE.UV(0,1));
             this.geometry.faceVertexUvs[0].push(faceuv);
 
-        //}
+        }
     }
 
     this.geometry.computeFaceNormals();
