@@ -28,6 +28,7 @@ var CONFIG = {
         wireframe : true,
         transparent : false
     },
+    'tunnelLiveSections' : 11, // should be 1 + cameraFar/(segdepth * seg/sec)
 
     // Light Ring Settings
     'lightRingCount' : 8,

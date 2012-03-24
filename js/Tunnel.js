@@ -5,11 +5,14 @@
 function Tunnel(scene) {
     this.scene = scene;
     this.tunnelSegments = [];
+    this.tunnelSections = [];
+    // Index used to delete segments from the scene
+    this.oldestLiveSection = 0;
 
     var texture = THREE.ImageUtils.loadTexture('img/HAND.jpg');
     //texture.wrapT = THREE.RepeatWrapping;
 
-    // create new tunnel segments & add to array
+
     this.tunnelMaterial = [
         new THREE.MeshLambertMaterial({
             map: texture,
@@ -58,12 +61,20 @@ Tunnel.prototype.update = function(playerZ){
     if(this.tunnelSegments.length*CONFIG.tunnelSegmentDepth <
         Math.abs(playerZ) + CONFIG.cameraFar){
         this.generateTunnelSection(-this.tunnelSegments.length*CONFIG.tunnelSegmentDepth);
+        if (this.tunnelSections.length - this.oldestLiveSection > CONFIG.tunnelLiveSections) {
+            // Remove from scene
+            this.scene.remove(this.tunnelSections[this.oldestLiveSection]);
+            // Remove from tunnelSections
+            delete this.tunnelSections[this.oldestLiveSection];
+            // Move counter along
+            this.oldestLiveSection += 1;
+        }
     }
 
     // can't dynamically add lights to scene???
     // maybe instead of splicing array up everytime
     var firstLightRing = this.tunnelLights[0];
-    if( Math.abs(firstLightRing.z) < Math.abs(playerZ) - CONFIG.cameraFar){
+    if(Math.abs(firstLightRing.z) < Math.abs(playerZ) - CONFIG.cameraFar){
         var lastLightRing = this.tunnelLights[this.tunnelLights.length - 1];
 
         firstLightRing.repositionLightRing(lastLightRing.z - CONFIG.cameraFar);
@@ -93,6 +104,7 @@ Tunnel.prototype.generateTunnelSection = function(startZ) {
 
     // Create a single mesh
     newTunnelMesh = new THREE.Mesh(geometry, this.tunnelMaterial[this.tunnelMaterial.length-1]);
+    this.tunnelSections.push(newTunnelMesh);
     this.scene.add(newTunnelMesh);
 };
 
