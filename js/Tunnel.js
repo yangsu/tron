@@ -43,21 +43,7 @@ function Tunnel(scene) {
     var sphereMaterial = new THREE.MeshBasicMaterial( { map: texture } );
     */
 
-    var i = 0,
-        newTunnelSeg = new TunnelSegment(-i*CONFIG.tunnelSectionDepth, this.tunnelMaterial),
-        geometry = newTunnelSeg.geometry,
-        newTunnelMesh;
-
-    this.tunnelSegments.push(newTunnelSeg);
-    for(i = 1; i < this.numOfSegments; i += 1) {
-        newTunnelSeg = new TunnelSegment(-i*CONFIG.tunnelSectionDepth, this.tunnelMaterial);
-        this.tunnelSegments.push(newTunnelSeg);
-        // Merge geometry
-        THREE.GeometryUtils.merge(geometry, newTunnelSeg.geometry);
-    }
-
-    newTunnelMesh = new THREE.Mesh(geometry, this.tunnelMaterial[this.tunnelMaterial.length-1]);
-    this.scene.add(newTunnelMesh);
+    this.generateTunnelSection(0);
 
     this.tunnelLights = [];
     var j, tunnelRing;
@@ -71,22 +57,7 @@ Tunnel.prototype.update = function(playerZ){
     // Dynamic tunnel generation based on player position
     if(this.tunnelSegments.length*CONFIG.tunnelSectionDepth <
         Math.abs(playerZ) + CONFIG.cameraFar){
-        var i = 0,
-            startZ = -this.tunnelSegments.length*CONFIG.tunnelSectionDepth,
-            newTunnelSeg = new TunnelSegment(startZ - i*CONFIG.tunnelSectionDepth, this.tunnelMaterial),
-            geometry = newTunnelSeg.geometry,
-            newTunnelMesh;
-
-        this.tunnelSegments.push(newTunnelSeg);
-
-        for(i = 1; i < this.numOfSegments; i += 1) {
-            newTunnelSeg= new TunnelSegment(startZ - i*CONFIG.tunnelSectionDepth, this.tunnelMaterial);
-            this.tunnelSegments.push(newTunnelSeg);
-            THREE.GeometryUtils.merge(geometry, newTunnelSeg.geometry);
-        }
-
-        newTunnelMesh = new THREE.Mesh(geometry, this.tunnelMaterial[this.tunnelMaterial.length-1]);
-        this.scene.add(newTunnelMesh);
+        this.generateTunnelSection(-this.tunnelSegments.length*CONFIG.tunnelSectionDepth);
     }
 
     // can't dynamically add lights to scene???
@@ -105,6 +76,26 @@ Tunnel.prototype.update = function(playerZ){
     for(; a < this.tunnelLights.length; a++){
         this.tunnelLights[a].update();
     }
+};
+
+Tunnel.prototype.generateTunnelSection = function(startZ) {
+    var i = 0,
+        newTunnelSeg = new TunnelSegment(startZ, this.tunnelMaterial),
+        geometry = newTunnelSeg.geometry,
+        newTunnelMesh;
+
+    this.tunnelSegments.push(newTunnelSeg);
+
+    for(i = 1; i < this.numOfSegments; i += 1) {
+        newTunnelSeg= new TunnelSegment(startZ - i*CONFIG.tunnelSectionDepth, this.tunnelMaterial);
+        this.tunnelSegments.push(newTunnelSeg);
+        // Merge with geometry
+        THREE.GeometryUtils.merge(geometry, newTunnelSeg.geometry);
+    }
+
+    // Create a single mesh
+    newTunnelMesh = new THREE.Mesh(geometry, this.tunnelMaterial[this.tunnelMaterial.length-1]);
+    this.scene.add(newTunnelMesh);
 };
 
 Tunnel.prototype.getFace = function(i, j) {
@@ -155,11 +146,10 @@ LightRing.prototype.update = function(){
 };
 
 LightRing.prototype.repositionLightRing = function(newZ){
-    var i = 0;
     this.z = newZ;
-    for(; i < this.lights.length; i++){
-        this.lights[i].position.z = newZ;
-    }
+    _.each(this.lights, function (light) {
+        light.position.z = newZ;
+    });
 };
 
 function TunnelSegment(startZ, materials) {
