@@ -17,6 +17,8 @@ var UTIL = {
                            this.z);
         };
         return new Coord(radius, theta, z);
+    },
+    now : function () {
+        return new Date().getTime();
     }
-
 };

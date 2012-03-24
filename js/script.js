@@ -12,7 +12,7 @@ $(document).ready(function () {
         INITIAL_Z_POS = CONFIG.cameraInitZ,
         camera, scene, renderer,
         tunnel, myPlayer,
-        oldDate;
+        lastUpdate;
 
     function init() {
         camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
@@ -29,24 +29,21 @@ $(document).ready(function () {
         renderer.setClearColorHex(CONFIG.background, 1.0);
         renderer.clear();
 
-		oldDate = new Date();
+        lastUpdate = UTIL.now();
 
+        window.ondevicemotion = function(event) {
 
-		window.ondevicemotion = function(event) {
-			
-			if(event.accelerationIncludingGravity.x > 0.75)
-			{
-				myPlayer.moveRight();
-			}
-			else if(event.accelerationIncludingGravity.x < -0.75)
-			{
-				myPlayer.moveLeft();
-			}
-			
-			// event.accelerationIncludingGravity.x
-			// event.accelerationIncludingGravity.y
-			// event.accelerationIncludingGravity.z
-		}
+            if(event.accelerationIncludingGravity.x > 0.75) {
+                myPlayer.moveRight();
+            }
+            else if(event.accelerationIncludingGravity.x < -0.75) {
+                myPlayer.moveLeft();
+            }
+
+            // event.accelerationIncludingGravity.x
+            // event.accelerationIncludingGravity.y
+            // event.accelerationIncludingGravity.z
+        };
 
         document.body.appendChild(renderer.domElement);
 
@@ -63,15 +60,15 @@ $(document).ready(function () {
     }
 
     function update() {
-    	var now = new Date();
-    	var dt = (now.getTime() - oldDate.getTime())/1000;
-    	oldDate = now;
-    	log(dt);
-    	
+        var now = UTIL.now(),
+            dt = (now - lastUpdate)/1000;
+
         // Call update methods to produce animation
         tunnel.update(myPlayer.getZ());
         myPlayer.update(dt);
         camera.position.z += CONFIG.cameraVel.z * dt;
+
+        lastUpdate = now;
     }
 
     function keyPressed(e) {

@@ -7,13 +7,15 @@ function Tunnel(scene) {
     this.tunnelSegments = [];
     this.numOfSegments = CONFIG.tunnelInitialSectionCount;
 
-	var texture = THREE.ImageUtils.loadTexture('img/HAND.jpg');
-	//texture.wrapT = THREE.RepeatWrapping;
+    var texture = THREE.ImageUtils.loadTexture('img/HAND.jpg');
+    //texture.wrapT = THREE.RepeatWrapping;
 
     // create new tunnel segments & add to array
     this.tunnelMaterial = [
-    	new THREE.MeshLambertMaterial({ map: texture, 
-        							transparent : false}),
+        new THREE.MeshLambertMaterial({
+            map: texture,
+            transparent : false
+        }),
         //new THREE.MeshLambertMaterial(CONFIG.tunnelMaterial),
         new THREE.MeshLambertMaterial({
             color: 0x000000,
@@ -22,16 +24,16 @@ function Tunnel(scene) {
         }),
         new THREE.MeshFaceMaterial()
     ];
-    
+
     /*
     var geometry = new THREE.CylinderGeometry( 1, 1, 30, 32, 1, true );
-	texture = THREE.ImageUtils.loadTexture( "images/water.jpg" );
-	texture.wrapT = THREE.RepeatWrapping;
+    texture = THREE.ImageUtils.loadTexture( "images/water.jpg" );
+    texture.wrapT = THREE.RepeatWrapping;
 
-	var material = new THREE.MeshLambertMaterial({color : 0xFFFFFF, map : texture});
-	var mesh = new THREE.Mesh( geometry, material );
+    var material = new THREE.MeshLambertMaterial({color : 0xFFFFFF, map : texture});
+    var mesh = new THREE.Mesh( geometry, material );
     */
-   
+
     /*
     var texture = THREE.ImageUtils.loadTexture("tronTexture.jpg");
     texture.wrapS = texture.wrapT = THREE.ClampToEdgeWrapping;
@@ -41,56 +43,64 @@ function Tunnel(scene) {
     var sphereMaterial = new THREE.MeshBasicMaterial( { map: texture } );
     */
 
-    this.tunnelLights = [];
-    var newTunnelSeg, newTunnelMesh, newTunnelLight, i;
-    for(i = 0; i < this.numOfSegments; i += 1) {
+    var i = 0,
+        newTunnelSeg = new TunnelSegment(-i*CONFIG.tunnelSectionDepth, this.tunnelMaterial),
+        geometry = newTunnelSeg.geometry,
+        newTunnelMesh;
+    for(i = 1; i < this.numOfSegments; i += 1) {
         newTunnelSeg = new TunnelSegment(-i*CONFIG.tunnelSectionDepth, this.tunnelMaterial);
         this.tunnelSegments.push(newTunnelSeg);
-
-        newTunnelMesh = new THREE.Mesh(newTunnelSeg.geometry, this.tunnelMaterial[this.tunnelMaterial.length-1]);
-        this.scene.add(newTunnelMesh);
+        // Merge geometry
+        THREE.GeometryUtils.merge(geometry, newTunnelSeg.geometry);
     }
+    newTunnelMesh = new THREE.Mesh(geometry, this.tunnelMaterial[this.tunnelMaterial.length-1]);
+    this.scene.add(newTunnelMesh);
 
+    this.tunnelLights = [];
     var j, tunnelRing;
-    this.tunnelLights = new Array();
-    for(j = 0; j < 3; j += 1)
-    {
-    	tunnelRing = new LightRing(-this.numOfSegments*CONFIG.tunnelSectionDepth - CONFIG.cameraFar*j, this.scene);
-    	this.tunnelLights.push(tunnelRing);
-	}
+    for(j = 0; j < 3; j += 1) {
+        tunnelRing = new LightRing(-this.numOfSegments*CONFIG.tunnelSectionDepth - CONFIG.cameraFar*j, this.scene);
+        this.tunnelLights.push(tunnelRing);
+    }
 }
 
 Tunnel.prototype.update = function(playerZ){
     // Dynamic tunnel generation based on player position
     if(this.tunnelSegments.length*CONFIG.tunnelSectionDepth <
         Math.abs(playerZ) + CONFIG.cameraFar){
-        var newTunnelSeg, newTunnelMesh,
-            i = 0,
-            startZ = -this.tunnelSegments.length*CONFIG.tunnelSectionDepth;
-        for(; i < this.numOfSegments; i += 1) {
-            newTunnelSeg = new TunnelSegment(startZ - i*CONFIG.tunnelSectionDepth, this.tunnelMaterial);
+        var i = 0,
+            startZ = -this.tunnelSegments.length*CONFIG.tunnelSectionDepth,
+            newTunnelSeg = new TunnelSegment(startZ - i*CONFIG.tunnelSectionDepth, this.tunnelMaterial),
+            geometry = newTunnelSeg.geometry,
+            newTunnelMesh;
+
+         this.tunnelSegments.push(newTunnelSeg);
+
+        for(i = 1; i < this.numOfSegments; i += 1) {
+            newTunnelSeg= new TunnelSegment(startZ - i*CONFIG.tunnelSectionDepth, this.tunnelMaterial);
             this.tunnelSegments.push(newTunnelSeg);
-
-            newTunnelMesh = new THREE.Mesh(newTunnelSeg.geometry, this.tunnelMaterial[this.tunnelMaterial.length-1]);
-            this.scene.add(newTunnelMesh);
+            THREE.GeometryUtils.merge(geometry, newTunnelSeg.geometry);
         }
+
+        newTunnelMesh = new THREE.Mesh(geometry, this.tunnelMaterial[this.tunnelMaterial.length-1]);
+        this.scene.add(newTunnelMesh);
     }
 
-	// can't dynamically add lights to scene???
-	// maybe instead of splicing array up everytime
-	var firstLightRing = this.tunnelLights[0];
-    if( Math.abs(firstLightRing.z) < Math.abs(playerZ) - CONFIG.cameraFar){ 
-    	var lastLightRing = this.tunnelLights[this.tunnelLights.length - 1];
-    	
-    	firstLightRing.repositionLightRing(lastLightRing.z - CONFIG.cameraFar);
-    	this.tunnelLights.splice(0, 1); // remove first element
-    	this.tunnelLights.push(firstLightRing); // add first element to element
+    // can't dynamically add lights to scene???
+    // maybe instead of splicing array up everytime
+    var firstLightRing = this.tunnelLights[0];
+    if( Math.abs(firstLightRing.z) < Math.abs(playerZ) - CONFIG.cameraFar){
+        var lastLightRing = this.tunnelLights[this.tunnelLights.length - 1];
+
+        firstLightRing.repositionLightRing(lastLightRing.z - CONFIG.cameraFar);
+        this.tunnelLights.splice(0, 1); // remove first element
+        this.tunnelLights.push(firstLightRing); // add first element to element
     }
-    
+
     // how the hell do you do the underscore each again???
     var a = 0;
     for(; a < this.tunnelLights.length; a++){
-    	this.tunnelLights[a].update();
+        this.tunnelLights[a].update();
     }
 };
 
@@ -124,22 +134,22 @@ function LightRing(startZ, scene){
 }
 
 LightRing.prototype.update = function(){
-	var i = 0, step = 0.05;
-	for(; i < this.lights.length; i += 1){
-		
-		if(this.lights[i].intensity >= step*10) this.rising = false;
-		else if(this.lights[i].intensity <= step*2) this.rising = true;
-		
-		log(this.lights[i].intensity);
-		
-		if(this.rising){ 
-			this.lights[i].intensity += step;
-		}
-		else{ 
-			this.lights[i].intensity -= step;
-		}
-	}
-}
+    var i = 0, step = 0.05;
+    for(; i < this.lights.length; i += 1){
+
+        if(this.lights[i].intensity >= step*10) this.rising = false;
+        else if(this.lights[i].intensity <= step*2) this.rising = true;
+
+        // console.log(this.lights[i].intensity);
+
+        if(this.rising){
+            this.lights[i].intensity += step;
+        }
+        else{
+            this.lights[i].intensity -= step;
+        }
+    }
+};
 
 LightRing.prototype.repositionLightRing = function(newZ){
     var i = 0;
@@ -185,13 +195,13 @@ function TunnelSegment(startZ, materials) {
             face.materialIndex = 0;
             this.geometry.faces.push(face);
             faceCounter += 1;
-            
+
             // Configure UV Texturing coord data
             var faceuv = [new THREE.UV(0,1),
-            			new THREE.UV(1,1),
-            			new THREE.UV(1,0),
-            			new THREE.UV(0,0)];
-            			
+                        new THREE.UV(1,1),
+                        new THREE.UV(1,0),
+                        new THREE.UV(0,0)];
+
             this.geometry.faceUvs[0].push(new THREE.UV(0,1));
             this.geometry.faceVertexUvs[0].push(faceuv);
 
