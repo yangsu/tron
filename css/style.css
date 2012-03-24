@@ -73,6 +73,42 @@ canvas {
   margin: auto;
 }
 
+.menu {
+    position: absolute;
+    width: 30%;
+    height: 25%;
+    top: 37.5%;
+    left: 35%;
+
+    text-align: center;
+    border: 3px solid white;
+    border-radius: 15px;
+    color: #47C5D8;
+
+    z-index: 5;
+}
+
+.menu > button {
+    border: 2px solid #47C5D8;
+    background: black;
+    color: #47C5D8;
+}
+
+.menu > button:hover {
+    border: 2px solid #71d2e1;
+    color: #71d2e1;
+}
+
+#scorediv {
+    position: fixed;
+    top: 0;
+    right: 0;
+    color: #47C5D8;
+    width: 100px;
+    text-align: right;
+    z-index: 5;
+}
+
 
 @media only screen and (min-width: 35em) {
 

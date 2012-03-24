@@ -2,21 +2,26 @@
  * @author Troy Ferrell & Yang Su
  */
 $(document).ready(function () {
-    var OFFSET = 6,
-        WIDTH = window.innerWidth - OFFSET,
-        HEIGHT = window.innerHeight - OFFSET,
-        VIEW_ANGLE = CONFIG.cameraAngle,
-        ASPECT = WIDTH / HEIGHT,
-        NEAR = CONFIG.cameraNear,
-        FAR = CONFIG.cameraFar,
-        INITIAL_Z_POS = CONFIG.cameraInitZ,
-        camera, scene, renderer,
+    var camera, scene, renderer,
         tunnel, myPlayer,
-        lastUpdate;
+        lastUpdate,
+        initialized = false,
+        paused = false,
+        startmenu = $('#startmenu'),
+        ingamemenu = $('#ingamemenu');
 
     function init() {
-        camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
-        camera.position.z = INITIAL_Z_POS;
+        // Scene Initialization
+        var OFFSET = 6,
+            WIDTH = window.innerWidth - OFFSET,
+            HEIGHT = window.innerHeight - OFFSET,
+            ASPECT = WIDTH / HEIGHT;
+        lastUpdate = UTIL.now();
+        camera = new THREE.PerspectiveCamera(CONFIG.cameraAngle,
+                                             ASPECT,
+                                             CONFIG.cameraNear,
+                                             CONFIG.cameraFar);
+        camera.position.z = CONFIG.cameraInitZ;
 
         scene = new THREE.Scene();
         scene.add(camera);
@@ -29,31 +34,25 @@ $(document).ready(function () {
         renderer.setClearColorHex(CONFIG.background, 1.0);
         renderer.clear();
 
-        lastUpdate = UTIL.now();
-
-        window.ondevicemotion = function(event) {
-
-            if(event.accelerationIncludingGravity.x > 0.75) {
-                myPlayer.moveRight();
-            }
-            else if(event.accelerationIncludingGravity.x < -0.75) {
-                myPlayer.moveLeft();
-            }
-
-            // event.accelerationIncludingGravity.x
-            // event.accelerationIncludingGravity.y
-            // event.accelerationIncludingGravity.z
-        };
-
         document.body.appendChild(renderer.domElement);
 
-        // bind key events
-        document.onkeypress = keyPressed;
+        // Stats Initialization
+        var stats = new Stats(),
+            statsdom = stats.getDomElement();
+        // Align top-left
+        statsdom.style.position = 'absolute';
+        statsdom.style.left = '0px';
+        statsdom.style.top = '0px';
+        document.body.appendChild(statsdom);
+        setInterval( function () {
+            stats.update();
+        }, 1000 / 60 );
     }
 
     function animate() {
-        update();
-        // Render scene
+        if (initialized && !paused) {
+            update();
+        }
         renderer.render(scene, camera);
         // note: three.js includes requestAnimationFrame shim
         requestAnimationFrame(animate);
@@ -71,28 +70,51 @@ $(document).ready(function () {
         lastUpdate = now;
     }
 
-    function keyPressed(e) {
-        var code = e.charCode;
-        if(code == 100 /* 'a' */) {
-            myPlayer.moveRight();
-        }
-        if(code == 97 /* 'a' */) {
-            myPlayer.moveLeft();
-        }
-    }
-
     // Initialization
     init();
-    animate();
 
-    var stats = new Stats(),
-        statsdom = stats.getDomElement();
-    // Align top-left
-    statsdom.style.position = 'absolute';
-    statsdom.style.left = '0px';
-    statsdom.style.top = '0px';
-    document.body.appendChild(statsdom);
-    setInterval( function () {
-        stats.update();
-    }, 1000 / 60 );
+    // Event handlers
+    window.ondevicemotion = function(event) {
+
+        if(event.accelerationIncludingGravity.x > 0.75) {
+            myPlayer.moveRight();
+        }
+        else if(event.accelerationIncludingGravity.x < -0.75) {
+            myPlayer.moveLeft();
+        }
+
+        // event.accelerationIncludingGravity.x
+        // event.accelerationIncludingGravity.y
+        // event.accelerationIncludingGravity.z
+    };
+    $('#play').click(function () {
+        startmenu.fadeOut('fast', function () {
+            animate();
+            initialized = true;
+        });
+    });
+    $('#resume').click(function () {
+        paused = false;
+        ingamemenu.fadeOut();
+    });
+    $(document).keyup(function(event) {
+        switch (event.which) {
+            case 97 /* 'a' */:
+                myPlayer.moveLeft();
+            break;
+            case 100 /* 'd' */:
+                myPlayer.moveRight();
+            break;
+            case 27 /* esc */:
+            console.log('esc');
+                paused = !paused;
+                if (paused) {
+                    ingamemenu.fadeIn();
+                }
+                else {
+                    ingamemenu.fadeOut();
+                }
+            break;
+        }
+    });
 });

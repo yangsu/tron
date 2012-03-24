@@ -16,16 +16,28 @@
 </head>
 <body>
   <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
-  <header>
-
-  </header>
+  <header></header>
   <div role="main">
+    <div id="startmenu" class="menu">
+        <h1>Tron</h1>
+        <p>
+          Movement: A/D<br>
+        </p>
+        <button id="play">Play</button>
+    </div>
+    <div id="ingamemenu" class="menu" style="display:none;">
+        <h1>Tron</h1>
+        <p>
+          Movement: A/D<br>
+        </p>
+        <button id="resume">Resume</button>
+    </div>
 
+    <div id="scorediv">
+        Score: <span id="score">0</span>
+    </div>
   </div>
-  <footer>
-
-  </footer>
-
+  <footer></footer>
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
   <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')</script>
