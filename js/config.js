@@ -20,9 +20,9 @@ var CONFIG = {
 
     // Tunnel Settings
     'tunnelRadius' : 50,
-    'tunnelSectionDepth' : 10,
+    'tunnelSegmentDepth' : 10,
+    'tunnelSegmentPerSection' : 10,
     'tunnelResolution' : 10,
-    'tunnelInitialSectionCount' : 10,
     'tunnelMaterial' : {
         color : 0x47C5D8,
         wireframe : true,

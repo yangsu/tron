@@ -5,7 +5,6 @@
 function Tunnel(scene) {
     this.scene = scene;
     this.tunnelSegments = [];
-    this.numOfSegments = CONFIG.tunnelInitialSectionCount;
 
     var texture = THREE.ImageUtils.loadTexture('img/HAND.jpg');
     //texture.wrapT = THREE.RepeatWrapping;
@@ -46,18 +45,19 @@ function Tunnel(scene) {
     this.generateTunnelSection(0);
 
     this.tunnelLights = [];
-    var j, tunnelRing;
+    var j, tunnelRing,
+        startZ = -CONFIG.tunnelSegmentPerSection*CONFIG.tunnelSegmentDepth;
     for(j = 0; j < 3; j += 1) {
-        tunnelRing = new LightRing(-this.numOfSegments*CONFIG.tunnelSectionDepth - CONFIG.cameraFar*j, this.scene);
+        tunnelRing = new LightRing(startZ - CONFIG.cameraFar*j, this.scene);
         this.tunnelLights.push(tunnelRing);
     }
 }
 
 Tunnel.prototype.update = function(playerZ){
     // Dynamic tunnel generation based on player position
-    if(this.tunnelSegments.length*CONFIG.tunnelSectionDepth <
+    if(this.tunnelSegments.length*CONFIG.tunnelSegmentDepth <
         Math.abs(playerZ) + CONFIG.cameraFar){
-        this.generateTunnelSection(-this.tunnelSegments.length*CONFIG.tunnelSectionDepth);
+        this.generateTunnelSection(-this.tunnelSegments.length*CONFIG.tunnelSegmentDepth);
     }
 
     // can't dynamically add lights to scene???
@@ -84,8 +84,8 @@ Tunnel.prototype.generateTunnelSection = function(startZ) {
 
     this.tunnelSegments.push(newTunnelSeg);
 
-    for(i = 1; i < this.numOfSegments; i += 1) {
-        newTunnelSeg= new TunnelSegment(startZ - i*CONFIG.tunnelSectionDepth, this.tunnelMaterial);
+    for(i = 1; i < CONFIG.tunnelSegmentPerSection; i += 1) {
+        newTunnelSeg= new TunnelSegment(startZ - i*CONFIG.tunnelSegmentDepth, this.tunnelMaterial);
         this.tunnelSegments.push(newTunnelSeg);
         // Merge with geometry
         THREE.GeometryUtils.merge(geometry, newTunnelSeg.geometry);
@@ -155,7 +155,7 @@ function TunnelSegment(startZ, materials) {
     var deltaTheta = 2*Math.PI/CONFIG.tunnelResolution,
         radius = CONFIG.tunnelRadius,
         faceCounter = 0,
-        depth = CONFIG.tunnelSectionDepth,
+        depth = CONFIG.tunnelSegmentDepth,
         theta, face,
         rcos, rsin, rcosd, rsind,
         temp;
