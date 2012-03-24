@@ -47,12 +47,15 @@ function Tunnel(scene) {
         newTunnelSeg = new TunnelSegment(-i*CONFIG.tunnelSectionDepth, this.tunnelMaterial),
         geometry = newTunnelSeg.geometry,
         newTunnelMesh;
+
+    this.tunnelSegments.push(newTunnelSeg);
     for(i = 1; i < this.numOfSegments; i += 1) {
         newTunnelSeg = new TunnelSegment(-i*CONFIG.tunnelSectionDepth, this.tunnelMaterial);
         this.tunnelSegments.push(newTunnelSeg);
         // Merge geometry
         THREE.GeometryUtils.merge(geometry, newTunnelSeg.geometry);
     }
+
     newTunnelMesh = new THREE.Mesh(geometry, this.tunnelMaterial[this.tunnelMaterial.length-1]);
     this.scene.add(newTunnelMesh);
 
@@ -74,7 +77,7 @@ Tunnel.prototype.update = function(playerZ){
             geometry = newTunnelSeg.geometry,
             newTunnelMesh;
 
-         this.tunnelSegments.push(newTunnelSeg);
+        this.tunnelSegments.push(newTunnelSeg);
 
         for(i = 1; i < this.numOfSegments; i += 1) {
             newTunnelSeg= new TunnelSegment(startZ - i*CONFIG.tunnelSectionDepth, this.tunnelMaterial);
