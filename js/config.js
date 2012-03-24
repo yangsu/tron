@@ -33,5 +33,6 @@ var CONFIG = {
     'lightRingCount' : 8,
     'lightColor' : 0xFFFFFF,
     'lightIntensity' : 0.55,
-    'lightRange' : 800
+    'lightRange' : 800,
+    'lightIntensityStep' : 0.05
 };

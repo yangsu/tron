@@ -71,11 +71,9 @@ Tunnel.prototype.update = function(playerZ){
         this.tunnelLights.push(firstLightRing); // add first element to element
     }
 
-    // how the hell do you do the underscore each again???
-    var a = 0;
-    for(; a < this.tunnelLights.length; a++){
-        this.tunnelLights[a].update();
-    }
+    _.each(this.tunnelLights, function (light) {
+        light.update();
+    });
 };
 
 Tunnel.prototype.generateTunnelSection = function(startZ) {
@@ -128,21 +126,18 @@ function LightRing(startZ, scene){
 }
 
 LightRing.prototype.update = function(){
-    var i = 0, step = 0.05;
-    for(; i < this.lights.length; i += 1){
-
-        if(this.lights[i].intensity >= step*10) this.rising = false;
-        else if(this.lights[i].intensity <= step*2) this.rising = true;
-
-        // console.log(this.lights[i].intensity);
+    var step = CONFIG.lightIntensityStep;
+    _.each(this.lights, function (light) {
+        if(light.intensity >= step*10) this.rising = false;
+        else if(light.intensity <= step*2) this.rising = true;
 
         if(this.rising){
-            this.lights[i].intensity += step;
+            light.intensity += step;
         }
         else{
-            this.lights[i].intensity -= step;
+            light.intensity -= step;
         }
-    }
+    });
 };
 
 LightRing.prototype.repositionLightRing = function(newZ){
