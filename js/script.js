@@ -106,7 +106,6 @@ $(document).ready(function () {
                 myPlayer.moveRight();
             break;
             case 27 /* esc */:
-            console.log('esc');
                 paused = !paused;
                 if (paused) {
                     ingamemenu.fadeIn();
