@@ -3,7 +3,7 @@
  */
 
 // Used as objloader
-function Obj(fileName, scene){
+function Obj(fileData, scene){
     
     // need to parse .obj file
     
@@ -12,20 +12,10 @@ function Obj(fileName, scene){
     //this.material
     
     // how the hell do we read files in our directories??
-    
-    // Check for the various File API support.
-    if (window.File && window.FileReader && window.FileList && window.Blob) {
-        // Great success! All the File APIs are supported.
-    } else {
-        alert('The File APIs are not fully supported in this browser.');
+    var lines = fileData.split("\n");
+    var i = 0;
+    for(; i < lines.length; i += 1){
+        document.write("<br /> Element" + i + " = " + lines[i]);
     }
     
-    var reader = new FileReader();
-    //reader.onload = (function(theFile){
-     //   
-    //});
-    
-    //file 
-    //reader.readAsText();
-
 }

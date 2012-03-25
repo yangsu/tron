@@ -47,6 +47,35 @@ $(document).ready(function () {
         setInterval( function () {
             stats.update();
         }, 1000 / 60 );
+        
+        function handleFileSelect(evt){
+            var files = evt.target.files; // FileList Object
+            var f = files[0];
+            
+            var reader = new FileReader();
+            log('In select function');
+            
+            reader.onload = (function(theFile){
+                return function(e){
+                    log(e.target.result);
+                    
+                    var span = document.createElement('span');
+                    span.innerHTML = ['<h2>File Read Worked</h2>'].join('');
+                    document.getElementById('list').insertBefore(span, null);
+                    
+                   /*
+                    var lines = e.target.result.split("\n");
+                    var i = 0;
+                    for(; i < lines.length; i += 1){
+                        document.write("<br /> Element" + i + " = " + lines[i]);
+                    }*/
+                }
+            })(f);
+            
+            reader.readAsText(f);
+        }
+        
+        document.getElementById('files').addEventListener('change', handleFileSelect, false);
     }
 
     function animate() {
