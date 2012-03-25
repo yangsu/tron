@@ -31,7 +31,7 @@ $(document).ready(function () {
         //var ambient = new THREE.AmbientLight( 0x505050 );
         //scene.add( ambient );
         
-        var directionalLight = new THREE.DirectionalLight( 0xffeedd );
+        var directionalLight = new THREE.DirectionalLight( 0xFFFFFF );
         directionalLight.position.set( 0, 0, 100 ).normalize();
         scene.add( directionalLight );
   
@@ -110,10 +110,10 @@ $(document).ready(function () {
         
         $('#score').html(event.accelerationIncludingGravity.x);
         
-        if(event.accelerationIncludingGravity.x > 0.75) {
+        if(event.accelerationIncludingGravity.x > 1.75) {
             myPlayer.moveRight();
         }
-        else if(event.accelerationIncludingGravity.x < -0.75) {
+        else if(event.accelerationIncludingGravity.x < -1.75) {
             myPlayer.moveLeft();
         }
 
@@ -134,7 +134,7 @@ $(document).ready(function () {
     });
     
     $(document).mousemove(function(e){
-       $('#score').html(e.pageX);
+       //$('#score').html(e.pageX);
    }); 
    
     $(document).keyup(function(event) {

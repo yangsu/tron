@@ -32,7 +32,7 @@ var CONFIG = {
 
     // Light Ring Settings
     'lightRingCount' : 8,
-    'lightColor' : 0x0000FF,
+    'lightColor' : 0xFFFFFF,
     'lightIntensity' : 0.55,
     'lightRange' : 800,
     'lightIntensityStep' : 0.05
