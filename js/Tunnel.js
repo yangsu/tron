@@ -12,7 +12,6 @@ function Tunnel(scene) {
     var texture = THREE.ImageUtils.loadTexture('img/HAND.jpg');
     //texture.wrapT = THREE.RepeatWrapping;
 
-
     this.tunnelMaterial = [
         new THREE.MeshLambertMaterial({
             map: texture,
@@ -26,24 +25,6 @@ function Tunnel(scene) {
         }),
         new THREE.MeshFaceMaterial()
     ];
-
-    /*
-    var geometry = new THREE.CylinderGeometry( 1, 1, 30, 32, 1, true );
-    texture = THREE.ImageUtils.loadTexture( "images/water.jpg" );
-    texture.wrapT = THREE.RepeatWrapping;
-
-    var material = new THREE.MeshLambertMaterial({color : 0xFFFFFF, map : texture});
-    var mesh = new THREE.Mesh( geometry, material );
-    */
-
-    /*
-    var texture = THREE.ImageUtils.loadTexture("tronTexture.jpg");
-    texture.wrapS = texture.wrapT = THREE.ClampToEdgeWrapping;
-    texture.repeat.set( 125, 125 );
-    texture.offset.set( 15, 15 );
-    texture.needsUpdate = true;
-    var sphereMaterial = new THREE.MeshBasicMaterial( { map: texture } );
-    */
 
     this.generateTunnelSection(0);
 
