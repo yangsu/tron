@@ -10,6 +10,8 @@ $(document).ready(function () {
         startmenu = $('#startmenu'),
         ingamemenu = $('#ingamemenu');
 
+    var mesh;
+    
     function init() {
         // Scene Initialization
         var OFFSET = 6,
@@ -25,9 +27,19 @@ $(document).ready(function () {
 
         scene = new THREE.Scene();
         scene.add(camera);
-
+/*
+        var ambient = new THREE.AmbientLight( 0xffffff );
+        scene.add( ambient );
+        
+        var directionalLight = new THREE.DirectionalLight( 0xffeedd );
+        directionalLight.position.set( 0, -70, 100 ).normalize();
+        scene.add( directionalLight );
+  */
         tunnel = new Tunnel(scene);
         myPlayer = new Player(scene);
+
+        var loader = new THREE.JSONLoader();
+        loader.load( "obj/LightCycle.js", createScene );
 
         renderer = new THREE.WebGLRenderer(CONFIG.renderer);
         renderer.setSize(WIDTH, HEIGHT);
@@ -48,34 +60,23 @@ $(document).ready(function () {
             stats.update();
         }, 1000 / 60 );
         
-        function handleFileSelect(evt){
-            var files = evt.target.files; // FileList Object
-            var f = files[0];
-            
-            var reader = new FileReader();
-            log('In select function');
-            
-            reader.onload = (function(theFile){
-                return function(e){
-                    log(e.target.result);
-                    
-                    var span = document.createElement('span');
-                    span.innerHTML = ['<h2>File Read Worked</h2>'].join('');
-                    document.getElementById('list').insertBefore(span, null);
-                    
-                   /*
-                    var lines = e.target.result.split("\n");
-                    var i = 0;
-                    for(; i < lines.length; i += 1){
-                        document.write("<br /> Element" + i + " = " + lines[i]);
-                    }*/
-                }
-            })(f);
-            
-            reader.readAsText(f);
-        }
+    }
+    function createScene(geometry){
+        //geometry.materials[0][0].shading = THREE.FlatShading;
+        //geometry.materials[0][0].morphTargets = true;
         
-        document.getElementById('files').addEventListener('change', handleFileSelect, false);
+        //var material = new THREE.MeshLambertMaterial({wireframe:false});
+        var texture = THREE.ImageUtils.loadTexture('img/HAND.jpg');
+        //texture.wrapT = THREE.RepeatWrapping;
+        var material = new THREE.MeshLambertMaterial({
+            map: texture,
+            transparent : false});
+
+        mesh = new THREE.Mesh(geometry, material);
+        mesh.position = CONFIG.playerPos.convertToCartesian();
+        mesh.scale.set(2, 2, 2);
+        mesh.rotation.y = Math.PI;
+        scene.add(mesh);
     }
 
     function animate() {
@@ -92,8 +93,12 @@ $(document).ready(function () {
             dt = (now - lastUpdate)/1000;
 
         // Call update methods to produce animation
+        
         tunnel.update(myPlayer.getZ());
         myPlayer.update(dt);
+        
+        mesh.position.z = myPlayer.getZ();
+       
         camera.position.z += CONFIG.cameraVel.z * dt;
 
         lastUpdate = now;

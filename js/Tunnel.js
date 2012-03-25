@@ -9,7 +9,7 @@ function Tunnel(scene) {
     // Index used to delete segments from the scene
     this.oldestLiveSection = 0;
 
-    var texture = THREE.ImageUtils.loadTexture('img/HAND.jpg');
+    var texture = THREE.ImageUtils.loadTexture('img/t.jpg');
     //texture.wrapT = THREE.RepeatWrapping;
 
     this.tunnelMaterial = [

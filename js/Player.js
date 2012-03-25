@@ -7,18 +7,31 @@ function Player(scene) {
     var texture = THREE.ImageUtils.loadTexture('img/t.jpg');
     // texture.needsUpdate = true;
     this.material = new THREE.MeshLambertMaterial({
-        map: texture
+      map: texture
     });
-
+    
     this.playerMesh = new THREE.Mesh(
         new THREE.CubeGeometry(10, 10, 20),
         this.material);
+        
+    var loader = new THREE.JSONLoader();
+    loader.load( "obj/LightCycle.js", this.loadObj);
 
     this.position = CONFIG.playerPos;
     this.velocity = CONFIG.playerVel;
     this.updatePosition();
 
-    this.scene.add(this.playerMesh);
+    //this.scene.add(this.playerMesh);
+}
+
+Player.prototype.loadObj = function(geometry){
+    var material = new THREE.MeshLambertMaterial({
+        wireframe:true
+     });
+    this.playerMesh = new THREE.Mesh(geometry, material);
+    this.playerMesh.position = CONFIG.playerPos.convertToCartesian();
+    this.playerMesh.scale.set(1, 1, 1);
+    //scene.add(playerMesh);  
 }
 
 // temp method for testing lights
