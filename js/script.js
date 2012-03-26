@@ -27,14 +27,14 @@ $(document).ready(function () {
 
         scene = new THREE.Scene();
         scene.add(camera);
-/*
-        var ambient = new THREE.AmbientLight( 0xffffff );
-        scene.add( ambient );
+
+        //var ambient = new THREE.AmbientLight( 0x505050 );
+        //scene.add( ambient );
         
         var directionalLight = new THREE.DirectionalLight( 0xffeedd );
-        directionalLight.position.set( 0, -70, 100 ).normalize();
+        directionalLight.position.set( 0, 0, 100 ).normalize();
         scene.add( directionalLight );
-  */
+  
         tunnel = new Tunnel(scene);
         myPlayer = new Player(scene);
 
@@ -62,9 +62,6 @@ $(document).ready(function () {
         
     }
     function createScene(geometry){
-        //geometry.materials[0][0].shading = THREE.FlatShading;
-        //geometry.materials[0][0].morphTargets = true;
-        
         //var material = new THREE.MeshLambertMaterial({wireframe:false});
         var texture = THREE.ImageUtils.loadTexture('img/HAND.jpg');
         //texture.wrapT = THREE.RepeatWrapping;
@@ -94,11 +91,12 @@ $(document).ready(function () {
 
         // Call update methods to produce animation
         
-        tunnel.update(myPlayer.getZ());
+        tunnel.update(myPlayer.getPosition().z);
         myPlayer.update(dt);
         
-        mesh.position.z = myPlayer.getZ();
-       
+        mesh.position = myPlayer.getPosition();
+        mesh.rotation = myPlayer.getRotation();
+        
         camera.position.z += CONFIG.cameraVel.z * dt;
 
         lastUpdate = now;
@@ -109,7 +107,9 @@ $(document).ready(function () {
 
     // Event handlers
     window.ondevicemotion = function(event) {
-
+        
+        $('#score').html(event.accelerationIncludingGravity.x);
+        
         if(event.accelerationIncludingGravity.x > 0.75) {
             myPlayer.moveRight();
         }
@@ -121,6 +121,7 @@ $(document).ready(function () {
         // event.accelerationIncludingGravity.y
         // event.accelerationIncludingGravity.z
     };
+    
     $('#play').click(function () {
         startmenu.fadeOut('fast', function () {
             animate();
@@ -131,14 +132,19 @@ $(document).ready(function () {
         paused = false;
         ingamemenu.fadeOut();
     });
+    
+    $(document).mousemove(function(e){
+       $('#score').html(e.pageX);
+   }); 
+   
     $(document).keyup(function(event) {
         switch (event.which) {
-            case 97 /* 'a' */:
+            case 65 /* 'a' */://97
                 myPlayer.moveLeft();
-            break;
-            case 100 /* 'd' */:
+                break;
+            case 68 /* 'd' */: //100
                 myPlayer.moveRight();
-            break;
+                break;
             case 27 /* esc */:
                 paused = !paused;
                 if (paused) {

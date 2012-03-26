@@ -16,7 +16,7 @@ var CONFIG = {
 
     // Player Settings
     'playerPos' : UTIL.v3c(40, 1.5*Math.PI, 0),
-    'playerVel' : UTIL.v3c(0, Math.PI/80, -350),
+    'playerVel' : UTIL.v3c(0, Math.PI/40, -350),
 
     // Tunnel Settings
     'tunnelRadius' : 50,
@@ -32,7 +32,7 @@ var CONFIG = {
 
     // Light Ring Settings
     'lightRingCount' : 8,
-    'lightColor' : 0xFFFFFF,
+    'lightColor' : 0x0000FF,
     'lightIntensity' : 0.55,
     'lightRange' : 800,
     'lightIntensityStep' : 0.05

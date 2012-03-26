@@ -34,10 +34,13 @@ Player.prototype.loadObj = function(geometry){
     //scene.add(playerMesh);  
 }
 
-// temp method for testing lights
-Player.prototype.getZ = function(){
-    return this.playerMesh.position.z;
-};
+Player.prototype.getPosition = function(){
+    return this.playerMesh.position;
+}
+
+Player.prototype.getRotation = function(){
+    return this.playerMesh.rotation;
+}
 
 Player.prototype.moveLeft = function () {
     this.position.theta -= this.velocity.theta;
