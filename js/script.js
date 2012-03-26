@@ -63,7 +63,7 @@ $(document).ready(function () {
     }
     function createScene(geometry){
         //var material = new THREE.MeshLambertMaterial({wireframe:false});
-        var texture = THREE.ImageUtils.loadTexture('img/HAND.jpg');
+        var texture = THREE.ImageUtils.loadTexture('obj/LightCycle_TextureTest1.png');
         //texture.wrapT = THREE.RepeatWrapping;
         var material = new THREE.MeshLambertMaterial({
             map: texture,
@@ -96,6 +96,7 @@ $(document).ready(function () {
         
         mesh.position = myPlayer.getPosition();
         mesh.rotation = myPlayer.getRotation();
+        mesh.rotation.y += 0.005;
         
         camera.position.z += CONFIG.cameraVel.z * dt;
 

@@ -15,7 +15,7 @@ var CONFIG = {
     'cameraVel' : UTIL.v3c(0, 0, -350),
 
     // Player Settings
-    'playerPos' : UTIL.v3c(40, 1.5*Math.PI, 0),
+    'playerPos' : UTIL.v3c(35, 1.5*Math.PI, 0),
     'playerVel' : UTIL.v3c(0, Math.PI/40, -350),
 
     // Tunnel Settings
