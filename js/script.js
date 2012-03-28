@@ -11,7 +11,7 @@ $(document).ready(function () {
         ingamemenu = $('#ingamemenu');
 
     var mesh;
-    
+
     function init() {
         // Scene Initialization
         var OFFSET = 6,
@@ -30,11 +30,11 @@ $(document).ready(function () {
 
         //var ambient = new THREE.AmbientLight( 0x505050 );
         //scene.add( ambient );
-        
+
         var directionalLight = new THREE.DirectionalLight( 0xFFFFFF );
         directionalLight.position.set( 0, 0, 100 ).normalize();
         scene.add( directionalLight );
-  
+
         tunnel = new Tunnel(scene);
         myPlayer = new Player(scene);
 
@@ -59,7 +59,7 @@ $(document).ready(function () {
         setInterval( function () {
             stats.update();
         }, 1000 / 60 );
-        
+
     }
     function createScene(geometry){
         //var material = new THREE.MeshLambertMaterial({wireframe:false});
@@ -90,14 +90,14 @@ $(document).ready(function () {
             dt = (now - lastUpdate)/1000;
 
         // Call update methods to produce animation
-        
+
         tunnel.update(myPlayer.getPosition().z);
         myPlayer.update(dt);
-        
+
         mesh.position = myPlayer.getPosition();
         mesh.rotation = myPlayer.getRotation();
         mesh.rotation.y += 0.005;
-        
+
         camera.position.z += CONFIG.cameraVel.z * dt;
 
         lastUpdate = now;
@@ -108,9 +108,9 @@ $(document).ready(function () {
 
     // Event handlers
     window.ondevicemotion = function(event) {
-        
+
         $('#score').html(event.accelerationIncludingGravity.x);
-        
+
         if(event.accelerationIncludingGravity.x > 1.75) {
             myPlayer.moveRight();
         }
@@ -122,7 +122,7 @@ $(document).ready(function () {
         // event.accelerationIncludingGravity.y
         // event.accelerationIncludingGravity.z
     };
-    
+
     $('#play').click(function () {
         startmenu.fadeOut('fast', function () {
             animate();
@@ -133,19 +133,14 @@ $(document).ready(function () {
         paused = false;
         ingamemenu.fadeOut();
     });
-    
+
     $(document).mousemove(function(e){
        //$('#score').html(e.pageX);
-   }); 
-   
+   });
+
+    // Only keyup can capture the key event for the 'esc' key
     $(document).keyup(function(event) {
         switch (event.which) {
-            case 65 /* 'a' */://97
-                myPlayer.moveLeft();
-                break;
-            case 68 /* 'd' */: //100
-                myPlayer.moveRight();
-                break;
             case 27 /* esc */:
                 paused = !paused;
                 if (paused) {
@@ -154,7 +149,19 @@ $(document).ready(function () {
                 else {
                     ingamemenu.fadeOut();
                 }
-            break;
+                break;
+        }
+    });
+    $(document).keypress(function(event) {
+        switch (event.which) {
+            case 65 /* 'A' */:
+            case 97 /* 'a' */:
+                myPlayer.moveLeft();
+                break;
+            case 68 /* 'D' */:
+            case 100 /* 'd' */:
+                myPlayer.moveRight();
+                break;
         }
     });
 });

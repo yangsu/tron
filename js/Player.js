@@ -9,11 +9,11 @@ function Player(scene) {
     this.material = new THREE.MeshLambertMaterial({
       map: texture
     });
-    
+
     this.playerMesh = new THREE.Mesh(
         new THREE.CubeGeometry(10, 10, 20),
         this.material);
-        
+
     var loader = new THREE.JSONLoader();
     loader.load( "obj/LightCycle.js", this.loadObj);
 
@@ -31,16 +31,16 @@ Player.prototype.loadObj = function(geometry){
     this.playerMesh = new THREE.Mesh(geometry, material);
     this.playerMesh.position = CONFIG.playerPos.convertToCartesian();
     this.playerMesh.scale.set(1, 1, 1);
-    //scene.add(playerMesh);  
-}
+    //scene.add(playerMesh);
+};
 
 Player.prototype.getPosition = function(){
     return this.playerMesh.position;
-}
+};
 
 Player.prototype.getRotation = function(){
     return this.playerMesh.rotation;
-}
+};
 
 Player.prototype.moveLeft = function () {
     this.position.theta -= this.velocity.theta;
