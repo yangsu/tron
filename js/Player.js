@@ -10,6 +10,7 @@ function Player(scene) {
       map: texture
     });
 
+/*
     var trailTexture = THREE.ImageUtils.loadTexture('img/TrailTexture_2.png');
     this.trailMaterial = new THREE.MeshLambertMaterial({
         map: trailTexture,
@@ -20,7 +21,9 @@ function Player(scene) {
     this.playerTrail = new THREE.Mesh(
         new THREE.CubeGeometry(CONFIG.playerTrail.x, CONFIG.playerTrail.y, CONFIG.playerTrail.z), 
         this.trailMaterial
-    );
+    );*/
+   
+   this.cycleTrail = new Trail(this.scene);
     
     this.playerMesh = new THREE.Mesh(
         new THREE.CubeGeometry(10, 5, 25),
@@ -33,7 +36,7 @@ function Player(scene) {
     this.velocity = CONFIG.playerVel;
     this.updatePosition();
 
-    this.scene.add(this.playerTrail);
+    //this.scene.add(this.playerTrail);
     //this.scene.add(this.playerMesh);
 }
 
@@ -84,4 +87,6 @@ Player.prototype.moveForward = function (dt) {
 
 Player.prototype.update = function (dt) {
     this.moveForward(dt);
+    
+    this.cycleTrail.update(this.position);
 };
