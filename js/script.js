@@ -23,18 +23,19 @@ $(document).ready(function () {
                                              ASPECT,
                                              CONFIG.cameraNear,
                                              CONFIG.cameraFar);
-        camera.position.z = CONFIG.cameraInitZ;
+        camera.position = CONFIG.cameraPos;        
 
         scene = new THREE.Scene();
         scene.add(camera);
 
-        //var ambient = new THREE.AmbientLight( 0x505050 );
-        //scene.add( ambient );
-
+/*
         var directionalLight = new THREE.DirectionalLight( 0xFFFFFF );
         directionalLight.position.set( 0, 0, 100 ).normalize();
         scene.add( directionalLight );
-
+*/
+        var ambientLight = new THREE.AmbientLight(0x555555);
+        scene.add(ambientLight);
+        
         tunnel = new Tunnel(scene);
         myPlayer = new Player(scene);
 
@@ -96,7 +97,7 @@ $(document).ready(function () {
 
         mesh.position = myPlayer.getPosition();
         mesh.rotation = myPlayer.getRotation();
-        mesh.rotation.y += 0.005;
+//        mesh.rotation.y += 0.005;
 
         camera.position.z += CONFIG.cameraVel.z * dt;
 

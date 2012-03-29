@@ -9,13 +9,13 @@ function Tunnel(scene) {
     // Index used to delete segments from the scene
     this.oldestLiveSection = 0;
 
-    var texture = THREE.ImageUtils.loadTexture('img/t.jpg');
+    var texture = THREE.ImageUtils.loadTexture('img/TrailTexture_2.png');
     //texture.wrapT = THREE.RepeatWrapping;
 
     this.tunnelMaterial = [
         new THREE.MeshLambertMaterial({
             map: texture,
-            transparent : false
+            transparent : true
         }),
         //new THREE.MeshLambertMaterial(CONFIG.tunnelMaterial),
         new THREE.MeshLambertMaterial({
@@ -120,6 +120,7 @@ function LightRing(startZ, scene){
 
 LightRing.prototype.update = function(){
     var step = CONFIG.lightIntensityStep;
+    /*
     _.each(this.lights, function (light) {
         if(light.intensity >= step*10) this.rising = false;
         else if(light.intensity <= step*2) this.rising = true;
@@ -130,7 +131,7 @@ LightRing.prototype.update = function(){
         else{
             light.intensity -= step;
         }
-    });
+    });*/
 };
 
 LightRing.prototype.repositionLightRing = function(newZ){
@@ -155,7 +156,7 @@ function TunnelSegment(startZ, materials) {
 
     // dynamically create quads for tunnel segment
     for (theta = 0; theta < 2*Math.PI; theta += deltaTheta){
-        if (Math.floor(Math.random() * (materials.length-1)) === 0) {
+        //if (Math.floor(Math.random() * (materials.length-1)) === 0) {
             rcos = radius*Math.cos(theta);
             rsin = radius*Math.sin(theta);
             rcosd = radius*Math.cos(theta + deltaTheta);
@@ -186,7 +187,7 @@ function TunnelSegment(startZ, materials) {
             this.geometry.faceUvs[0].push(new THREE.UV(0,1));
             this.geometry.faceVertexUvs[0].push(faceuv);
 
-        }
+        //}
     }
 
     this.geometry.computeFaceNormals();

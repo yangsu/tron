@@ -10,17 +10,30 @@ function Player(scene) {
       map: texture
     });
 
+    var trailTexture = THREE.ImageUtils.loadTexture('img/TrailTexture_2.png');
+    this.trailMaterial = new THREE.MeshLambertMaterial({
+        map: trailTexture,
+        transparent: true,
+        reflectivity: 0.15,
+        refractionRatio: 0.75,
+    })
+    this.playerTrail = new THREE.Mesh(
+        new THREE.CubeGeometry(CONFIG.playerTrail.x, CONFIG.playerTrail.y, CONFIG.playerTrail.z), 
+        this.trailMaterial
+    );
+    
     this.playerMesh = new THREE.Mesh(
-        new THREE.CubeGeometry(10, 10, 20),
+        new THREE.CubeGeometry(10, 5, 25),
         this.material);
 
     var loader = new THREE.JSONLoader();
-    loader.load( "obj/LightCycle.js", this.loadObj);
+    //loader.load( "obj/LightCycle.js", this.loadObj);
 
     this.position = CONFIG.playerPos;
     this.velocity = CONFIG.playerVel;
     this.updatePosition();
 
+    this.scene.add(this.playerTrail);
     //this.scene.add(this.playerMesh);
 }
 
@@ -45,22 +58,28 @@ Player.prototype.getRotation = function(){
 Player.prototype.moveLeft = function () {
     this.position.theta -= this.velocity.theta;
     this.playerMesh.rotation.z -= this.velocity.theta;
+    this.playerTrail.rotation.z -= this.velocity.theta;
     this.updatePosition();
 };
 
 Player.prototype.moveRight = function () {
     this.position.theta += this.velocity.theta;
     this.playerMesh.rotation.z += this.velocity.theta;
+    this.playerTrail.rotation.z += this.velocity.theta;
     this.updatePosition();
 };
 
 Player.prototype.updatePosition = function () {
     this.playerMesh.position = this.position.convertToCartesian();
+    
+    this.playerTrail.position = this.position.convertToCartesian();
+    this.playerTrail.position.z += CONFIG.playerTrailOffset_Z;
 };
 
 Player.prototype.moveForward = function (dt) {
     this.position.z += this.velocity.z * dt;
-    this.playerMesh.position.z = this.position.z;
+    
+    this.updatePosition();
 };
 
 Player.prototype.update = function (dt) {
