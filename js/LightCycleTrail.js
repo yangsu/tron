@@ -8,16 +8,23 @@ function Trail(scene){
     this.lastSegment;
     
     var trailTexture = THREE.ImageUtils.loadTexture('img/TrailTexture_2.png');
-    this.trailMaterial = new THREE.MeshLambertMaterial({
+    /*this.trailMaterial = new THREE.MeshLambertMaterial({
         map: trailTexture,
         transparent: true,
         reflectivity: 0.15,
         refractionRatio: 0.75,
-    })
+    });*/
     
-    var r1 = 40, r2 = 35;
-    var start_bottom_vertex =  UTIL.vtx3(r1*Math.cos(theta), r1*Math.sin(theta), z);
-    var start_top_vertex = UTIL.vtx3(r2*Math.cos(theta), r2*Math.sin(theta), z);
+   this.trailMaterial = new THREE.MeshLambertMaterial({wireframe: true, color: 0x0000ff});
+    
+    var theta = CONFIG.playerPos.theta;
+    var z = CONFIG.playerPos.z;
+    var start_bottom_vertex =  UTIL.vtx3(CONFIG.trailRadius_Lower*Math.cos(theta), 
+                                         CONFIG.trailRadius_Lower*Math.sin(theta), 
+                                         z);
+    var start_top_vertex = UTIL.vtx3(CONFIG.trailRadius_Upper*Math.cos(theta), 
+                                     CONFIG.trailRadius_Upper*Math.sin(theta), 
+                                     z);
     var startTunnelSegment = new TrailSegment(start_top_vertex, start_bottom_vertex, CONFIG.playerPos);
     
     this.trailSegments.push(startTunnelSegment); 
@@ -63,11 +70,15 @@ function TrailSegment(lastVertex_Top, lastVertex_Bottom, playerPos){
     var z = playerPos.z;
     
     // need to create config parameters or pass basedon value
-    var r1 = 40, r2 = 35; // need to create config parameters or pass based on value
+    var r1 = 45, r2 = 35; // need to create config parameters or pass based on value
     
     // Define forward two vertices
-    this.front_bottom_vertex =  UTIL.vtx3(r1*Math.cos(theta), r1*Math.sin(theta), z);
-    this.front_top_vertex = UTIL.vtx3(r2*Math.cos(theta), r2*Math.sin(theta), z);
+    this.front_bottom_vertex =  UTIL.vtx3(CONFIG.trailRadius_Lower*Math.cos(theta), 
+                                          CONFIG.trailRadius_Lower*Math.sin(theta), 
+                                          z);
+    this.front_top_vertex = UTIL.vtx3(CONFIG.trailRadius_Upper*Math.cos(theta), 
+                                      CONFIG.trailRadius_Upper*Math.sin(theta), 
+                                      z);
    
     // push vertices to three.js geoemetry
     this.geometry.vertices.push(this.front_bottom_vertex,
@@ -76,7 +87,7 @@ function TrailSegment(lastVertex_Top, lastVertex_Bottom, playerPos){
                                 lastVertex_Bottom);
             
     // Create face out of vertices & push                    
-    var face = new THREE.Face4(0, 1, 2, 3);
+    var face = new THREE.Face4(3,2,1,0);//0, 1, 2, 3);
     this.geometry.faces.push(face);
 
     // Configure UV Texturing coord data

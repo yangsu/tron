@@ -11,27 +11,27 @@ var CONFIG = {
     'cameraAngle' : 75,
     'cameraNear' : 0.1,
     'cameraFar' : 1000,
-    'cameraPos' : UTIL.v3(-15, 0, 100),
+    'cameraPos' : UTIL.v3(-15, 0, 200),
     'cameraVel' : UTIL.v3c(0, 0, -350),
 
     // Player Settings
-    'playerPos' : UTIL.v3c(35, 1.5*Math.PI, 0),
+    'playerPos' : UTIL.v3c(75, 1.5*Math.PI, 0),
     'playerVel' : UTIL.v3c(0, Math.PI/40, -350),
-    'playerTrailOffset_Y' : -3,
-    'playerTrailOffset_Z' : 50,
     'playerTrail' : UTIL.v3(0.005, 7, 50),
+    'trailRadius_Upper' : 75,
+    'trailRadius_Lower' : 85,
 
     // Tunnel Settings
-    'tunnelRadius' : 50,
+    'tunnelRadius' : 100,
     'tunnelSegmentDepth' : 10,
     'tunnelSegmentPerSection' : 10,
-    'tunnelResolution' : 10,
+    'tunnelResolution' : 16,
     'tunnelMaterial' : {
         color : 0x47C5D8,
         wireframe : true,
         transparent : false
     },
-    'tunnelLiveSections' : 12, // should be 1 + cameraFar/(segdepth * seg/sec)
+    'tunnelLiveSections' : 15, // should be 1 + cameraFar/(segdepth * seg/sec)
 
     // Light Ring Settings
     'lightRingCount' : 8,

@@ -28,13 +28,13 @@ $(document).ready(function () {
         scene = new THREE.Scene();
         scene.add(camera);
 
-/*
+
         var directionalLight = new THREE.DirectionalLight( 0xFFFFFF );
         directionalLight.position.set( 0, 0, 100 ).normalize();
         scene.add( directionalLight );
-*/
-        var ambientLight = new THREE.AmbientLight(0x555555);
-        scene.add(ambientLight);
+
+        //var ambientLight = new THREE.AmbientLight(0xFFFFFF);
+       // scene.add(ambientLight);
         
         tunnel = new Tunnel(scene);
         myPlayer = new Player(scene);

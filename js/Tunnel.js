@@ -9,12 +9,13 @@ function Tunnel(scene) {
     // Index used to delete segments from the scene
     this.oldestLiveSection = 0;
 
-    var texture = THREE.ImageUtils.loadTexture('img/TrailTexture_2.png');
+    var texture_1 = THREE.ImageUtils.loadTexture('img/TunnelTexture.png');
+    //var texture_2 = THREE.ImageUtils.loadTexture('img/TrailTexture_2.png');
     //texture.wrapT = THREE.RepeatWrapping;
 
     this.tunnelMaterial = [
         new THREE.MeshLambertMaterial({
-            map: texture,
+            map: texture_1,
             transparent : true
         }),
         //new THREE.MeshLambertMaterial(CONFIG.tunnelMaterial),
@@ -27,6 +28,7 @@ function Tunnel(scene) {
     ];
 
     this.generateTunnelSection(0);
+
 
     this.tunnelLights = [];
     var j, tunnelRing,
@@ -54,6 +56,7 @@ Tunnel.prototype.update = function(playerZ){
 
     // can't dynamically add lights to scene???
     // maybe instead of splicing array up everytime
+    
     var firstLightRing = this.tunnelLights[0];
     if(Math.abs(firstLightRing.z) < Math.abs(playerZ) - CONFIG.cameraFar){
         var lastLightRing = this.tunnelLights[this.tunnelLights.length - 1];
@@ -159,7 +162,7 @@ function TunnelSegment(startZ, materials) {
 
     // dynamically create quads for tunnel segment
     for (theta = 0; theta < 2*Math.PI; theta += deltaTheta){
-        //if (Math.floor(Math.random() * (materials.length-1)) === 0) {
+        if (Math.floor(Math.random() * (materials.length-1)) === 0) {
             rcos = radius*Math.cos(theta);
             rsin = radius*Math.sin(theta);
             rcosd = radius*Math.cos(theta + deltaTheta);
@@ -177,6 +180,7 @@ function TunnelSegment(startZ, materials) {
                                    temp + 2,
                                    temp + 1,
                                    temp);
+              
             face.materialIndex = 0;
             this.geometry.faces.push(face);
             faceCounter += 1;
@@ -189,8 +193,7 @@ function TunnelSegment(startZ, materials) {
 
             this.geometry.faceUvs[0].push(new THREE.UV(0,1));
             this.geometry.faceVertexUvs[0].push(faceuv);
-
-        //}
+        }
     }
 
     this.geometry.computeFaceNormals();
