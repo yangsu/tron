@@ -39,20 +39,11 @@ $(document).ready(function () {
 
         //var ambientLight = new THREE.AmbientLight(0xFFFFFF);
        // scene.add(ambientLight);
-<<<<<<< HEAD
-        
-        tunnel = new Tunnel();
-        myPlayer = new Player();
-=======
-
-        tunnel = new Tunnel(scene, function () {
+        tunnel = new Tunnel(function () {
             tunnelInitialized = true;
         });
-        myPlayer = new Player(scene);
+        myPlayer = new Player();
 
-        var loader = new THREE.JSONLoader();
-        loader.load('obj/LightCycle.js', createScene);
->>>>>>> cbd8dbf818591f50dd31e095974c35689223078c
 
         itemManager = new ItemManager();
         
@@ -76,25 +67,6 @@ $(document).ready(function () {
         }, 1000 / 60);
 
     }
-<<<<<<< HEAD
-=======
-
-    function createScene(geometry) {
-        //var material = new THREE.MeshLambertMaterial({wireframe:false});
-        var texture = THREE.ImageUtils.loadTexture('obj/LightCycle_TextureTest1.png'),
-        //texture.wrapT = THREE.RepeatWrapping;
-            material = new THREE.MeshLambertMaterial({
-                map: texture,
-                transparent : false
-            });
-
-        mesh = new THREE.Mesh(geometry, material);
-        mesh.position = CONFIG.playerPos.convertToCartesian();
-        mesh.scale.set(2, 2, 2);
-        mesh.rotation.y = Math.PI;
-        scene.add(mesh);
-    }
->>>>>>> cbd8dbf818591f50dd31e095974c35689223078c
 
     function animate() {
         if (started && !paused && tunnelInitialized) {

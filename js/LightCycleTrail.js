@@ -1,14 +1,7 @@
 /**
  * @author Troy Ferrell
  */
-<<<<<<< HEAD
 function Trail(){
-    
-=======
-function Trail(scene) {
-
-    this.scene = scene;
->>>>>>> cbd8dbf818591f50dd31e095974c35689223078c
     this.trailSegments = [];
     this.trailSegmentMeshes = [];
     this.oldestLiveSection = 0;
@@ -76,16 +69,9 @@ Trail.prototype.generateTrailSegment = function (playerPosition) {
 
     this.trailSegments.push(newTrailSegment);
     this.lastSegment = newTrailSegment;
-<<<<<<< HEAD
-    
+
     var newTrailMesh = new THREE.Mesh(newTrailSegment.geometry, this.trailMaterial);
     window.scene.add(newTrailMesh);
-=======
-
-    newTrailMesh = new THREE.Mesh(newTrailSegment.geometry, this.trailMaterial);
-    this.trailSegmentMeshes.push(newTrailMesh);
-    this.scene.add(newTrailMesh);
->>>>>>> cbd8dbf818591f50dd31e095974c35689223078c
 };
 
 
