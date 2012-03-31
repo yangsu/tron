@@ -1,8 +1,10 @@
 /**
  * @author Troy Ferrell & Yang Su
  */
+
+var scene;
 $(document).ready(function () {
-    var camera, scene, renderer,
+    var camera, renderer,
         tunnel, myPlayer,
         lastUpdate,
         initialized = false,
@@ -36,12 +38,11 @@ $(document).ready(function () {
         //var ambientLight = new THREE.AmbientLight(0xFFFFFF);
        // scene.add(ambientLight);
         
-        tunnel = new Tunnel(scene);
-        myPlayer = new Player(scene);
+        tunnel = new Tunnel();
+        myPlayer = new Player();
 
-        var loader = new THREE.JSONLoader();
-        loader.load( "obj/LightCycle.js", createScene );
-
+        itemManager = new ItemManager();
+        
         renderer = new THREE.WebGLRenderer(CONFIG.renderer);
         renderer.setSize(WIDTH, HEIGHT);
         renderer.setClearColorHex(CONFIG.background, 1.0);
@@ -62,20 +63,6 @@ $(document).ready(function () {
         }, 1000 / 60 );
 
     }
-    function createScene(geometry){
-        //var material = new THREE.MeshLambertMaterial({wireframe:false});
-        var texture = THREE.ImageUtils.loadTexture('obj/LightCycle_TextureTest1.png');
-        //texture.wrapT = THREE.RepeatWrapping;
-        var material = new THREE.MeshLambertMaterial({
-            map: texture,
-            transparent : false});
-
-        mesh = new THREE.Mesh(geometry, material);
-        mesh.position = CONFIG.playerPos.convertToCartesian();
-        mesh.scale.set(2, 2, 2);
-        mesh.rotation.y = Math.PI;
-        scene.add(mesh);
-    }
 
     function animate() {
         if (initialized && !paused) {
@@ -91,14 +78,10 @@ $(document).ready(function () {
             dt = (now - lastUpdate)/1000;
 
         // Call update methods to produce animation
-
         tunnel.update(myPlayer.getPosition().z);
         myPlayer.update(dt);
-
-        mesh.position = myPlayer.getPosition();
-        mesh.rotation = myPlayer.getRotation();
-//        mesh.rotation.y += 0.005;
-
+        itemManager.update();
+        
         camera.position.z += CONFIG.cameraVel.z * dt;
 
         lastUpdate = now;

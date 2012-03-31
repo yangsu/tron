@@ -1,9 +1,8 @@
 /**
  * @author Troy Ferrell
  */
-function Trail(scene){
+function Trail(){
     
-    this.scene = scene;
     this.trailSegments = [];
     this.lastSegment;
     
@@ -56,7 +55,7 @@ Trail.prototype.generateTrailSegment = function(playerPosition) {
     this.lastSegment = newTrailSegment;
     
     var newTrailMesh = new THREE.Mesh(newTrailSegment.geometry, this.trailMaterial);
-    this.scene.add(newTrailMesh);
+    window.scene.add(newTrailMesh);
 };
 
 

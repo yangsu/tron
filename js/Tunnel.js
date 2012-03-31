@@ -2,8 +2,7 @@
  * @author Troy Ferrell & Yang Su
  */
 
-function Tunnel(scene) {
-    this.scene = scene;
+function Tunnel() {
     this.tunnelSegments = [];
     this.tunnelSections = [];
     // Index used to delete segments from the scene
@@ -34,7 +33,7 @@ function Tunnel(scene) {
     var j, tunnelRing,
         startZ = -CONFIG.tunnelSegmentPerSection*CONFIG.tunnelSegmentDepth;
     for(j = 0; j < 3; j += 1) {
-        tunnelRing = new LightRing(startZ - CONFIG.cameraFar*j, this.scene);
+        tunnelRing = new LightRing(startZ - CONFIG.cameraFar*j);
         this.tunnelLights.push(tunnelRing);
     }
 }
@@ -46,7 +45,7 @@ Tunnel.prototype.update = function(playerZ){
         this.generateTunnelSection(-this.tunnelSegments.length*CONFIG.tunnelSegmentDepth);
         if (this.tunnelSections.length - this.oldestLiveSection > CONFIG.tunnelLiveSections) {
             // Remove from scene
-            this.scene.remove(this.tunnelSections[this.oldestLiveSection]);
+            window.scene.remove(this.tunnelSections[this.oldestLiveSection]);
             // Remove from tunnelSections
             delete this.tunnelSections[this.oldestLiveSection];
             // Move counter along
@@ -89,7 +88,7 @@ Tunnel.prototype.generateTunnelSection = function(startZ) {
     // Create a single mesh
     newTunnelMesh = new THREE.Mesh(geometry, this.tunnelMaterial[this.tunnelMaterial.length-1]);
     this.tunnelSections.push(newTunnelMesh);
-    this.scene.add(newTunnelMesh);
+    window.scene.add(newTunnelMesh);
 };
 
 Tunnel.prototype.getFace = function(i, j) {
@@ -101,7 +100,7 @@ Tunnel.prototype.getFace = function(i, j) {
     }
 };
 
-function LightRing(startZ, scene){
+function LightRing(startZ){
     this.lights = [];
     this.rising = false;
     this.z = startZ;
@@ -117,7 +116,7 @@ function LightRing(startZ, scene){
         newTunnelLight.position.z = startZ;
 
         this.lights.push(newTunnelLight);
-        scene.add(newTunnelLight);
+        window.scene.add(newTunnelLight);
     }
 }
 
