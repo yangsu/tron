@@ -1,14 +1,24 @@
-/**
+  /**
  * @author Troy Ferrell & Yang Su
  */
 
+<<<<<<< HEAD
 function Tunnel() {
+=======
+function Tunnel(scene, callback) {
+    this.scene = scene;
+>>>>>>> cbd8dbf818591f50dd31e095974c35689223078c
     this.tunnelSegments = [];
     this.tunnelSections = [];
     // Index used to delete segments from the scene
     this.oldestLiveSection = 0;
-
-    var texture_1 = THREE.ImageUtils.loadTexture('img/TunnelTexture.png');
+    var that = this,
+        texture_1 = THREE.ImageUtils.loadTexture('img/TunnelTexture.png', {}, function (data) {
+        that.create(UTIL.getImageData(texture_1.image), callback);
+    }),
+        j,
+        tunnelRing,
+        startZ = -CONFIG.tunnelSegmentPerSection * CONFIG.tunnelSegmentDepth;
     //var texture_2 = THREE.ImageUtils.loadTexture('img/TrailTexture_2.png');
     //texture.wrapT = THREE.RepeatWrapping;
 
@@ -26,23 +36,31 @@ function Tunnel() {
         new THREE.MeshFaceMaterial()
     ];
 
-    this.generateTunnelSection(0);
-
+    // this.generateTunnelSection(0);
 
     this.tunnelLights = [];
+<<<<<<< HEAD
     var j, tunnelRing,
         startZ = -CONFIG.tunnelSegmentPerSection*CONFIG.tunnelSegmentDepth;
     for(j = 0; j < 3; j += 1) {
         tunnelRing = new LightRing(startZ - CONFIG.cameraFar*j);
+=======
+    for (j = 0; j < 3; j += 1) {
+        tunnelRing = new LightRing(startZ - CONFIG.cameraFar * j, this.scene);
+>>>>>>> cbd8dbf818591f50dd31e095974c35689223078c
         this.tunnelLights.push(tunnelRing);
     }
 }
 
-Tunnel.prototype.update = function(playerZ){
+Tunnel.prototype.create = function(imgData, callback) {
+
+    callback();
+};
+Tunnel.prototype.update = function (playerZ) {
     // Dynamic tunnel generation based on player position
-    if(this.tunnelSegments.length*CONFIG.tunnelSegmentDepth <
-        Math.abs(playerZ) + CONFIG.cameraFar){
-        this.generateTunnelSection(-this.tunnelSegments.length*CONFIG.tunnelSegmentDepth);
+    if (this.tunnelSegments.length * CONFIG.tunnelSegmentDepth <
+            Math.abs(playerZ) + CONFIG.cameraFar) {
+        this.generateTunnelSection(-this.tunnelSegments.length * CONFIG.tunnelSegmentDepth);
         if (this.tunnelSections.length - this.oldestLiveSection > CONFIG.tunnelLiveSections) {
             // Remove from scene
             window.scene.remove(this.tunnelSections[this.oldestLiveSection]);
@@ -55,11 +73,10 @@ Tunnel.prototype.update = function(playerZ){
 
     // can't dynamically add lights to scene???
     // maybe instead of splicing array up everytime
-    
-    var firstLightRing = this.tunnelLights[0];
-    if(Math.abs(firstLightRing.z) < Math.abs(playerZ) - CONFIG.cameraFar){
-        var lastLightRing = this.tunnelLights[this.tunnelLights.length - 1];
 
+    var firstLightRing = this.tunnelLights[0],
+        lastLightRing = this.tunnelLights[this.tunnelLights.length - 1];
+    if (Math.abs(firstLightRing.z) < Math.abs(playerZ) - CONFIG.cameraFar) {
         firstLightRing.repositionLightRing(lastLightRing.z - CONFIG.cameraFar);
         this.tunnelLights.splice(0, 1); // remove first element
         this.tunnelLights.push(firstLightRing); // add first element to element
@@ -70,7 +87,7 @@ Tunnel.prototype.update = function(playerZ){
     });
 };
 
-Tunnel.prototype.generateTunnelSection = function(startZ) {
+Tunnel.prototype.generateTunnelSection = function (startZ) {
     var i = 0,
         newTunnelSeg = new TunnelSegment(startZ, this.tunnelMaterial),
         geometry = newTunnelSeg.geometry,
@@ -78,41 +95,46 @@ Tunnel.prototype.generateTunnelSection = function(startZ) {
 
     this.tunnelSegments.push(newTunnelSeg);
 
-    for(i = 1; i < CONFIG.tunnelSegmentPerSection; i += 1) {
-        newTunnelSeg= new TunnelSegment(startZ - i*CONFIG.tunnelSegmentDepth, this.tunnelMaterial);
+    for (i = 1; i < CONFIG.tunnelSegmentPerSection; i += 1) {
+        newTunnelSeg = new TunnelSegment(startZ - i * CONFIG.tunnelSegmentDepth, this.tunnelMaterial);
         this.tunnelSegments.push(newTunnelSeg);
         // Merge with geometry
         THREE.GeometryUtils.merge(geometry, newTunnelSeg.geometry);
     }
 
     // Create a single mesh
-    newTunnelMesh = new THREE.Mesh(geometry, this.tunnelMaterial[this.tunnelMaterial.length-1]);
+    newTunnelMesh = new THREE.Mesh(geometry, this.tunnelMaterial[this.tunnelMaterial.length - 1]);
     this.tunnelSections.push(newTunnelMesh);
     window.scene.add(newTunnelMesh);
 };
 
-Tunnel.prototype.getFace = function(i, j) {
-    if (i <= this.tunnelSegments.length && i >= 0)
+Tunnel.prototype.getFace = function (i, j) {
+    if (i <= this.tunnelSegments.length && i >= 0) {
         return this.tunnelSegments[i].getFace(j);
-    else {
-        console.log('Error: Tunnel getFace('+i+','+j+') index out of bounds');
+    } else {
+        console.log('Error: Tunnel getFace(' + i + ',' + j + ') index out of bounds');
         return null;
     }
 };
 
+<<<<<<< HEAD
 function LightRing(startZ){
+=======
+function LightRing(startZ, scene) {
+>>>>>>> cbd8dbf818591f50dd31e095974c35689223078c
     this.lights = [];
     this.rising = false;
     this.z = startZ;
 
-    var deltaTheta = 2*Math.PI/CONFIG.lightRingCount,
+    var deltaTheta = 2 * Math.PI / CONFIG.lightRingCount,
         radius = CONFIG.tunnelRadius,
-        theta, newTunnelLight;
+        theta,
+        newTunnelLight;
 
-    for (theta = 0; theta < 2*Math.PI; theta += deltaTheta){
+    for (theta = 0; theta < 2 * Math.PI; theta += deltaTheta) {
         newTunnelLight = new THREE.PointLight(CONFIG.lightColor, CONFIG.lightIntensity, CONFIG.lightRange);
-        newTunnelLight.position.x = radius*Math.cos(theta);
-        newTunnelLight.position.y = radius*Math.sin(theta);
+        newTunnelLight.position.x = radius * Math.cos(theta);
+        newTunnelLight.position.y = radius * Math.sin(theta);
         newTunnelLight.position.z = startZ;
 
         this.lights.push(newTunnelLight);
@@ -120,17 +142,17 @@ function LightRing(startZ){
     }
 }
 
-LightRing.prototype.update = function(){
+LightRing.prototype.update = function () {
     var step = CONFIG.lightIntensityStep;
     /*
-     * I'm a fucking idiot. Just use sin funciton 
+     * I'm a fucking idiot. Just use sin funciton
      * EX: light.intensity = (MaxIntensity-MinIntensity)*sin(t) + MinIntensity;
-     
-    _.each(this.lights, function (light) {
-        if(light.intensity >= step*10) this.rising = false;
-        else if(light.intensity <= step*2) this.rising = true;
 
-        if(this.rising){
+    _.each(this.lights, function (light) {
+        if (light.intensity >= step*10) this.rising = false;
+        else if (light.intensity <= step*2) this.rising = true;
+
+        if (this.rising) {
             light.intensity += step;
         }
         else{
@@ -139,7 +161,7 @@ LightRing.prototype.update = function(){
     });*/
 };
 
-LightRing.prototype.repositionLightRing = function(newZ){
+LightRing.prototype.repositionLightRing = function (newZ) {
     this.z = newZ;
     _.each(this.lights, function (light) {
         light.position.z = newZ;
@@ -151,21 +173,26 @@ function TunnelSegment(startZ, materials) {
     this.geometry.dynamic = true;
     this.geometry.materials = materials;
 
-    var deltaTheta = 2*Math.PI/CONFIG.tunnelResolution,
+    var deltaTheta = 2 * Math.PI / CONFIG.tunnelResolution,
         radius = CONFIG.tunnelRadius,
         faceCounter = 0,
         depth = CONFIG.tunnelSegmentDepth,
-        theta, face,
-        rcos, rsin, rcosd, rsind,
+        theta,
+        face,
+        rcos,
+        rsin,
+        rcosd,
+        rsind,
+        faceuv,
         temp;
 
     // dynamically create quads for tunnel segment
-    for (theta = 0; theta < 2*Math.PI; theta += deltaTheta){
-        if (Math.floor(Math.random() * (materials.length-1)) === 0) {
-            rcos = radius*Math.cos(theta);
-            rsin = radius*Math.sin(theta);
-            rcosd = radius*Math.cos(theta + deltaTheta);
-            rsind = radius*Math.sin(theta + deltaTheta);
+    for (theta = 0; theta < 2 * Math.PI; theta += deltaTheta) {
+        if (Math.floor(Math.random() * (materials.length - 1)) === 0) {
+            rcos = radius * Math.cos(theta);
+            rsin = radius * Math.sin(theta);
+            rcosd = radius * Math.cos(theta + deltaTheta);
+            rsind = radius * Math.sin(theta + deltaTheta);
 
             // Create vertices for current quad in cylinder segment
             this.geometry.vertices.push(UTIL.vtx3(rcos, rsin, startZ),
@@ -174,23 +201,25 @@ function TunnelSegment(startZ, materials) {
                                         UTIL.vtx3(rcosd, rsind, startZ));
 
             // Define normals to point inward
-            temp = faceCounter*4;
+            temp = faceCounter * 4;
             face = new THREE.Face4(temp + 3,
                                    temp + 2,
                                    temp + 1,
                                    temp);
-              
+
             face.materialIndex = 0;
             this.geometry.faces.push(face);
             faceCounter += 1;
 
             // Configure UV Texturing coord data
-            var faceuv = [new THREE.UV(0,1),
-                        new THREE.UV(1,1),
-                        new THREE.UV(1,0),
-                        new THREE.UV(0,0)];
+            faceuv = [
+                new THREE.UV(0, 1),
+                new THREE.UV(1, 1),
+                new THREE.UV(1, 0),
+                new THREE.UV(0, 0)
+            ];
 
-            this.geometry.faceUvs[0].push(new THREE.UV(0,1));
+            this.geometry.faceUvs[0].push(new THREE.UV(0, 1));
             this.geometry.faceVertexUvs[0].push(faceuv);
         }
     }
@@ -199,11 +228,11 @@ function TunnelSegment(startZ, materials) {
     this.geometry.computeVertexNormals();
 }
 
-TunnelSegment.prototype.getFace = function(i) {
-    if (i <= this.geometry.faces.length && i >= 0)
+TunnelSegment.prototype.getFace = function (i) {
+    if (i <= this.geometry.faces.length && i >= 0) {
         return this.geometry.faces[i];
-    else {
-        console.log('Error: TunnelSegment getFace('+i+') index out of bounds');
+    } else {
+        console.log('Error: TunnelSegment getFace(' + i + ') index out of bounds');
         return null;
     }
 };

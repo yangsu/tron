@@ -6,13 +6,13 @@ var scene;
 $(document).ready(function () {
     var camera, renderer,
         tunnel, myPlayer,
+        mesh,
         lastUpdate,
-        initialized = false,
+        started = false,
         paused = false,
+        tunnelInitialized = false,
         startmenu = $('#startmenu'),
         ingamemenu = $('#ingamemenu');
-
-    var mesh;
 
     function init() {
         // Scene Initialization
@@ -20,26 +20,39 @@ $(document).ready(function () {
             WIDTH = window.innerWidth - OFFSET,
             HEIGHT = window.innerHeight - OFFSET,
             ASPECT = WIDTH / HEIGHT;
+
         lastUpdate = UTIL.now();
-        camera = new THREE.PerspectiveCamera(CONFIG.cameraAngle,
-                                             ASPECT,
-                                             CONFIG.cameraNear,
-                                             CONFIG.cameraFar);
-        camera.position = CONFIG.cameraPos;        
+        camera = new THREE.PerspectiveCamera(
+            CONFIG.cameraAngle,
+            ASPECT,
+            CONFIG.cameraNear,
+            CONFIG.cameraFar
+        );
+        camera.position = CONFIG.cameraPos;
 
         scene = new THREE.Scene();
         scene.add(camera);
 
-
-        var directionalLight = new THREE.DirectionalLight( 0xFFFFFF );
-        directionalLight.position.set( 0, 0, 100 ).normalize();
-        scene.add( directionalLight );
+        var directionalLight = new THREE.DirectionalLight(0xFFFFFF);
+        directionalLight.position.set(0, 0, 100).normalize();
+        scene.add(directionalLight);
 
         //var ambientLight = new THREE.AmbientLight(0xFFFFFF);
        // scene.add(ambientLight);
+<<<<<<< HEAD
         
         tunnel = new Tunnel();
         myPlayer = new Player();
+=======
+
+        tunnel = new Tunnel(scene, function () {
+            tunnelInitialized = true;
+        });
+        myPlayer = new Player(scene);
+
+        var loader = new THREE.JSONLoader();
+        loader.load('obj/LightCycle.js', createScene);
+>>>>>>> cbd8dbf818591f50dd31e095974c35689223078c
 
         itemManager = new ItemManager();
         
@@ -58,14 +71,33 @@ $(document).ready(function () {
         statsdom.style.left = '0px';
         statsdom.style.top = '0px';
         document.body.appendChild(statsdom);
-        setInterval( function () {
+        setInterval(function () {
             stats.update();
-        }, 1000 / 60 );
+        }, 1000 / 60);
 
     }
+<<<<<<< HEAD
+=======
+
+    function createScene(geometry) {
+        //var material = new THREE.MeshLambertMaterial({wireframe:false});
+        var texture = THREE.ImageUtils.loadTexture('obj/LightCycle_TextureTest1.png'),
+        //texture.wrapT = THREE.RepeatWrapping;
+            material = new THREE.MeshLambertMaterial({
+                map: texture,
+                transparent : false
+            });
+
+        mesh = new THREE.Mesh(geometry, material);
+        mesh.position = CONFIG.playerPos.convertToCartesian();
+        mesh.scale.set(2, 2, 2);
+        mesh.rotation.y = Math.PI;
+        scene.add(mesh);
+    }
+>>>>>>> cbd8dbf818591f50dd31e095974c35689223078c
 
     function animate() {
-        if (initialized && !paused) {
+        if (started && !paused && tunnelInitialized) {
             update();
         }
         renderer.render(scene, camera);
@@ -75,7 +107,7 @@ $(document).ready(function () {
 
     function update() {
         var now = UTIL.now(),
-            dt = (now - lastUpdate)/1000;
+            dt = (now - lastUpdate) / 1000;
 
         // Call update methods to produce animation
         tunnel.update(myPlayer.getPosition().z);
@@ -89,16 +121,16 @@ $(document).ready(function () {
 
     // Initialization
     init();
+    animate();
 
     // Event handlers
-    window.ondevicemotion = function(event) {
+    window.ondevicemotion = function (event) {
 
         $('#score').html(event.accelerationIncludingGravity.x);
 
-        if(event.accelerationIncludingGravity.x > 1.75) {
+        if (event.accelerationIncludingGravity.x > 1.75) {
             myPlayer.moveRight();
-        }
-        else if(event.accelerationIncludingGravity.x < -1.75) {
+        } else if (event.accelerationIncludingGravity.x < -1.75) {
             myPlayer.moveLeft();
         }
 
@@ -109,8 +141,7 @@ $(document).ready(function () {
 
     $('#play').click(function () {
         startmenu.fadeOut('fast', function () {
-            animate();
-            initialized = true;
+            started = true;
         });
     });
     $('#resume').click(function () {
@@ -118,34 +149,33 @@ $(document).ready(function () {
         ingamemenu.fadeOut();
     });
 
-    $(document).mousemove(function(e){
+    $(document).mousemove(function (e) {
        //$('#score').html(e.pageX);
-   });
+    });
 
     // Only keyup can capture the key event for the 'esc' key
-    $(document).keyup(function(event) {
+    $(document).keyup(function (event) {
         switch (event.which) {
-            case 27 /* esc */:
-                paused = !paused;
-                if (paused) {
-                    ingamemenu.fadeIn();
-                }
-                else {
-                    ingamemenu.fadeOut();
-                }
-                break;
+        case 27: /* esc */
+            paused = !paused;
+            if (paused) {
+                ingamemenu.fadeIn();
+            } else {
+                ingamemenu.fadeOut();
+            }
+            break;
         }
     });
-    $(document).keypress(function(event) {
+    $(document).keypress(function (event) {
         switch (event.which) {
-            case 65 /* 'A' */:
-            case 97 /* 'a' */:
-                myPlayer.moveLeft();
-                break;
-            case 68 /* 'D' */:
-            case 100 /* 'd' */:
-                myPlayer.moveRight();
-                break;
+        case 65: /* 'A' */
+        case 97: /* 'a' */
+            myPlayer.moveLeft();
+            break;
+        case 68: /* 'D' */
+        case 100:/* 'd' */
+            myPlayer.moveRight();
+            break;
         }
     });
 });
