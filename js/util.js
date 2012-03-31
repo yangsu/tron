@@ -22,5 +22,31 @@ var UTIL = {
     },
     now : function () {
         return new Date().getTime();
+    },
+
+    /*
+    Image Utils
+    var imagedata = getImageData(imgTexture.image);
+    var color = getPixel(imagedata, 10, 10);
+    */
+    getImageData : function (image) {
+        var canvas = document.createElement('canvas'),
+            context;
+        canvas.width = image.width;
+        canvas.height = image.height;
+
+        context = canvas.getContext('2d');
+        context.drawImage(image, 0, 0);
+
+        return context.getImageData(0, 0, image.width, image.height);
+    },
+    getPixel : function (imagedata, x, y) {
+        var position = (x + imagedata.width * y) * 4, data = imagedata.data;
+        return {
+            r: data[position],
+            g: data[position + 1],
+            b: data[position + 2],
+            a: data[position + 3]
+        };
     }
 };

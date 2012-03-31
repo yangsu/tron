@@ -2,14 +2,16 @@
  * @author Troy Ferrell & Yang Su
  */
 
-function Tunnel(scene) {
+function Tunnel(scene, callback) {
     this.scene = scene;
     this.tunnelSegments = [];
     this.tunnelSections = [];
     // Index used to delete segments from the scene
     this.oldestLiveSection = 0;
-
-    var texture_1 = THREE.ImageUtils.loadTexture('img/TunnelTexture.png'),
+    var that = this,
+        texture_1 = THREE.ImageUtils.loadTexture('img/TunnelTexture.png', {}, function (data) {
+        that.create(UTIL.getImageData(texture_1.image), callback);
+    }),
         j,
         tunnelRing,
         startZ = -CONFIG.tunnelSegmentPerSection * CONFIG.tunnelSegmentDepth;
@@ -30,8 +32,7 @@ function Tunnel(scene) {
         new THREE.MeshFaceMaterial()
     ];
 
-    this.generateTunnelSection(0);
-
+    // this.generateTunnelSection(0);
 
     this.tunnelLights = [];
     for (j = 0; j < 3; j += 1) {
@@ -40,6 +41,10 @@ function Tunnel(scene) {
     }
 }
 
+Tunnel.prototype.create = function(imgData, callback) {
+
+    callback();
+};
 Tunnel.prototype.update = function (playerZ) {
     // Dynamic tunnel generation based on player position
     if (this.tunnelSegments.length * CONFIG.tunnelSegmentDepth <

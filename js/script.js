@@ -6,8 +6,9 @@ $(document).ready(function () {
         tunnel, myPlayer,
         mesh,
         lastUpdate,
-        initialized = false,
+        started = false,
         paused = false,
+        tunnelInitialized = false,
         startmenu = $('#startmenu'),
         ingamemenu = $('#ingamemenu');
 
@@ -19,15 +20,16 @@ $(document).ready(function () {
             ASPECT = WIDTH / HEIGHT;
 
         lastUpdate = UTIL.now();
-        camera = new THREE.PerspectiveCamera(CONFIG.cameraAngle,
-                                             ASPECT,
-                                             CONFIG.cameraNear,
-                                             CONFIG.cameraFar);
+        camera = new THREE.PerspectiveCamera(
+            CONFIG.cameraAngle,
+            ASPECT,
+            CONFIG.cameraNear,
+            CONFIG.cameraFar
+        );
         camera.position = CONFIG.cameraPos;
 
         scene = new THREE.Scene();
         scene.add(camera);
-
 
         var directionalLight = new THREE.DirectionalLight(0xFFFFFF);
         directionalLight.position.set(0, 0, 100).normalize();
@@ -36,7 +38,9 @@ $(document).ready(function () {
         //var ambientLight = new THREE.AmbientLight(0xFFFFFF);
        // scene.add(ambientLight);
 
-        tunnel = new Tunnel(scene);
+        tunnel = new Tunnel(scene, function () {
+            tunnelInitialized = true;
+        });
         myPlayer = new Player(scene);
 
         var loader = new THREE.JSONLoader();
@@ -80,7 +84,7 @@ $(document).ready(function () {
     }
 
     function animate() {
-        if (initialized && !paused) {
+        if (started && !paused && tunnelInitialized) {
             update();
         }
         renderer.render(scene, camera);
@@ -108,6 +112,7 @@ $(document).ready(function () {
 
     // Initialization
     init();
+    animate();
 
     // Event handlers
     window.ondevicemotion = function (event) {
@@ -127,8 +132,7 @@ $(document).ready(function () {
 
     $('#play').click(function () {
         startmenu.fadeOut('fast', function () {
-            animate();
-            initialized = true;
+            started = true;
         });
     });
     $('#resume').click(function () {
