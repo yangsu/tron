@@ -5,7 +5,8 @@ function Trail(scene) {
 
     this.scene = scene;
     this.trailSegments = [];
-    this.lastSegment = null;
+    this.trailSegmentMeshes = [];
+    this.oldestLiveSection = 0;
 
     var trailTexture = THREE.ImageUtils.loadTexture('img/TrailTexture_2.png'),
     /*this.trailMaterial = new THREE.MeshLambertMaterial({
@@ -29,7 +30,10 @@ function Trail(scene) {
         ),
         startTunnelSegment = new TrailSegment(startTopVertex, startBottomVertex, CONFIG.playerPos);
 
-    this.trailMaterial = new THREE.MeshLambertMaterial({wireframe: true, color: 0x0000ff});
+    this.trailMaterial = new THREE.MeshLambertMaterial({
+        wireframe: true,
+        color: 0x0000ff
+    });
     this.trailSegments.push(startTunnelSegment);
     this.lastSegment = startTunnelSegment;
 
@@ -46,7 +50,14 @@ Trail.prototype.update = function (playerPosition) {
     this.generateTrailSegment(playerPosition);
 
     // delete any stale trail segments
-    // TODO: HERE!!!!!
+    if (this.trailSegmentMeshes.length - this.oldestLiveSection > CONFIG.trailLiveSections) {
+        // Remove from scene
+        this.scene.remove(this.trailSegmentMeshes[this.oldestLiveSection]);
+        // Remove from trailSegmentMeshes
+        delete this.trailSegmentMeshes[this.oldestLiveSection];
+        // Move counter along
+        this.oldestLiveSection += 1;
+    }
 };
 
 Trail.prototype.generateTrailSegment = function (playerPosition) {
@@ -62,6 +73,7 @@ Trail.prototype.generateTrailSegment = function (playerPosition) {
     this.lastSegment = newTrailSegment;
 
     newTrailMesh = new THREE.Mesh(newTrailSegment.geometry, this.trailMaterial);
+    this.trailSegmentMeshes.push(newTrailMesh);
     this.scene.add(newTrailMesh);
 };
 
@@ -95,10 +107,12 @@ function TrailSegment(lastVertexTop, lastVertexBottom, playerPos) {
     );
 
     // push vertices to three.js geoemetry
-    this.geometry.vertices.push(this.frontBottomVertex,
-                                this.frontTopVertex,
-                                lastVertexTop,
-                                lastVertexBottom);
+    this.geometry.vertices.push(
+        this.frontBottomVertex,
+        this.frontTopVertex,
+        lastVertexTop,
+        lastVertexBottom
+    );
 
     // Create face out of vertices & push
     face = new THREE.Face4(3, 2, 1, 0);//0, 1, 2, 3);

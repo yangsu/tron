@@ -33,6 +33,9 @@ var CONFIG = {
     },
     'tunnelLiveSections' : 15, // should be 1 + cameraFar/(segdepth * seg/sec)
 
+    // Trail Settings
+    'trailLiveSections' : 15,
+
     // Light Ring Settings
     'lightRingCount' : 8,
     'lightColor' : 0xFFFFFF,
