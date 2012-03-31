@@ -4,13 +4,12 @@
 $(document).ready(function () {
     var camera, scene, renderer,
         tunnel, myPlayer,
+        mesh,
         lastUpdate,
         initialized = false,
         paused = false,
         startmenu = $('#startmenu'),
         ingamemenu = $('#ingamemenu');
-
-    var mesh;
 
     function init() {
         // Scene Initialization
@@ -18,29 +17,30 @@ $(document).ready(function () {
             WIDTH = window.innerWidth - OFFSET,
             HEIGHT = window.innerHeight - OFFSET,
             ASPECT = WIDTH / HEIGHT;
+
         lastUpdate = UTIL.now();
         camera = new THREE.PerspectiveCamera(CONFIG.cameraAngle,
                                              ASPECT,
                                              CONFIG.cameraNear,
                                              CONFIG.cameraFar);
-        camera.position = CONFIG.cameraPos;        
+        camera.position = CONFIG.cameraPos;
 
         scene = new THREE.Scene();
         scene.add(camera);
 
 
-        var directionalLight = new THREE.DirectionalLight( 0xFFFFFF );
-        directionalLight.position.set( 0, 0, 100 ).normalize();
-        scene.add( directionalLight );
+        var directionalLight = new THREE.DirectionalLight(0xFFFFFF);
+        directionalLight.position.set(0, 0, 100).normalize();
+        scene.add(directionalLight);
 
         //var ambientLight = new THREE.AmbientLight(0xFFFFFF);
        // scene.add(ambientLight);
-        
+
         tunnel = new Tunnel(scene);
         myPlayer = new Player(scene);
 
         var loader = new THREE.JSONLoader();
-        loader.load( "obj/LightCycle.js", createScene );
+        loader.load('obj/LightCycle.js', createScene);
 
         renderer = new THREE.WebGLRenderer(CONFIG.renderer);
         renderer.setSize(WIDTH, HEIGHT);
@@ -57,18 +57,20 @@ $(document).ready(function () {
         statsdom.style.left = '0px';
         statsdom.style.top = '0px';
         document.body.appendChild(statsdom);
-        setInterval( function () {
+        setInterval(function () {
             stats.update();
-        }, 1000 / 60 );
+        }, 1000 / 60);
 
     }
-    function createScene(geometry){
+
+    function createScene(geometry) {
         //var material = new THREE.MeshLambertMaterial({wireframe:false});
-        var texture = THREE.ImageUtils.loadTexture('obj/LightCycle_TextureTest1.png');
+        var texture = THREE.ImageUtils.loadTexture('obj/LightCycle_TextureTest1.png'),
         //texture.wrapT = THREE.RepeatWrapping;
-        var material = new THREE.MeshLambertMaterial({
-            map: texture,
-            transparent : false});
+            material = new THREE.MeshLambertMaterial({
+                map: texture,
+                transparent : false
+            });
 
         mesh = new THREE.Mesh(geometry, material);
         mesh.position = CONFIG.playerPos.convertToCartesian();
@@ -88,7 +90,7 @@ $(document).ready(function () {
 
     function update() {
         var now = UTIL.now(),
-            dt = (now - lastUpdate)/1000;
+            dt = (now - lastUpdate) / 1000;
 
         // Call update methods to produce animation
 
@@ -108,14 +110,13 @@ $(document).ready(function () {
     init();
 
     // Event handlers
-    window.ondevicemotion = function(event) {
+    window.ondevicemotion = function (event) {
 
         $('#score').html(event.accelerationIncludingGravity.x);
 
-        if(event.accelerationIncludingGravity.x > 1.75) {
+        if (event.accelerationIncludingGravity.x > 1.75) {
             myPlayer.moveRight();
-        }
-        else if(event.accelerationIncludingGravity.x < -1.75) {
+        } else if (event.accelerationIncludingGravity.x < -1.75) {
             myPlayer.moveLeft();
         }
 
@@ -135,34 +136,33 @@ $(document).ready(function () {
         ingamemenu.fadeOut();
     });
 
-    $(document).mousemove(function(e){
+    $(document).mousemove(function (e) {
        //$('#score').html(e.pageX);
-   });
+    });
 
     // Only keyup can capture the key event for the 'esc' key
-    $(document).keyup(function(event) {
+    $(document).keyup(function (event) {
         switch (event.which) {
-            case 27 /* esc */:
-                paused = !paused;
-                if (paused) {
-                    ingamemenu.fadeIn();
-                }
-                else {
-                    ingamemenu.fadeOut();
-                }
-                break;
+        case 27: /* esc */
+            paused = !paused;
+            if (paused) {
+                ingamemenu.fadeIn();
+            } else {
+                ingamemenu.fadeOut();
+            }
+            break;
         }
     });
-    $(document).keypress(function(event) {
+    $(document).keypress(function (event) {
         switch (event.which) {
-            case 65 /* 'A' */:
-            case 97 /* 'a' */:
-                myPlayer.moveLeft();
-                break;
-            case 68 /* 'D' */:
-            case 100 /* 'd' */:
-                myPlayer.moveRight();
-                break;
+        case 65: /* 'A' */
+        case 97: /* 'a' */
+            myPlayer.moveLeft();
+            break;
+        case 68: /* 'D' */
+        case 100:/* 'd' */
+            myPlayer.moveRight();
+            break;
         }
     });
 });

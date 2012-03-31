@@ -4,22 +4,23 @@
 
 function Player(scene) {
     this.scene = scene;
-    var texture = THREE.ImageUtils.loadTexture('img/t.jpg');
+    var texture = THREE.ImageUtils.loadTexture('img/t.jpg'),
+        loader = new THREE.JSONLoader();
     // texture.needsUpdate = true;
     this.material = new THREE.MeshLambertMaterial({
-      map: texture
+        map: texture
     });
 
-   this.cycleTrail = new Trail(this.scene);
-    
-    
+    this.cycleTrail = new Trail(this.scene);
+
+
     this.playerMesh = new THREE.Mesh(
         new THREE.CubeGeometry(10, 5, 25),
-        this.material);
+        this.material
+    );
 
-    var loader = new THREE.JSONLoader();
     //loader.load( "obj/LightCycle.js", loadObj);
-    
+
     this.position = CONFIG.playerPos;
     this.velocity = CONFIG.playerVel;
     this.updatePosition();
@@ -27,26 +28,27 @@ function Player(scene) {
     //this.scene.add(this.playerMesh);
 }
 
-Player.prototype.loadObj = function(geometry){
+Player.prototype.loadObj = function (geometry) {
     //var material = new THREE.MeshLambertMaterial({wireframe:false});
-    var texture = THREE.ImageUtils.loadTexture('obj/LightCycle_TextureTest1.png');
+    var texture = THREE.ImageUtils.loadTexture('obj/LightCycle_TextureTest1.png'),
     //texture.wrapT = THREE.RepeatWrapping;
-    var material = new THREE.MeshLambertMaterial({
-        map: texture,
-        transparent : false});
+        material = new THREE.MeshLambertMaterial({
+            map: texture,
+            transparent : false
+        });
 
     Player.playerMesh = new THREE.Mesh(geometry, material);
     Player.playerMesh.position = CONFIG.playerPos.convertToCartesian();
     Player.playerMesh.scale.set(2, 2, 2);
     Player.playerMesh.rotation.y = Math.PI;
-    Player.scene.add( Player.playerMesh);
+    Player.scene.add(Player.playerMesh);
 };
 
-Player.prototype.getPosition = function(){
+Player.prototype.getPosition = function () {
     return this.playerMesh.position;
 };
 
-Player.prototype.getRotation = function(){
+Player.prototype.getRotation = function () {
     return this.playerMesh.rotation;
 };
 
@@ -68,12 +70,12 @@ Player.prototype.updatePosition = function () {
 
 Player.prototype.moveForward = function (dt) {
     this.position.z += this.velocity.z * dt;
-    
+
     this.updatePosition();
 };
 
 Player.prototype.update = function (dt) {
     this.moveForward(dt);
-    
+
     this.cycleTrail.update(this.position);
 };

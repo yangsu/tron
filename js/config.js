@@ -18,8 +18,8 @@ var CONFIG = {
     'playerPos' : UTIL.v3c(75, 1.5*Math.PI, 0),
     'playerVel' : UTIL.v3c(0, Math.PI/40, -350),
     'playerTrail' : UTIL.v3(0.005, 7, 50),
-    'trailRadius_Upper' : 75,
-    'trailRadius_Lower' : 85,
+    'trailRadiusUpper' : 75,
+    'trailRadiusLower' : 85,
 
     // Tunnel Settings
     'tunnelRadius' : 100,
