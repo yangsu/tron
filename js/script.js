@@ -71,8 +71,8 @@ $(document).ready(function () {
     function animate() {
         if (started && !paused && tunnelInitialized) {
             update();
+            renderer.render(scene, camera);
         }
-        renderer.render(scene, camera);
         // note: three.js includes requestAnimationFrame shim
         requestAnimationFrame(animate);
     }
