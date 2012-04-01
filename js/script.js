@@ -46,7 +46,7 @@ $(document).ready(function () {
 
 
         itemManager = new ItemManager();
-        
+
         renderer = new THREE.WebGLRenderer(CONFIG.renderer);
         renderer.setSize(WIDTH, HEIGHT);
         renderer.setClearColorHex(CONFIG.background, 1.0);
@@ -85,7 +85,7 @@ $(document).ready(function () {
         tunnel.update(myPlayer.getPosition().z);
         myPlayer.update(dt);
         itemManager.update();
-        
+
         camera.position.z += CONFIG.cameraVel.z * dt;
 
         lastUpdate = now;

@@ -1,7 +1,7 @@
 /**
  * @author Troy Ferrell
  */
-function Trail(){
+function Trail() {
     this.trailSegments = [];
     this.trailSegmentMeshes = [];
     this.oldestLiveSection = 0;
@@ -50,7 +50,7 @@ Trail.prototype.update = function (playerPosition) {
     // delete any stale trail segments
     if (this.trailSegmentMeshes.length - this.oldestLiveSection > CONFIG.trailLiveSections) {
         // Remove from scene
-        this.scene.remove(this.trailSegmentMeshes[this.oldestLiveSection]);
+        window.scene.remove(this.trailSegmentMeshes[this.oldestLiveSection]);
         // Remove from trailSegmentMeshes
         delete this.trailSegmentMeshes[this.oldestLiveSection];
         // Move counter along
@@ -70,7 +70,8 @@ Trail.prototype.generateTrailSegment = function (playerPosition) {
     this.trailSegments.push(newTrailSegment);
     this.lastSegment = newTrailSegment;
 
-    var newTrailMesh = new THREE.Mesh(newTrailSegment.geometry, this.trailMaterial);
+    newTrailMesh = new THREE.Mesh(newTrailSegment.geometry, this.trailMaterial);
+    this.trailSegmentMeshes.push(newTrailMesh);
     window.scene.add(newTrailMesh);
 };
 

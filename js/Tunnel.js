@@ -10,11 +10,11 @@ function Tunnel(callback) {
     this.oldestLiveSection = 0;
     var that = this,
         texture_1 = THREE.ImageUtils.loadTexture('img/TunnelTexture.png', {}, function (data) {
-        that.create(UTIL.getImageData(texture_1.image), callback);
-    }),
+            that.create(UTIL.getImageData(texture_1.image), callback);
+        }),
         j,
         tunnelRing,
-        startZ = -CONFIG.tunnelSegmentPerSection * CONFIG.tunnelSegmentDepth;
+        startZ;
     //var texture_2 = THREE.ImageUtils.loadTexture('img/TrailTexture_2.png');
     //texture.wrapT = THREE.RepeatWrapping;
 
@@ -35,15 +35,14 @@ function Tunnel(callback) {
     // this.generateTunnelSection(0);
 
     this.tunnelLights = [];
-    var j, tunnelRing,
-        startZ = -CONFIG.tunnelSegmentPerSection*CONFIG.tunnelSegmentDepth;
-    for(j = 0; j < 3; j += 1) {
-        tunnelRing = new LightRing(startZ - CONFIG.cameraFar*j);
+    startZ = -CONFIG.tunnelSegmentPerSection * CONFIG.tunnelSegmentDepth;
+    for (j = 0; j < 3; j += 1) {
+        tunnelRing = new LightRing(startZ - CONFIG.cameraFar * j);
         this.tunnelLights.push(tunnelRing);
     }
 }
 
-Tunnel.prototype.create = function(imgData, callback) {
+Tunnel.prototype.create = function (imgData, callback) {
 
     callback();
 };
@@ -108,7 +107,7 @@ Tunnel.prototype.getFace = function (i, j) {
     }
 };
 
-function LightRing(startZ){
+function LightRing (startZ) {
     this.lights = [];
     this.rising = false;
     this.z = startZ;
