@@ -2,12 +2,8 @@
  * @author Troy Ferrell & Yang Su
  */
 
-<<<<<<< HEAD
-function Tunnel() {
-=======
-function Tunnel(scene, callback) {
-    this.scene = scene;
->>>>>>> cbd8dbf818591f50dd31e095974c35689223078c
+function Tunnel(callback) {
+
     this.tunnelSegments = [];
     this.tunnelSections = [];
     // Index used to delete segments from the scene
@@ -39,15 +35,10 @@ function Tunnel(scene, callback) {
     // this.generateTunnelSection(0);
 
     this.tunnelLights = [];
-<<<<<<< HEAD
     var j, tunnelRing,
         startZ = -CONFIG.tunnelSegmentPerSection*CONFIG.tunnelSegmentDepth;
     for(j = 0; j < 3; j += 1) {
         tunnelRing = new LightRing(startZ - CONFIG.cameraFar*j);
-=======
-    for (j = 0; j < 3; j += 1) {
-        tunnelRing = new LightRing(startZ - CONFIG.cameraFar * j, this.scene);
->>>>>>> cbd8dbf818591f50dd31e095974c35689223078c
         this.tunnelLights.push(tunnelRing);
     }
 }
@@ -117,11 +108,7 @@ Tunnel.prototype.getFace = function (i, j) {
     }
 };
 
-<<<<<<< HEAD
 function LightRing(startZ){
-=======
-function LightRing(startZ, scene) {
->>>>>>> cbd8dbf818591f50dd31e095974c35689223078c
     this.lights = [];
     this.rising = false;
     this.z = startZ;
