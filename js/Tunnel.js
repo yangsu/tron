@@ -8,15 +8,18 @@ function Tunnel(callback) {
     this.tunnelSections = [];
     // Index used to delete segments from the scene
     this.oldestLiveSection = 0;
-    var that = this,
-        texture_1 = THREE.ImageUtils.loadTexture('img/TunnelTexture.png', {}, function (data) {
-            that.create(UTIL.getImageData(texture_1.image), callback);
-        }),
+    var __self = this,
+        texture_1 = THREE.ImageUtils.loadTexture('img/TunnelTexture.png'),
         j,
         tunnelRing,
         startZ;
     //var texture_2 = THREE.ImageUtils.loadTexture('img/TrailTexture_2.png');
     //texture.wrapT = THREE.RepeatWrapping;
+    THREE.ImageUtils.loadTexture('img/tunnelmap.jpg', {}, function (data) {
+        __self.imageData = UTIL.getImageData(data);
+        __self.generateTunnelSection(0);
+        callback();
+    });
 
     this.tunnelMaterial = [
         new THREE.MeshLambertMaterial({
@@ -32,8 +35,6 @@ function Tunnel(callback) {
         new THREE.MeshFaceMaterial()
     ];
 
-    // this.generateTunnelSection(0);
-
     this.tunnelLights = [];
     startZ = -CONFIG.tunnelSegmentPerSection * CONFIG.tunnelSegmentDepth;
     for (j = 0; j < 3; j += 1) {
@@ -42,10 +43,6 @@ function Tunnel(callback) {
     }
 }
 
-Tunnel.prototype.create = function (imgData, callback) {
-
-    callback();
-};
 Tunnel.prototype.update = function (playerZ) {
     // Dynamic tunnel generation based on player position
     if (this.tunnelSegments.length * CONFIG.tunnelSegmentDepth <
@@ -79,14 +76,22 @@ Tunnel.prototype.update = function (playerZ) {
 
 Tunnel.prototype.generateTunnelSection = function (startZ) {
     var i = 0,
-        newTunnelSeg = new TunnelSegment(startZ, this.tunnelMaterial),
+        newTunnelSeg = new TunnelSegment(
+            startZ,
+            this.tunnelMaterial,
+            UTIL.getColumn(this.imageData, 0)
+        ),
         geometry = newTunnelSeg.geometry,
         newTunnelMesh;
 
     this.tunnelSegments.push(newTunnelSeg);
 
     for (i = 1; i < CONFIG.tunnelSegmentPerSection; i += 1) {
-        newTunnelSeg = new TunnelSegment(startZ - i * CONFIG.tunnelSegmentDepth, this.tunnelMaterial);
+        newTunnelSeg = new TunnelSegment(
+            startZ - i * CONFIG.tunnelSegmentDepth,
+            this.tunnelMaterial,
+            UTIL.getColumn(this.imageData, i)
+        );
         this.tunnelSegments.push(newTunnelSeg);
         // Merge with geometry
         THREE.GeometryUtils.merge(geometry, newTunnelSeg.geometry);
@@ -154,27 +159,30 @@ LightRing.prototype.repositionLightRing = function (newZ) {
     });
 };
 
-function TunnelSegment(startZ, materials) {
+function TunnelSegment(startZ, materials, imageData) {
     this.geometry = new THREE.Geometry();
     this.geometry.dynamic = true;
     this.geometry.materials = materials;
 
-    var deltaTheta = 2 * Math.PI / CONFIG.tunnelResolution,
+    // var deltaTheta = 2 * Math.PI / CONFIG.tunnelResolution,
+    var deltaTheta = 2 * Math.PI / imageData.length,
         radius = CONFIG.tunnelRadius,
-        faceCounter = 0,
         depth = CONFIG.tunnelSegmentDepth,
-        theta,
         face,
+        faceuv,
+        theta,
         rcos,
         rsin,
         rcosd,
         rsind,
-        faceuv,
-        temp;
+        temp,
+        i;
 
     // dynamically create quads for tunnel segment
-    for (theta = 0; theta < 2 * Math.PI; theta += deltaTheta) {
-        if (Math.floor(Math.random() * (materials.length - 1)) === 0) {
+    for (i = 0, theta = 0; theta < 2 * Math.PI; theta += deltaTheta, i += 1) {
+        temp = imageData[i];
+        // Temporary thing, need to add in structure to create different tiles
+        if (temp.r + temp.g + temp.b > 10) {
             rcos = radius * Math.cos(theta);
             rsin = radius * Math.sin(theta);
             rcosd = radius * Math.cos(theta + deltaTheta);
@@ -187,7 +195,7 @@ function TunnelSegment(startZ, materials) {
                                         UTIL.vtx3(rcosd, rsind, startZ));
 
             // Define normals to point inward
-            temp = faceCounter * 4;
+            temp = this.geometry.faces.length * 4;
             face = new THREE.Face4(temp + 3,
                                    temp + 2,
                                    temp + 1,
@@ -195,7 +203,6 @@ function TunnelSegment(startZ, materials) {
 
             face.materialIndex = 0;
             this.geometry.faces.push(face);
-            faceCounter += 1;
 
             // Configure UV Texturing coord data
             faceuv = [
