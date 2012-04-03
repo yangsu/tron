@@ -40,13 +40,55 @@ var UTIL = {
 
         return context.getImageData(0, 0, image.width, image.height);
     },
-    getPixel : function (imagedata, x, y) {
-        var position = (x + imagedata.width * y) * 4, data = imagedata.data;
+    rgba : function (r, g, b, a) {
         return {
-            r: data[position],
-            g: data[position + 1],
-            b: data[position + 2],
-            a: data[position + 3]
+            r: r,
+            g: g,
+            b: b,
+            a: a
         };
+    },
+    getPixel : function (imagedata, x, y) {
+        var data = imagedata.data,
+            position = (x + imagedata.width * y) * 4;
+        return UTIL.rgba(
+            data[position],
+            data[position + 1],
+            data[position + 2],
+            data[position + 3]
+        );
+    },
+    getRow : function (imagedata, r) {
+        var position = (imagedata.width * r) * 4,
+            data = imagedata.data,
+            row = new Array(imagedata.width),
+            end = imagedata.width,
+            i;
+        for (i = 0; i < end; position += 4, i += 1) {
+            row[i] = UTIL.rgba(
+                data[position],
+                data[position + 1],
+                data[position + 2],
+                data[position + 3]
+            );
+        }
+        return row;
+    },
+    getColumn : function (imagedata, c) {
+        var position = c,
+            data = imagedata.data,
+            column = new Array(imagedata.height),
+            inc = imagedata.width * 4,
+            end = imagedata.height,
+            i;
+        for (i = 0; i < end; position += inc, i += 1) {
+            column[i] = UTIL.rgba(
+                data[position],
+                data[position + 1],
+                data[position + 2],
+                data[position + 3]
+            );
+        }
+        return column;
     }
 };
