@@ -75,7 +75,7 @@ var UTIL = {
         return row;
     },
     getColumn : function (imagedata, c) {
-        var position = c,
+        var position = c * 4,
             data = imagedata.data,
             column = new Array(imagedata.height),
             inc = imagedata.width * 4,
