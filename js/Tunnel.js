@@ -8,6 +8,8 @@ function Tunnel(callback) {
     this.tunnelSections = [];
     // Index used to delete segments from the scene
     this.oldestLiveSection = 0;
+    this.imagePosition = 0;
+
     var __self = this,
         texture_1 = THREE.ImageUtils.loadTexture('img/TunnelTexture.png'),
         j,
@@ -76,10 +78,11 @@ Tunnel.prototype.update = function (playerZ) {
 
 Tunnel.prototype.generateTunnelSection = function (startZ) {
     var i = 0,
+        column = this.imagePosition,
         newTunnelSeg = new TunnelSegment(
             startZ,
             this.tunnelMaterial,
-            UTIL.getColumn(this.imageData, 0)
+            UTIL.getColumn(this.imageData, column)
         ),
         geometry = newTunnelSeg.geometry,
         newTunnelMesh;
@@ -90,7 +93,7 @@ Tunnel.prototype.generateTunnelSection = function (startZ) {
         newTunnelSeg = new TunnelSegment(
             startZ - i * CONFIG.tunnelSegmentDepth,
             this.tunnelMaterial,
-            UTIL.getColumn(this.imageData, i)
+            UTIL.getColumn(this.imageData, column + i)
         );
         this.tunnelSegments.push(newTunnelSeg);
         // Merge with geometry
@@ -101,6 +104,12 @@ Tunnel.prototype.generateTunnelSection = function (startZ) {
     newTunnelMesh = new THREE.Mesh(geometry, this.tunnelMaterial[this.tunnelMaterial.length - 1]);
     this.tunnelSections.push(newTunnelMesh);
     window.scene.add(newTunnelMesh);
+
+    this.imagePosition += CONFIG.tunnelSegmentPerSection;
+    if (this.imagePosition >= this.imageData.width) {
+        // End level here, wrap map for now
+        this.imagePosition = 0;
+    }
 };
 
 Tunnel.prototype.getFace = function (i, j) {
