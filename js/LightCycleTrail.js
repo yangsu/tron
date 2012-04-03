@@ -6,13 +6,7 @@ function Trail() {
     this.trailSegmentMeshes = [];
     this.oldestLiveSection = 0;
 
-    var trailTexture = THREE.ImageUtils.loadTexture('img/TrailTexture_2.png'),
-    /*this.trailMaterial = new THREE.MeshLambertMaterial({
-        map: trailTexture,
-        transparent: true,
-        reflectivity: 0.15,
-        refractionRatio: 0.75,
-    });*/
+    var trailTexture = THREE.ImageUtils.loadTexture('img/TrailTexture.png'),
 
         theta = CONFIG.playerPos.theta,
         z = CONFIG.playerPos.z,
@@ -29,9 +23,15 @@ function Trail() {
         startTunnelSegment = new TrailSegment(startTopVertex, startBottomVertex, CONFIG.playerPos);
 
     this.trailMaterial = new THREE.MeshLambertMaterial({
-        wireframe: true,
-        color: 0x0000ff
+        map: trailTexture,
+        // transparent: true,
+        reflectivity: 0.15,
+        refractionRatio: 0.75
     });
+    // this.trailMaterial = new THREE.MeshLambertMaterial({
+    //     wireframe: true,
+    //     color: 0x0000ff
+    // });
     this.trailSegments.push(startTunnelSegment);
     this.lastSegment = startTunnelSegment;
 
@@ -113,7 +113,10 @@ function TrailSegment(lastVertexTop, lastVertexBottom, playerPos) {
     );
 
     // Create face out of vertices & push
-    face = new THREE.Face4(3, 2, 1, 0);//0, 1, 2, 3);
+    face = new THREE.Face4(3, 2, 1, 0);
+    this.geometry.faces.push(face);
+    // Creates opposite face to cover the other side
+    face = new THREE.Face4(0, 1, 2, 3);
     this.geometry.faces.push(face);
 
     // Configure UV Texturing coord data
