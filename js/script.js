@@ -81,7 +81,7 @@ $(document).ready(function () {
         var hblur = new THREE.ShaderPass(THREE.ShaderExtras['horizontalBlur']);
         var vblur = new THREE.ShaderPass(THREE.ShaderExtras['verticalBlur']);
 
-        var bluriness = 2;
+        var bluriness = 3;
 
         hblur.uniforms['h'].value = bluriness / WIDTH;
         vblur.uniforms['v'].value = bluriness / HEIGHT;

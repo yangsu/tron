@@ -4,11 +4,10 @@
 function Trail() {
     this.trailSegments = [];
     this.trailSegmentMeshes = [];
+    this.trailSegmentGlowMeshes = [];
     this.oldestLiveSection = 0;
 
-    var trailTexture = THREE.ImageUtils.loadTexture('img/TrailTexture_2.png'),
-
-        theta = CONFIG.playerPos.theta,
+    var theta = CONFIG.playerPos.theta,
         z = CONFIG.playerPos.z,
         startBottomVertex = UTIL.vtx3(
             CONFIG.trailRadius_Lower * Math.cos(theta),
@@ -23,23 +22,19 @@ function Trail() {
         startTunnelSegment = new TrailSegment(startTopVertex, startBottomVertex, CONFIG.playerPos);
 
     this.trailMaterial = new THREE.MeshLambertMaterial({
-        map: trailTexture,
-        // transparent: true,
-        reflectivity: 0.15,
-        refractionRatio: 0.75
+        map: THREE.ImageUtils.loadTexture('img/TrailTexture2.png'),
+        transparent: true
+        // reflectivity: 0.15,
+        // refractionRatio: 0.75
     });
-    // this.trailMaterial = new THREE.MeshLambertMaterial({
-    //     wireframe: true,
-    //     color: 0x0000ff
-    // });
+    this.trailGlowMaterial = new THREE.MeshPhongMaterial({
+        map: THREE.ImageUtils.loadTexture('img/TrailTexture2_glow.png'),
+        ambient: 0x444444,
+        color: 0x000000
+    });
+
     this.trailSegments.push(startTunnelSegment);
     this.lastSegment = startTunnelSegment;
-
-    /*
-    this.playerTrail = new THREE.Mesh(
-        new THREE.CubeGeometry(CONFIG.playerTrail.x, CONFIG.playerTrail.y, CONFIG.playerTrail.z),
-        this.trailMaterial
-);*/
 }
 
 Trail.prototype.update = function (playerPosition) {
@@ -53,13 +48,16 @@ Trail.prototype.update = function (playerPosition) {
         window.scene.remove(this.trailSegmentMeshes[this.oldestLiveSection]);
         // Remove from trailSegmentMeshes
         delete this.trailSegmentMeshes[this.oldestLiveSection];
+        // Remove from glowscene
+        window.glowscene.remove(this.trailSegmentGlowMeshes[this.oldestLiveSection]);
+        // Remove from trailSegmentGlowMeshes
+        delete this.trailSegmentGlowMeshes[this.oldestLiveSection];
         // Move counter along
         this.oldestLiveSection += 1;
     }
 };
 
 Trail.prototype.generateTrailSegment = function (playerPosition) {
-
     var newTrailSegment = new TrailSegment(
         this.lastSegment.frontTopVertex,
         this.lastSegment.frontBottomVertex,
@@ -73,6 +71,10 @@ Trail.prototype.generateTrailSegment = function (playerPosition) {
     newTrailMesh = new THREE.Mesh(newTrailSegment.geometry, this.trailMaterial);
     this.trailSegmentMeshes.push(newTrailMesh);
     window.scene.add(newTrailMesh);
+    newTrailMesh = new THREE.Mesh(newTrailSegment.geometry, this.trailGlowMaterial);
+    // newTrailMesh.overdraw = true;
+    this.trailSegmentGlowMeshes.push(newTrailMesh);
+    window.glowscene.add(newTrailMesh);
 };
 
 
