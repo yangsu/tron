@@ -7,7 +7,7 @@ var scene, glowscene;
 $(document).ready(function () {
     var camera, renderer,
         finalComposer, glowcomposer, renderTarget,
-        tunnel, myPlayer,
+        tunnel, player,
         lastUpdate,
         itemManager,
         started = false,
@@ -45,7 +45,7 @@ $(document).ready(function () {
             tunnelInitialized = true;
         });
 
-        myPlayer = new Player();
+        player = new Player();
 
         itemManager = new ItemManager();
 
@@ -168,13 +168,13 @@ $(document).ready(function () {
             dt = (now - lastUpdate) / 1000;
 
         // Call update methods to produce animation
-        tunnel.update(myPlayer.getPosition().z);
-        myPlayer.update(dt);
+        tunnel.update(player.getPosition().z);
+        player.update(dt);
         itemManager.update();
 
         // camera.position.z += CONFIG.cameraVel.z * dt;
         // TODO: Temp solution by placing camera with an offset from player
-        camera.position.z = myPlayer.position.z + 200;
+        camera.position.z = player.position.z + 200;
 
         lastUpdate = now;
     }
@@ -189,9 +189,9 @@ $(document).ready(function () {
         $('#score').html(event.accelerationIncludingGravity.x);
 
         if (event.accelerationIncludingGravity.x > 1.75) {
-            myPlayer.accelerateRight();
+            player.accelerateRight();
         } else if (event.accelerationIncludingGravity.x < -1.75) {
-            myPlayer.accelerateLeft();
+            player.accelerateLeft();
         }
 
         // event.accelerationIncludingGravity.x
@@ -225,7 +225,7 @@ $(document).ready(function () {
             }
             break;
         default:
-            myPlayer.resetAcceleration();
+            player.resetAcceleration();
         }
     });
     $(document).keydown(function (event) {
@@ -233,23 +233,23 @@ $(document).ready(function () {
         case 65: /* 'A' */
         case 97: /* 'a' */
         case 37: /* LEFT */
-            myPlayer.accelerateLeft();
+            player.accelerateLeft();
             break;
         case 38: /* UP */
-            myPlayer.accelerate();
+            player.accelerate();
             break;
         case 68: /* 'D' */
         case 100:/* 'd' */
         case 39: /* RIGHT */
-            myPlayer.accelerateRight();
+            player.accelerateRight();
             break;
         case 40: /* DOWN */
-            myPlayer.decelerate();
+            player.decelerate();
             break;
         }
     });
     $(document).keypress(function (event) {
-        switch (event.which) {
-        }
+        // switch (event.which) {
+        // }
     });
 });

@@ -11,7 +11,7 @@ function Player() {
         map: texture
     });
 
-    this.cycleTrail = new Trail(this.scene);
+    this.trail = new Trail(this.scene);
 
     this.position = CONFIG.playerPos;
     this.velocity = CONFIG.playerDefaulVel;
@@ -20,32 +20,27 @@ function Player() {
     __self = this;
     loader = new THREE.JSONLoader();
     loader.load('obj/LightCycle.js', function (geometry) {
-        //var material = new THREE.MeshLambertMaterial({wireframe:false});
-        var texture = THREE.ImageUtils.loadTexture('img/LightCycle_TextureTest1.png'),
-            material = new THREE.MeshLambertMaterial({
-                map: texture,
+        var material = new THREE.MeshLambertMaterial({
+                map: THREE.ImageUtils.loadTexture('img/LightCycle_TextureTest1.png'),
                 transparent : false
+            }),
+            glowMaterial = new THREE.MeshPhongMaterial({
+                map: THREE.ImageUtils.loadTexture('img/LightCycle_Glow.png'),
+                ambient: 0xFFFFFF,
+                color: 0x000000
             });
         //texture.wrapT = THREE.RepeatWrapping;
 
-        __self.playerMesh = new THREE.Mesh(geometry, material);
-        __self.playerMesh.scale.set(3, 3, 3);
-        window.scene.add(__self.playerMesh);
+        __self.mesh = new THREE.Mesh(geometry, material);
+        __self.mesh.scale.set(3, 3, 3);
+        window.scene.add(__self.mesh);
 
-        // draw glow info
-        var gmap = THREE.ImageUtils.loadTexture('img/LightCycle_Glow.png');
-        var gmat = new THREE.MeshPhongMaterial({
-            map: gmap,
-            ambient: 0xFFFFFF,
-            color: 0x000000
-        });
+        __self.glowMesh = new THREE.Mesh(geometry, glowMaterial);
+        __self.glowMesh.scale = __self.mesh.scale;
+        __self.glowMesh.overdraw = true;
+        window.glowscene.add(__self.glowMesh);
 
-         __self.glowMesh = new THREE.Mesh(geometry, gmat);
-         __self.glowMesh.scale = __self.playerMesh.scale;
-         __self.glowMesh.overdraw = true;
-         window.glowscene.add(__self.glowMesh);
-
-         __self.updatePosition();
+        __self.updatePosition();
     });
 }
 
@@ -54,7 +49,7 @@ Player.prototype.getPosition = function () {
 };
 
 Player.prototype.getRotation = function () {
-    return this.playerMesh.rotation;
+    return this.mesh.rotation;
 };
 
 Player.prototype.move = function (dt) {
@@ -67,19 +62,19 @@ Player.prototype.move = function (dt) {
     this.position.theta += this.velocity.theta * dt;
 
     // Update Rotation
-    this.playerMesh.rotation.z += this.velocity.theta * dt;
+    this.mesh.rotation.z += this.velocity.theta * dt;
 
     this.updatePosition();
 };
 
 Player.prototype.updatePosition = function () {
-    this.playerMesh.position = this.position.convertToCartesian();
+    this.mesh.position = this.position.convertToCartesian();
     // Offset mesh so the back of the mesh at the current position
-    this.playerMesh.position.z += CONFIG.playerMeshOffest;
+    this.mesh.position.z += CONFIG.playerMeshOffest;
 
     // Update Glow Mesh
-    this.glowMesh.rotation = this.playerMesh.rotation;
-    this.glowMesh.position = this.playerMesh.position;
+    this.glowMesh.rotation = this.mesh.rotation;
+    this.glowMesh.position = this.mesh.position;
 };
 
 Player.prototype.accelerateLeft = function (dt) {
@@ -106,5 +101,5 @@ Player.prototype.resetAcceleration = function (dt) {
 Player.prototype.update = function (dt) {
     this.move(dt);
 
-    this.cycleTrail.update(this.position);
+    this.trail.update(this.position);
 };

@@ -4,8 +4,8 @@
 
 function Tunnel(callback) {
 
-    this.tunnelSegments = [];
-    this.tunnelSections = [];
+    this.segments = [];
+    this.sections = [];
     // Index used to delete segments from the scene
     this.oldestLiveSection = 0;
     this.imagePosition = 0;
@@ -19,16 +19,16 @@ function Tunnel(callback) {
     //texture.wrapT = THREE.RepeatWrapping;
     THREE.ImageUtils.loadTexture('img/tunnelmap.jpg', {}, function (data) {
         __self.imageData = UTIL.getImageData(data);
-        __self.generateTunnelSection(0);
+        __self.generateSection(0);
         callback();
     });
 
-    this.tunnelMaterial = [
+    this.material = [
         new THREE.MeshLambertMaterial({
             map: texture_1,
             transparent : true
         }),
-        //new THREE.MeshLambertMaterial(CONFIG.tunnelMaterial),
+        //new THREE.MeshLambertMaterial(CONFIG.material),
         new THREE.MeshLambertMaterial({
             color: 0x000000,
             opacity: 0.1,
@@ -37,24 +37,24 @@ function Tunnel(callback) {
         new THREE.MeshFaceMaterial()
     ];
 
-    this.tunnelLights = [];
+    this.lights = [];
     startZ = -CONFIG.tunnelSegmentPerSection * CONFIG.tunnelSegmentDepth;
     for (j = 0; j < 3; j += 1) {
         tunnelRing = new LightRing(startZ - CONFIG.cameraFar * j);
-        this.tunnelLights.push(tunnelRing);
+        this.lights.push(tunnelRing);
     }
 }
 
 Tunnel.prototype.update = function (playerZ) {
     // Dynamic tunnel generation based on player position
-    if (this.tunnelSegments.length * CONFIG.tunnelSegmentDepth <
+    if (this.segments.length * CONFIG.tunnelSegmentDepth <
             Math.abs(playerZ) + CONFIG.cameraFar) {
-        this.generateTunnelSection(-this.tunnelSegments.length * CONFIG.tunnelSegmentDepth);
-        if (this.tunnelSections.length - this.oldestLiveSection > CONFIG.tunnelLiveSections) {
+        this.generateSection(-this.segments.length * CONFIG.tunnelSegmentDepth);
+        if (this.sections.length - this.oldestLiveSection > CONFIG.tunnelLiveSections) {
             // Remove from scene
-            window.scene.remove(this.tunnelSections[this.oldestLiveSection]);
-            // Remove from tunnelSections
-            delete this.tunnelSections[this.oldestLiveSection];
+            window.scene.remove(this.sections[this.oldestLiveSection]);
+            // Remove from sections
+            delete this.sections[this.oldestLiveSection];
             // Move counter along
             this.oldestLiveSection += 1;
         }
@@ -63,47 +63,47 @@ Tunnel.prototype.update = function (playerZ) {
     // can't dynamically add lights to scene???
     // maybe instead of splicing array up everytime
 
-    var firstLightRing = this.tunnelLights[0],
-        lastLightRing = this.tunnelLights[this.tunnelLights.length - 1];
+    var firstLightRing = this.lights[0],
+        lastLightRing = this.lights[this.lights.length - 1];
     if (Math.abs(firstLightRing.z) < Math.abs(playerZ) - CONFIG.cameraFar) {
         firstLightRing.repositionLightRing(lastLightRing.z - CONFIG.cameraFar);
-        this.tunnelLights.splice(0, 1); // remove first element
-        this.tunnelLights.push(firstLightRing); // add first element to element
+        this.lights.splice(0, 1); // remove first element
+        this.lights.push(firstLightRing); // add first element to element
     }
 
-    _.each(this.tunnelLights, function (light) {
+    _.each(this.lights, function (light) {
         light.update();
     });
 };
 
-Tunnel.prototype.generateTunnelSection = function (startZ) {
+Tunnel.prototype.generateSection = function (startZ) {
     var i = 0,
         column = this.imagePosition,
-        newTunnelSeg = new TunnelSegment(
+        newSegment = new TunnelSegment(
             startZ,
-            this.tunnelMaterial,
+            this.material,
             UTIL.getColumn(this.imageData, column)
         ),
-        geometry = newTunnelSeg.geometry,
-        newTunnelMesh;
+        geometry = newSegment.geometry,
+        newMesh;
 
-    this.tunnelSegments.push(newTunnelSeg);
+    this.segments.push(newSegment);
 
     for (i = 1; i < CONFIG.tunnelSegmentPerSection; i += 1) {
-        newTunnelSeg = new TunnelSegment(
+        newSegment = new TunnelSegment(
             startZ - i * CONFIG.tunnelSegmentDepth,
-            this.tunnelMaterial,
+            this.material,
             UTIL.getColumn(this.imageData, column + i)
         );
-        this.tunnelSegments.push(newTunnelSeg);
+        this.segments.push(newSegment);
         // Merge with geometry
-        THREE.GeometryUtils.merge(geometry, newTunnelSeg.geometry);
+        THREE.GeometryUtils.merge(geometry, newSegment.geometry);
     }
 
     // Create a single mesh
-    newTunnelMesh = new THREE.Mesh(geometry, this.tunnelMaterial[this.tunnelMaterial.length - 1]);
-    this.tunnelSections.push(newTunnelMesh);
-    window.scene.add(newTunnelMesh);
+    newMesh = new THREE.Mesh(geometry, this.material[this.material.length - 1]);
+    this.sections.push(newMesh);
+    window.scene.add(newMesh);
 
     this.imagePosition += CONFIG.tunnelSegmentPerSection;
     if (this.imagePosition >= this.imageData.width) {
@@ -113,8 +113,8 @@ Tunnel.prototype.generateTunnelSection = function (startZ) {
 };
 
 Tunnel.prototype.getFace = function (i, j) {
-    if (i <= this.tunnelSegments.length && i >= 0) {
-        return this.tunnelSegments[i].getFace(j);
+    if (i <= this.segments.length && i >= 0) {
+        return this.segments[i].getFace(j);
     } else {
         console.log('Error: Tunnel getFace(' + i + ',' + j + ') index out of bounds');
         return null;
