@@ -34,7 +34,6 @@ function Player() {
         //texture.wrapT = THREE.RepeatWrapping;
 
         __self.playerMesh = new THREE.Mesh(geometry, material);
-        __self.playerMesh.position = CONFIG.playerPos.convertToCartesian();
         __self.playerMesh.scale.set(3, 3, 3);
 
 
@@ -58,7 +57,7 @@ function Player() {
 }
 
 Player.prototype.getPosition = function () {
-    return this.playerMesh.position;
+    return this.position;
 };
 
 Player.prototype.getRotation = function () {
@@ -82,6 +81,8 @@ Player.prototype.move = function (dt) {
 
 Player.prototype.updatePosition = function () {
     this.playerMesh.position = this.position.convertToCartesian();
+    // Offset mesh so the back of the mesh at the current position
+    this.playerMesh.position.z += CONFIG.playerMeshOffest;
 
     this.glowMesh.position = this.playerMesh.position;
 };
@@ -109,9 +110,6 @@ Player.prototype.resetAcceleration = function (dt) {
 
 Player.prototype.update = function (dt) {
     this.move(dt);
-
-    //this.playerMesh.rotation.x += 0.05;
-    //this.glowMesh.rotation.x += 0.05;
 
     this.cycleTrail.update(this.position);
 };

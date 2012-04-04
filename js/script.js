@@ -9,30 +9,30 @@ var finalshader = {
         tDiffuse: { type: "t", value: 0, texture: null }, // The base scene buffer
         tGlow: { type: "t", value: 1, texture: null } // The glow scene buffer
     },
- 
+
     vertexShader: [
         "varying vec2 vUv;",
- 
+
         "void main() {",
- 
+
             "vUv = vec2( uv.x, 1.0 - uv.y );",
             "gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
- 
+
         "}"
     ].join("n"),
- 
+
     fragmentShader: [
         "uniform sampler2D tDiffuse;",
         "uniform sampler2D tGlow;",
- 
+
         "varying vec2 vUv;",
- 
+
         "void main() {",
- 
+
             "vec4 texel = texture2D( tDiffuse, vUv );",
             "vec4 glow = texture2D( tGlow, vUv );",
             "gl_FragColor = texel + vec4(0.5, 0.75, 1.0, 1.0) * glow * 2.0;", // Blend the two buffers together (I colorized and intensified the glow at the same time)
- 
+
         "}"
     ].join("n")
 };
@@ -79,9 +79,9 @@ $(document).ready(function () {
         tunnel = new Tunnel(function () {
             tunnelInitialized = true;
         });
-        
+
         myPlayer = new Player();
-        
+
         itemManager = new ItemManager();
 
         renderer = new THREE.WebGLRenderer(CONFIG.renderer);
@@ -91,45 +91,45 @@ $(document).ready(function () {
         renderer.clear();
 
         // TESTING GLOW=====================================================
-        // DOESNT FUCKING WORK!?!?!? 
+        // DOESNT FUCKING WORK!?!?!?
         // Give it a go
         //http://bkcore.com/blog/3d/webgl-three-js-animated-selective-glow.html
-        
+
         // GLOW COMPOSER
         var renderTargetParameters = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBFormat, stencilBufer: false };
         renderTargetGlow = new THREE.WebGLRenderTarget( WIDTH, HEIGHT, renderTargetParameters );
-        
+
         var effectFXAA = new THREE.ShaderPass( THREE.ShaderExtras[ "fxaa" ] );
         effectFXAA.uniforms[ 'resolution' ].value.set( 1 / WIDTH, 1 / HEIGHT );
-        
+
         hblur = new THREE.ShaderPass( THREE.ShaderExtras[ "horizontalBlur" ] );
         vblur = new THREE.ShaderPass( THREE.ShaderExtras[ "verticalBlur" ] );
-        
+
         var bluriness = 3;
-        
+
         hblur.uniforms[ 'h' ].value = bluriness / WIDTH;
         vblur.uniforms[ 'v' ].value = bluriness / HEIGHT;
-        
+
         var renderModelGlow = new THREE.RenderPass( myPlayer.glowScene, camera );
-        
+
         glowcomposer = new THREE.EffectComposer( renderer, renderTargetGlow );
-        
+
         glowcomposer.addPass( renderModelGlow );
         glowcomposer.addPass( hblur );
         glowcomposer.addPass( vblur );
-        
+
         // FINAL COMPOSER
         finalshader.uniforms[ "tGlow" ].texture = glowcomposer.renderTarget2;
         var renderModel = new THREE.RenderPass( window.scene, camera );
         var finalPass = new THREE.ShaderPass( finalshader );
         finalPass.needsSwap = true;
         finalPass.renderToScreen = true;
-        
+
         renderTarget = new THREE.WebGLRenderTarget( WIDTH, HEIGHT, renderTargetParameters );
         finalcomposer = new THREE.EffectComposer( renderer, renderTarget );
         finalcomposer.addPass( renderModel );
         finalcomposer.addPass( effectFXAA );
-        finalcomposer.addPass( finalPass )
+        finalcomposer.addPass( finalPass );
 
         document.body.appendChild(renderer.domElement);
 
@@ -150,7 +150,7 @@ $(document).ready(function () {
     function animate() {
         if (started && !paused && tunnelInitialized) {
             update();
-            
+
             //renderer.render(scene, camera);
             glowcomposer.render(0.1);
             finalcomposer.render(0.1);
