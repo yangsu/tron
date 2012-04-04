@@ -42,7 +42,7 @@ var CONFIG = {
     'tunnelLiveSections' : 15, // should be 1 + cameraFar/(segdepth * seg/sec)
 
     // Trail Settings
-    'trailLiveSections' : 35,
+    'trailLiveSections' : 100,
 
     // Light Ring Settings
     'lightRingCount' : 8,
