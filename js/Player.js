@@ -22,7 +22,6 @@ function Player() {
     loader.load('obj/LightCycle.js', function (geometry) {
         //var material = new THREE.MeshLambertMaterial({wireframe:false});
         var texture = THREE.ImageUtils.loadTexture('img/LightCycle_TextureTest1.png'),
-        //var texture = THREE.ImageUtils.loadTexture('obj/LightCycle_TextureTest1.png'),
             material = new THREE.MeshLambertMaterial({
                 map: texture,
                 transparent : false

@@ -6,7 +6,7 @@ function Trail() {
     this.trailSegmentMeshes = [];
     this.oldestLiveSection = 0;
 
-    var trailTexture = THREE.ImageUtils.loadTexture('img/TrailTexture.png'),
+    var trailTexture = THREE.ImageUtils.loadTexture('img/TrailTexture_2.png'),
 
         theta = CONFIG.playerPos.theta,
         z = CONFIG.playerPos.z,
