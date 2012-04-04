@@ -15,8 +15,16 @@ var CONFIG = {
     'cameraVel' : UTIL.v3c(0, 0, -150),
 
     // Player Settings
+    'playerForwardVelMultiplier' : 0.05,
+    'playerDefaultForwardVel' : -150,
+    'playerMaxForwardVel' : -600,
+    'playerMinForwardVel' : 0,
+    'playerLateralVelMultiplier' : 0.25,
+    'playerMaxLateralVel' : Math.PI,
+
     'playerPos' : UTIL.v3c(75, 1.5*Math.PI, 0),
-    'playerVel' : UTIL.v3c(0, Math.PI/40, -150),
+    'playerDefaulVel' : UTIL.v3c(0, 0, -150),
+    'playerDefaulTargetVel' : UTIL.v3c(0, 0, -150),
     'playerTrail' : UTIL.v3(0.005, 7, 50),
     'trailRadiusUpper' : 75,
     'trailRadiusLower' : 85,

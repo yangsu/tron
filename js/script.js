@@ -86,7 +86,9 @@ $(document).ready(function () {
         myPlayer.update(dt);
         itemManager.update();
 
-        camera.position.z += CONFIG.cameraVel.z * dt;
+        // camera.position.z += CONFIG.cameraVel.z * dt;
+        // TODO: Temp solution by placing camera with an offset from player
+        camera.position.z = myPlayer.position.z + 200;
 
         lastUpdate = now;
     }
@@ -101,9 +103,9 @@ $(document).ready(function () {
         $('#score').html(event.accelerationIncludingGravity.x);
 
         if (event.accelerationIncludingGravity.x > 1.75) {
-            myPlayer.moveRight();
+            myPlayer.accelerateRight();
         } else if (event.accelerationIncludingGravity.x < -1.75) {
-            myPlayer.moveLeft();
+            myPlayer.accelerateLeft();
         }
 
         // event.accelerationIncludingGravity.x
@@ -136,18 +138,32 @@ $(document).ready(function () {
                 ingamemenu.fadeOut();
             }
             break;
+        default:
+            myPlayer.resetAcceleration();
+        }
+    });
+    $(document).keydown(function (event) {
+        switch (event.which) {
+        case 65: /* 'A' */
+        case 97: /* 'a' */
+        case 37: /* LEFT */
+            myPlayer.accelerateLeft();
+            break;
+        case 38: /* UP */
+            myPlayer.accelerate();
+            break;
+        case 68: /* 'D' */
+        case 100:/* 'd' */
+        case 39: /* RIGHT */
+            myPlayer.accelerateRight();
+            break;
+        case 40: /* DOWN */
+            myPlayer.decelerate();
+            break;
         }
     });
     $(document).keypress(function (event) {
         switch (event.which) {
-        case 65: /* 'A' */
-        case 97: /* 'a' */
-            myPlayer.moveLeft();
-            break;
-        case 68: /* 'D' */
-        case 100:/* 'd' */
-            myPlayer.moveRight();
-            break;
         }
     });
 });
