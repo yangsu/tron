@@ -122,12 +122,14 @@ function TrailSegment(lastVertexTop, lastVertexBottom, playerPos) {
     // Configure UV Texturing coord data
     faceuv = [
         new THREE.UV(0, 1),
-        new THREE.UV(1, 1),
+        new THREE.UV(0, 0),
         new THREE.UV(1, 0),
-        new THREE.UV(0, 0)
+        new THREE.UV(1, 1)
     ];
-
+    // TODO: This is kind of a hack. fix later?
     this.geometry.faceUvs[0].push(new THREE.UV(0, 1));
+    this.geometry.faceUvs[0].push(new THREE.UV(0, 1));
+    this.geometry.faceVertexUvs[0].push(faceuv);
     this.geometry.faceVertexUvs[0].push(faceuv);
 }
 
