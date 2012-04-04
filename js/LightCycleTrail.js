@@ -1,5 +1,5 @@
 /**
- * @author Troy Ferrell
+ * @author Troy Ferrell & Yang Su
  */
 function Trail() {
     this.segments = [];

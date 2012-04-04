@@ -11,7 +11,7 @@ function Player() {
         map: texture
     });
 
-    this.trail = new Trail(this.scene);
+    this.trail = new Trail();
 
     this.position = CONFIG.playerPos;
     this.velocity = CONFIG.playerDefaulVel;
