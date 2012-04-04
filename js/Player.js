@@ -17,15 +17,11 @@ function Player() {
     this.velocity = CONFIG.playerDefaulVel;
     this.targetVelocity = CONFIG.playerDefaulTargetVel;
 
-    this.glowScene = new THREE.Scene();
-    this.glowScene.add(new THREE.AmbientLight(0xFFFFFF));
-    this.glowMesh = null;
-
     __self = this;
     loader = new THREE.JSONLoader();
     loader.load('obj/LightCycle.js', function (geometry) {
         //var material = new THREE.MeshLambertMaterial({wireframe:false});
-        var texture = THREE.ImageUtils.loadTexture('img/LightDisk.png'),
+        var texture = THREE.ImageUtils.loadTexture('img/LightCycle_TextureTest1.png'),
         //var texture = THREE.ImageUtils.loadTexture('obj/LightCycle_TextureTest1.png'),
             material = new THREE.MeshLambertMaterial({
                 map: texture,
@@ -35,24 +31,22 @@ function Player() {
 
         __self.playerMesh = new THREE.Mesh(geometry, material);
         __self.playerMesh.scale.set(3, 3, 3);
-
+        window.scene.add(__self.playerMesh);
 
         // draw glow info
-        var gmap = THREE.ImageUtils.loadTexture('img/LightDisk_Glow.png');
+        var gmap = THREE.ImageUtils.loadTexture('img/LightCycle_Glow.png');
         var gmat = new THREE.MeshPhongMaterial({
             map: gmap,
-            ambient: 0xffffff,
+            ambient: 0xFFFFFF,
             color: 0x000000
         });
 
          __self.glowMesh = new THREE.Mesh(geometry, gmat);
-         __self.glowMesh.position = CONFIG.playerPos.convertToCartesian();
-         __self.glowMesh.scale.set(3, 3, 3);
+         __self.glowMesh.scale = __self.playerMesh.scale;
          __self.glowMesh.overdraw = true;
-        __self.glowScene.add( __self.glowMesh);
+         window.glowscene.add(__self.glowMesh);
 
-        __self.updatePosition();
-        window.scene.add(__self.playerMesh);
+         __self.updatePosition();
     });
 }
 
@@ -84,6 +78,8 @@ Player.prototype.updatePosition = function () {
     // Offset mesh so the back of the mesh at the current position
     this.playerMesh.position.z += CONFIG.playerMeshOffest;
 
+    // Update Glow Mesh
+    this.glowMesh.rotation = this.playerMesh.rotation;
     this.glowMesh.position = this.playerMesh.position;
 };
 

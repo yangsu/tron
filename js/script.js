@@ -2,80 +2,45 @@
  * @author Troy Ferrell & Yang Su
  */
 
-var scene;
-
-var finalshader = {
-    uniforms: {
-        tDiffuse: { type: "t", value: 0, texture: null }, // The base scene buffer
-        tGlow: { type: "t", value: 1, texture: null } // The glow scene buffer
-    },
-
-    vertexShader: [
-        "varying vec2 vUv;",
-
-        "void main() {",
-
-            "vUv = vec2( uv.x, 1.0 - uv.y );",
-            "gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
-
-        "}"
-    ].join("n"),
-
-    fragmentShader: [
-        "uniform sampler2D tDiffuse;",
-        "uniform sampler2D tGlow;",
-
-        "varying vec2 vUv;",
-
-        "void main() {",
-
-            "vec4 texel = texture2D( tDiffuse, vUv );",
-            "vec4 glow = texture2D( tGlow, vUv );",
-            "gl_FragColor = texel + vec4(0.5, 0.75, 1.0, 1.0) * glow * 2.0;", // Blend the two buffers together (I colorized and intensified the glow at the same time)
-
-        "}"
-    ].join("n")
-};
+var scene, glowscene;
 
 $(document).ready(function () {
     var camera, renderer,
+        finalComposer, glowcomposer, renderTarget,
         tunnel, myPlayer,
-        mesh,
         lastUpdate,
+        itemManager,
         started = false,
         paused = false,
         tunnelInitialized = false,
         startmenu = $('#startmenu'),
         ingamemenu = $('#ingamemenu');
 
-    var finalComposer, glowComposer, renderTarget;
 
     function init() {
+        lastUpdate = UTIL.now();
+
         // Scene Initialization
         var OFFSET = 6,
             WIDTH = window.innerWidth - OFFSET,
             HEIGHT = window.innerHeight - OFFSET,
             ASPECT = WIDTH / HEIGHT;
 
-        lastUpdate = UTIL.now();
+        // Camera Setup
         camera = new THREE.PerspectiveCamera(
             CONFIG.cameraAngle,
             ASPECT,
             CONFIG.cameraNear,
-            CONFIG.cameraFar
+            CONFIG.cameraar
         );
         camera.position = CONFIG.cameraPos;
 
+        // Scene setup
         scene = new THREE.Scene();
         scene.add(camera);
+        scene.add(new THREE.AmbientLight(0xAAAAAA));
 
-        //var directionalLight = new THREE.DirectionalLight(0xFFFFFF);
-        //directionalLight.position.set(0, 0, 100).normalize();
-        //scene.add(directionalLight);
-
-        var ambientLight = new THREE.AmbientLight(0xFFFFFF);
-        scene.add(ambientLight);
-
+        // Objects
         tunnel = new Tunnel(function () {
             tunnelInitialized = true;
         });
@@ -84,54 +49,93 @@ $(document).ready(function () {
 
         itemManager = new ItemManager();
 
+        // Renderer Initialization
         renderer = new THREE.WebGLRenderer(CONFIG.renderer);
         renderer.autoClear = false;
         renderer.setSize(WIDTH, HEIGHT);
         renderer.setClearColorHex(CONFIG.background, 1.0);
         renderer.clear();
 
-        // TESTING GLOW=====================================================
-        // DOESNT FUCKING WORK!?!?!?
-        // Give it a go
-        //http://bkcore.com/blog/3d/webgl-three-js-animated-selective-glow.html
+        document.body.appendChild(renderer.domElement);
+
+        // GLOW Initialization
+        glowscene = new THREE.Scene();
+        glowscene.add(new THREE.AmbientLight(0xFFFFFF));
 
         // GLOW COMPOSER
-        var renderTargetParameters = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBFormat, stencilBufer: false };
-        renderTargetGlow = new THREE.WebGLRenderTarget( WIDTH, HEIGHT, renderTargetParameters );
+        var renderTargetParameters = {
+                minFilter: THREE.LinearFilter,
+                magFilter: THREE.LinearFilter,
+                format: THREE.RGBFormat,
+                stencilBufer: false
+            },
+            renderTargetGlow = new THREE.WebGLRenderTarget(
+                WIDTH,
+                HEIGHT,
+                renderTargetParameters
+            );
 
-        var effectFXAA = new THREE.ShaderPass( THREE.ShaderExtras[ "fxaa" ] );
-        effectFXAA.uniforms[ 'resolution' ].value.set( 1 / WIDTH, 1 / HEIGHT );
+        var effectFXAA = new THREE.ShaderPass(THREE.ShaderExtras['fxaa']);
+        effectFXAA.uniforms['resolution'].value.set(1 / WIDTH, 1 / HEIGHT);
 
-        hblur = new THREE.ShaderPass( THREE.ShaderExtras[ "horizontalBlur" ] );
-        vblur = new THREE.ShaderPass( THREE.ShaderExtras[ "verticalBlur" ] );
+        var hblur = new THREE.ShaderPass(THREE.ShaderExtras['horizontalBlur']);
+        var vblur = new THREE.ShaderPass(THREE.ShaderExtras['verticalBlur']);
 
-        var bluriness = 3;
+        var bluriness = 2;
 
-        hblur.uniforms[ 'h' ].value = bluriness / WIDTH;
-        vblur.uniforms[ 'v' ].value = bluriness / HEIGHT;
+        hblur.uniforms['h'].value = bluriness / WIDTH;
+        vblur.uniforms['v'].value = bluriness / HEIGHT;
 
-        var renderModelGlow = new THREE.RenderPass( myPlayer.glowScene, camera );
+        var renderModelGlow = new THREE.RenderPass(glowscene, camera);
 
-        glowcomposer = new THREE.EffectComposer( renderer, renderTargetGlow );
+        glowcomposer = new THREE.EffectComposer(renderer, renderTargetGlow);
 
-        glowcomposer.addPass( renderModelGlow );
-        glowcomposer.addPass( hblur );
-        glowcomposer.addPass( vblur );
+        glowcomposer.addPass(renderModelGlow);
+        glowcomposer.addPass(hblur);
+        glowcomposer.addPass(vblur);
+        glowcomposer.addPass(hblur);
+        glowcomposer.addPass(vblur);
 
         // FINAL COMPOSER
-        finalshader.uniforms[ "tGlow" ].texture = glowcomposer.renderTarget2;
-        var renderModel = new THREE.RenderPass( window.scene, camera );
-        var finalPass = new THREE.ShaderPass( finalshader );
+        var finalshader = {
+            uniforms: {
+                tDiffuse: { type: 't', value: 0, texture: null },
+                tGlow: { type: 't', value: 1, texture: null }
+            },
+
+            vertexShader: [
+                'varying vec2 vUv;',
+                'void main() {',
+                    'vUv = vec2(uv.x, 1.0 - uv.y);',
+                    'gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);',
+                '}'
+            ].join('\n'),
+
+                fragmentShader: [
+                    'uniform sampler2D tDiffuse;',
+                    'uniform sampler2D tGlow;',
+                    'varying vec2 vUv;',
+                    'void main() {',
+                        'vec4 texel = texture2D(tDiffuse, vUv);',
+                        'vec4 glow = texture2D(tGlow, vUv);',
+                        'gl_FragColor = texel + vec4(0.5, 0.75, 1.0, 1.0) * glow * 2.0;',
+                    '}'
+            ].join('\n')
+        };
+        finalshader.uniforms['tGlow'].texture = glowcomposer.renderTarget2;
+
+        var renderModel = new THREE.RenderPass(scene, camera);
+        var finalPass = new THREE.ShaderPass(finalshader);
         finalPass.needsSwap = true;
         finalPass.renderToScreen = true;
 
-        renderTarget = new THREE.WebGLRenderTarget( WIDTH, HEIGHT, renderTargetParameters );
-        finalcomposer = new THREE.EffectComposer( renderer, renderTarget );
-        finalcomposer.addPass( renderModel );
-        finalcomposer.addPass( effectFXAA );
-        finalcomposer.addPass( finalPass );
-
-        document.body.appendChild(renderer.domElement);
+        finalcomposer = new THREE.EffectComposer(
+            renderer,
+            new THREE.WebGLRenderTarget(WIDTH, HEIGHT, renderTargetParameters)
+        );
+        finalcomposer.addPass(renderModel);
+        finalcomposer.addPass(effectFXAA);
+        finalcomposer.addPass(finalPass);
 
         // Stats Initialization
         var stats = new Stats(),
