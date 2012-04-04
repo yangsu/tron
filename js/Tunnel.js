@@ -24,11 +24,11 @@ function Tunnel(callback) {
     });
 
     this.material = [
+        // new THREE.MeshLambertMaterial(CONFIG.tunnelMaterial),
         new THREE.MeshLambertMaterial({
             map: texture_1,
             transparent : true
         }),
-        //new THREE.MeshLambertMaterial(CONFIG.material),
         new THREE.MeshLambertMaterial({
             color: 0x000000,
             opacity: 0.1,
@@ -143,7 +143,7 @@ function TunnelSegment(startZ, materials, imageData) {
     // dynamically create quads for tunnel segment
     for (i = 0, theta = 0; theta < 2 * Math.PI; theta += deltaTheta, i += 1) {
         temp = imageData[i];
-        // Temporary thing, need to add in structure to create different tiles
+        // TODO: Temporary hack need to add in structure to create different tiles
         if (temp.r + temp.g + temp.b > 10) {
             rcos = radius * Math.cos(theta);
             rsin = radius * Math.sin(theta);

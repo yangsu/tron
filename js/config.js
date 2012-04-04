@@ -21,7 +21,7 @@ var CONFIG = {
     'playerMinForwardVel' : 0,
     'playerLateralVelMultiplier' : 0.25,
     'playerMaxLateralVel' : Math.PI,
-    'playerMeshOffest' : -50,
+    'playerMeshOffest' : -45,
     'playerPos' : UTIL.v3c(75, 1.5 * Math.PI, 0),
     'playerDefaulVel' : UTIL.v3c(0, 0, -150),
     'playerDefaulTargetVel' : UTIL.v3c(0, 0, -150),
@@ -36,8 +36,8 @@ var CONFIG = {
     'tunnelResolution' : 16,
     'tunnelMaterial' : {
         color : 0x47C5D8,
-        wireframe : true,
-        transparent : false
+        ambient : 0x47C5D8,
+        wireframe : true
     },
     'tunnelLiveSections' : 15, // should be 1 + cameraFar/(segdepth * seg/sec)
 
