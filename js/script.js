@@ -223,6 +223,8 @@ $(document).ready(function () {
             } else {
                 ingamemenu.fadeOut();
             }
+            // Update lastUpdate timestamp to so dt will be 0 during the pause
+            lastUpdate = UTIL.now();
             break;
         default:
             player.resetAcceleration();
