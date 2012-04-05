@@ -5,7 +5,7 @@
 function ItemManager(scene) {
 
     this.gameItems = []; 
-                                      
+    this.gameCredits = [];                                      
     // Item - super class???
     // Booster portals
     // tron disk power-ups -> different colors
@@ -25,12 +25,28 @@ ItemManager.prototype.generatePowerUps = function(curve, numOfItems) {
     {
         var point3D = UTIL.v3c(itemRadius, itemPoints[i].x, itemPoints[i].y)
         
-        log(itemPoints[i].y);
-        
         newPowerUp = new PowerUp(point3D.convertToCartesian());
         this.gameItems.push(newPowerUp);
     }     
 }
+
+// def duplicated coded.
+// needs to be refactored
+ItemManager.prototype.generateCredits = function(curve, numOfItems) {
+      
+    var itemPoints = curve.getSpacedPoints(numOfItems),
+        itemRadius = CONFIG.trailRadiusLower;
+        
+    var i = 0, newCredit = null;
+    for(; i < numOfItems; i++)
+    {
+        var point3D = UTIL.v3c(itemRadius, itemPoints[i].x, itemPoints[i].y)
+        
+        newCredit = new Credit(point3D.convertToCartesian());
+        this.gameCredits.push(newCredit);
+    }     
+}
+
 
 ItemManager.prototype.update = function () {
     
@@ -40,6 +56,12 @@ ItemManager.prototype.update = function () {
     
         item.update();
     });
+    
+    // need to refactor by creating Item super class
+    // then store all items in gameitems array
+    _.each(this.gameCredits, function(credit){
+        credit.update();
+    })
 
     if(Math.random() > 0.99)
     {
@@ -50,6 +72,17 @@ ItemManager.prototype.update = function () {
                                             theta, window.levelProgress - CONFIG.cameraFar*2);
                                             
         this.generatePowerUps(curve, 10);
+    }
+    
+    if(Math.random() < 0.005)
+    {
+        //var theta = -Math.PI/2;
+        var theta = 2*Math.PI*Math.random();
+        var curve = new THREE.QuadraticBezierCurve(theta, window.levelProgress - CONFIG.cameraFar, 
+                                            theta + Math.PI/2, window.levelProgress - CONFIG.cameraFar*1.5, 
+                                            theta + Math.PI, window.levelProgress - CONFIG.cameraFar*2);
+                                            
+        this.generateCredits(curve, 10);
     }
 };
 
@@ -68,11 +101,8 @@ function PowerUp(pos) {
             });
         
         __self.powerUpMesh = new THREE.Mesh(geometry, material);
-        __self.powerUpMesh.scale.set(2, 2, 2);
+        __self.powerUpMesh.scale.set(2.5, 2.5, 2.5);
         __self.powerUpMesh.position = __self.position;
-        
-        //__self.powerUpMesh.position = CONFIG.playerPos.convertToCartesian();
-        //__self.powerUpMesh.position.z = __self.z;
         __self.powerUpMesh.rotation.x = Math.PI / 2;
         
         window.scene.add(__self.powerUpMesh);
@@ -86,3 +116,96 @@ PowerUp.prototype.update = function () {
         this.powerUpMesh.rotation.z += 0.05;
     }
 };
+
+// Need to refactor & decide on design
+function Credit(pos){
+     var __self = this;
+    //this.creditMesh = null;
+    this.position = pos;
+    var parent = new THREE.Object3D();
+    window.scene.add(parent);
+    
+    // GLOW CONTAINER (used for occluder)
+    var glowparent = new THREE.Object3D();
+    glowparent.position = parent.position;
+    glowparent.rotation = parent.rotation;
+    glowparent.scale = parent.scale;
+    window.glowscene.add( glowparent );
+    
+    var COLOR1 = 0x77bbff;
+    var COLOR2 = 0x8ec5e5;
+    var COLOR3 = 0x97a8ba;
+    
+    // GLYPH (BIG ONE)
+    this.glyph = new THREE.Mesh( 
+        new THREE.IcosahedronGeometry(15, 2),
+        new THREE.MeshBasicMaterial({
+            color: COLOR1,
+            opacity: 0.25,
+            wireframe: true,
+            wireframeLinewidth: 4
+        })
+    );
+    this.glyph.position = this.position;
+    //window.scene.add(this.glyph);
+    parent.add(this.glyph);
+    
+    // GLYPH2 (CORE)
+    var glyph2geom = new THREE.IcosahedronGeometry(10, 1);
+    this.glyph2 = new THREE.Mesh( 
+        glyph2geom,
+        new THREE.MeshLambertMaterial({
+            color: COLOR1,
+            transparent:true,
+            specular: COLOR1,
+            shading: THREE.FlatShading,
+            opacity: 0.75,
+            ambient: 0x202830
+        })
+    );
+    this.glyph2.position = this.position;
+    parent.add(this.glyph2);
+    
+    // GLYPHE2 WIREFRAME
+    this.glyph2wf = new THREE.Mesh( 
+        THREE.GeometryUtils.clone( glyph2geom ),
+        new THREE.MeshBasicMaterial({
+            color: COLOR2,
+            wireframe: true,
+            opacity: 1,
+            wireframeLinewidth: 4
+        })
+    );
+    this.glyph2wf.position = this.position;
+    this.glyph2wf.rotation = this.glyph2.rotation;
+    this.glyph2wf.scale.x = this.glyph2wf.scale.y = this.glyph2wf.scale.z = this.glyph2.scale.x + 0.01;
+    //window.scene.add(this.glyph2wf);
+    parent.add( this.glyph2wf );
+    
+    // GLYPHE2 GLOW OCCLUDER
+    this.glyph2oc = new THREE.Mesh( 
+        glyph2geom,
+        new THREE.MeshPhongMaterial({
+            color: 0x000000,
+            specular: 0x000000,
+            shading: THREE.FlatShading,
+            opacity: 0.9,
+            ambient: 0x000000
+        })
+    );
+    this.glyph2oc.position = this.glyph2.position;
+    this.glyph2oc.rotation = this.glyph2.rotation;
+    this.glyph2oc.scale.x = this.glyph2oc.scale.y = this.glyph2oc.scale.z = this.glyph2.scale.x;
+    glowparent.add( this.glyph2oc );
+    
+}
+
+Credit.prototype.update = function(){
+    
+    this.glyph.rotation.x += 0.04;
+    this.glyph.rotation.z -= 0.03;
+    
+    this.glyph2.rotation.x -= 0.04;
+    this.glyph2.rotation.z += 0.03;
+    //this.glyph2wf.rotation = this.glyph2.rotation;
+}
