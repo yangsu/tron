@@ -45,10 +45,10 @@ function Tunnel(callback) {
     }
 }
 
-Tunnel.prototype.update = function (playerZ) {
+Tunnel.prototype.update = function () {
     // Dynamic tunnel generation based on player position
     if (this.segments.length * CONFIG.tunnelSegmentDepth <
-            Math.abs(playerZ) + CONFIG.cameraFar) {
+            Math.abs(window.levelProgress) + CONFIG.cameraFar) {
         this.generateSection(-this.segments.length * CONFIG.tunnelSegmentDepth);
         if (this.sections.length - this.oldestLiveSection > CONFIG.tunnelLiveSections) {
             // Remove from scene
@@ -65,7 +65,7 @@ Tunnel.prototype.update = function (playerZ) {
 
     var firstLightRing = this.lights[0],
         lastLightRing = this.lights[this.lights.length - 1];
-    if (Math.abs(firstLightRing.z) < Math.abs(playerZ) - CONFIG.cameraFar) {
+    if (Math.abs(firstLightRing.z) < Math.abs(window.levelProgress) - CONFIG.cameraFar) {
         firstLightRing.repositionLightRing(lastLightRing.z - CONFIG.cameraFar);
         this.lights.splice(0, 1); // remove first element
         this.lights.push(firstLightRing); // add first element to element

@@ -2,7 +2,7 @@
  * @author Troy Ferrell & Yang Su
  */
 
-var scene, glowscene;
+var scene, glowscene, levelProgress;
 
 $(document).ready(function () {
     var camera, renderer,
@@ -40,6 +40,10 @@ $(document).ready(function () {
         scene.add(camera);
         scene.add(new THREE.AmbientLight(0xAAAAAA));
 
+       // Glow Scene setup
+        glowscene = new THREE.Scene();
+        glowscene.add(new THREE.AmbientLight(0xFFFFFF));
+
         // Objects
         tunnel = new Tunnel(function () {
             tunnelInitialized = true;
@@ -57,10 +61,6 @@ $(document).ready(function () {
         renderer.clear();
 
         document.body.appendChild(renderer.domElement);
-
-        // GLOW Initialization
-        glowscene = new THREE.Scene();
-        glowscene.add(new THREE.AmbientLight(0xFFFFFF));
 
         // GLOW COMPOSER
         var renderTargetParameters = {
@@ -93,8 +93,8 @@ $(document).ready(function () {
         glowcomposer.addPass(renderModelGlow);
         glowcomposer.addPass(hblur);
         glowcomposer.addPass(vblur);
-        glowcomposer.addPass(hblur);
-        glowcomposer.addPass(vblur);
+        //glowcomposer.addPass(hblur);
+       // glowcomposer.addPass(vblur);
 
         // FINAL COMPOSER
         var finalshader = {
@@ -167,8 +167,10 @@ $(document).ready(function () {
         var now = UTIL.now(),
             dt = (now - lastUpdate) / 1000;
 
+        levelProgress = player.getPosition().z;
+
         // Call update methods to produce animation
-        tunnel.update(player.getPosition().z);
+        tunnel.update();
         player.update(dt);
         itemManager.update();
 

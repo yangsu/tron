@@ -82,15 +82,9 @@ function TrailSegment(lastVertexTop, lastVertexBottom, playerPos) {
 
     this.geometry = new THREE.Geometry();
     this.geometry.dynamic = true;
-//  this.geometry.materials = materials;
 
     var theta = playerPos.theta,
         z = playerPos.z,
-
-    // need to create config parameters or pass basedon value
-        r1 = 45,
-        r2 = 35, // need to create config parameters or pass based on value
-
         face,
         faceuv;
 
