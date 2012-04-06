@@ -45,6 +45,7 @@ ItemManager.prototype.update = function () {
         credit.update();
     });
 
+/*
     var theta, curve;
     if (Math.random() > 0.99) {
         //var theta = -Math.PI/2;
@@ -69,6 +70,7 @@ ItemManager.prototype.update = function () {
 
         this.generateItems('credit', curve, 10);
     }
+    */
 };
 
 function PowerUp(pos) {

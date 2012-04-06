@@ -3,13 +3,8 @@
  */
 
 function Player() {
-    var texture = THREE.ImageUtils.loadTexture('img/t.jpg'),
-        __self,
+    var __self,
         loader;
-    // texture.needsUpdate = true;
-    this.material = new THREE.MeshLambertMaterial({
-        map: texture
-    });
 
     this.trail = new Trail();
 

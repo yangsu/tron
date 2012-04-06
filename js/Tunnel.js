@@ -17,7 +17,7 @@ function Tunnel(callback) {
         startZ;
     //var texture_2 = THREE.ImageUtils.loadTexture('img/TrailTexture_2.png');
     //texture.wrapT = THREE.RepeatWrapping;
-    THREE.ImageUtils.loadTexture('img/tunnelmap.jpg', {}, function (data) {
+    THREE.ImageUtils.loadTexture('img/TunnelMap.png', {}, function (data) {
         __self.imageData = UTIL.getImageData(data);
         __self.generateSection(0);
         callback();
