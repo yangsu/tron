@@ -10,6 +10,7 @@ $(document).ready(function () {
         tunnel, player,
         lastUpdate,
         itemManager,
+        particleManager,
         started = false,
         paused = false,
         tunnelInitialized = false,
@@ -52,7 +53,8 @@ $(document).ready(function () {
         player = new Player();
 
         itemManager = new ItemManager();
-
+        particleManager = new ParticleEngine();
+     
         // Renderer Initialization
         renderer = new THREE.WebGLRenderer(CONFIG.renderer);
         renderer.autoClear = false;
@@ -173,7 +175,8 @@ $(document).ready(function () {
         tunnel.update();
         player.update(dt);
         itemManager.update();
-
+        particleManager.update();
+        
         // camera.position.z += CONFIG.cameraVel.z * dt;
         // TODO: Temp solution by placing camera with an offset from player
         camera.position.z = player.position.z + 200;
