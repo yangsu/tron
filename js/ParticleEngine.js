@@ -35,6 +35,7 @@ function ParticleEngine(){
     window.scene.add(this.particleSystem);
 }
 
+// NEed to refactor code
 ParticleEngine.prototype.update = function () {
   var pCount = this.particleCount;
   while(pCount--) {
