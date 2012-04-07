@@ -32,7 +32,7 @@ $(document).ready(function () {
             CONFIG.cameraAngle,
             ASPECT,
             CONFIG.cameraNear,
-            CONFIG.cameraar
+            CONFIG.cameraFar
         );
         camera.position = CONFIG.cameraPos;
 
@@ -55,6 +55,8 @@ $(document).ready(function () {
         itemManager = new ItemManager();
         particleManager = new ParticleEngine();
      
+        skybox = new SkyBox();
+        
         // Renderer Initialization
         renderer = new THREE.WebGLRenderer(CONFIG.renderer);
         renderer.autoClear = false;
