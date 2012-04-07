@@ -19,7 +19,6 @@ $(document).ready(function () {
         startmenu = $('#startmenu'),
         ingamemenu = $('#ingamemenu');
 
-
     function init() {
         lastUpdate = UTIL.now();
 
@@ -37,7 +36,7 @@ $(document).ready(function () {
             100000
             //CONFIG.cameraFar
         );
-        //camera.position = CONFIG.cameraPos;
+        camera.position = CONFIG.cameraPos;
 
         // Scene setup
         scene = new THREE.Scene();
@@ -189,8 +188,6 @@ $(document).ready(function () {
         // camera.position.z += CONFIG.cameraVel.z * dt;
         // TODO: Temp solution by placing camera with an offset from player
         
-
-        log(mouseX);
         camera.rotation.x = (window.innerHeight/2 - mouseY)/1000;
         camera.rotation.y = (window.innerWidth/2 - mouseX)/1000;
         
