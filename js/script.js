@@ -20,6 +20,11 @@ $(document).ready(function () {
         ingamemenu = $('#ingamemenu');
 
     function init() {
+        
+        if ( !Detector.webgl ) {
+            Detector.addGetWebGLMessage();
+        }
+        
         lastUpdate = UTIL.now();
 
         // Scene Initialization
