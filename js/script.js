@@ -11,6 +11,8 @@ $(document).ready(function () {
         lastUpdate,
         itemManager,
         particleManager,
+        mouseX = window.innerWidth/2, 
+        mouseY = window.innerHeight/2,
         started = false,
         paused = false,
         tunnelInitialized = false,
@@ -32,9 +34,10 @@ $(document).ready(function () {
             CONFIG.cameraAngle,
             ASPECT,
             CONFIG.cameraNear,
-            CONFIG.cameraFar
+            100000
+            //CONFIG.cameraFar
         );
-        camera.position = CONFIG.cameraPos;
+        //camera.position = CONFIG.cameraPos;
 
         // Scene setup
         scene = new THREE.Scene();
@@ -65,6 +68,9 @@ $(document).ready(function () {
         renderer.clear();
 
         document.body.appendChild(renderer.domElement);
+
+        // add the mouse move listener
+        document.addEventListener( 'mousemove', onMouseMove, false );
 
         // GLOW COMPOSER
         var renderTargetParameters = {
@@ -149,6 +155,7 @@ $(document).ready(function () {
         statsdom.style.left = '0px';
         statsdom.style.top = '0px';
         document.body.appendChild(statsdom);
+        
         setInterval(function () {
             stats.update();
         }, 1000 / 60);
@@ -181,6 +188,12 @@ $(document).ready(function () {
         
         // camera.position.z += CONFIG.cameraVel.z * dt;
         // TODO: Temp solution by placing camera with an offset from player
+        
+
+        log(mouseX);
+        camera.rotation.x = (window.innerHeight/2 - mouseY)/1000;
+        camera.rotation.y = (window.innerWidth/2 - mouseX)/1000;
+        
         camera.position.z = player.position.z + 200;
 
         lastUpdate = now;
@@ -189,6 +202,12 @@ $(document).ready(function () {
     // Initialization
     init();
     animate();
+
+    function onMouseMove( event ) {
+        // store the mouseX and mouseY position 
+        mouseX = event.clientX;
+        mouseY = event.clientY;
+    }
 
     // Event handlers
     window.ondevicemotion = function (event) {
