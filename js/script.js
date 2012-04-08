@@ -39,8 +39,7 @@ $(document).ready(function () {
             CONFIG.cameraAngle,
             ASPECT,
             CONFIG.cameraNear,
-            100000
-            //CONFIG.cameraFar
+            CONFIG.cameraFar
         );
         camera.position = CONFIG.cameraPos;
 

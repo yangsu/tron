@@ -10,10 +10,11 @@ var CONFIG = {
     // Camera Settings
     'cameraAngle' : 75,
     'cameraNear' : 0.1,
-    'cameraFar' : 1000,
+    'cameraFar' : 100000,
     'cameraPos' : UTIL.v3(-15, 0, 200),
     'cameraVel' : UTIL.v3c(0, 0, -150),
 
+    'viewDistance' : 1000,
     // Player Settings
     'playerForwardVelMultiplier' : 0.05,
     'playerDefaultForwardVel' : -150,

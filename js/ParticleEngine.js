@@ -21,7 +21,7 @@ function ParticleEngine() {
 
         pX = radius * Math.cos(theta);
         pY = radius * Math.sin(theta);
-        pZ = Math.random() * (-CONFIG.cameraFar * 2);
+        pZ = Math.random() * (-CONFIG.viewDistance * 2);
 
         particle = new THREE.Vertex(new THREE.Vector3(pX, pY, pZ));
         particle.velocity = new THREE.Vector3(0, 0, Math.random());
@@ -45,7 +45,7 @@ ParticleEngine.prototype.update = function () {
 
         // check if we need to reset
         if (Math.abs(particle.position.z) < Math.abs(window.levelProgress)) {
-            particle.position.z = window.levelProgress - CONFIG.cameraFar * 2;
+            particle.position.z = window.levelProgress - CONFIG.viewDistance * 2;
             particle.velocity.z = 0;
         }
 

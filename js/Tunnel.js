@@ -40,7 +40,7 @@ function Tunnel(callback) {
     this.lights = [];
     startZ = -CONFIG.tunnelSegmentPerSection * CONFIG.tunnelSegmentDepth;
     for (j = 0; j < 3; j += 1) {
-        tunnelRing = new LightRing(startZ - CONFIG.cameraFar * j);
+        tunnelRing = new LightRing(startZ - CONFIG.viewDistance * j);
         this.lights.push(tunnelRing);
     }
 }
@@ -48,7 +48,7 @@ function Tunnel(callback) {
 Tunnel.prototype.update = function () {
     // Dynamic tunnel generation based on player position
     if (this.segments.length * CONFIG.tunnelSegmentDepth <
-            Math.abs(window.levelProgress) + CONFIG.cameraFar) {
+            Math.abs(window.levelProgress) + CONFIG.viewDistance) {
         this.generateSection(-this.segments.length * CONFIG.tunnelSegmentDepth);
         if (this.sections.length - this.oldestLiveSection > CONFIG.tunnelLiveSections) {
             // Remove from scene
@@ -65,8 +65,8 @@ Tunnel.prototype.update = function () {
 
     var firstLightRing = this.lights[0],
         lastLightRing = this.lights[this.lights.length - 1];
-    if (Math.abs(firstLightRing.z) < Math.abs(window.levelProgress) - CONFIG.cameraFar) {
-        firstLightRing.repositionLightRing(lastLightRing.z - CONFIG.cameraFar);
+    if (Math.abs(firstLightRing.z) < Math.abs(window.levelProgress) - CONFIG.viewDistance) {
+        firstLightRing.repositionLightRing(lastLightRing.z - CONFIG.viewDistance);
         this.lights.splice(0, 1); // remove first element
         this.lights.push(firstLightRing); // add first element to element
     }

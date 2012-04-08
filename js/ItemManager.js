@@ -51,9 +51,9 @@ ItemManager.prototype.update = function () {
         //var theta = -Math.PI/2;
         theta = 360 * Math.random();
         curve = new THREE.QuadraticBezierCurve(
-            theta, window.levelProgress - CONFIG.cameraFar,
-            theta, window.levelProgress - CONFIG.cameraFar * 1.5,
-            theta, window.levelProgress - CONFIG.cameraFar * 2
+            theta, window.levelProgress - CONFIG.viewDistance,
+            theta, window.levelProgress - CONFIG.viewDistance * 1.5,
+            theta, window.levelProgress - CONFIG.viewDistance * 2
         );
 
         this.generateItems('powerup', curve, 10);
@@ -63,9 +63,9 @@ ItemManager.prototype.update = function () {
         //var theta = -Math.PI/2;
         theta = 2 * Math.PI * Math.random();
         curve = new THREE.QuadraticBezierCurve(
-            theta, window.levelProgress - CONFIG.cameraFar,
-            theta + Math.PI / 2, window.levelProgress - CONFIG.cameraFar * 1.5,
-            theta + Math.PI, window.levelProgress - CONFIG.cameraFar * 2
+            theta, window.levelProgress - CONFIG.viewDistance,
+            theta + Math.PI / 2, window.levelProgress - CONFIG.viewDistance * 1.5,
+            theta + Math.PI, window.levelProgress - CONFIG.viewDistance * 2
         );
 
         this.generateItems('credit', curve, 10);
