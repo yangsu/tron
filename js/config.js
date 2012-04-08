@@ -16,7 +16,7 @@ var CONFIG = {
 
     // Player Settings
     'playerForwardVelMultiplier' : 0.05,
-    'playerDefaultForwardVel' : 00,
+    'playerDefaultForwardVel' : -150,
     'playerMaxForwardVel' : -600,
     'playerMinForwardVel' : 0,
     'playerLateralVelMultiplier' : 0.25,

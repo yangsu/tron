@@ -74,24 +74,27 @@ Player.prototype.updatePosition = function () {
     }
 };
 
-Player.prototype.accelerateLeft = function (dt) {
+Player.prototype.accelerateLeft = function () {
     this.targetVelocity.theta = -CONFIG.playerMaxLateralVel;
 };
 
-Player.prototype.accelerateRight = function (dt) {
+Player.prototype.accelerateRight = function () {
     this.targetVelocity.theta = CONFIG.playerMaxLateralVel;
 };
 
-Player.prototype.accelerate = function (dt) {
+Player.prototype.accelerate = function () {
     this.targetVelocity.z = CONFIG.playerMaxForwardVel;
 };
 
-Player.prototype.decelerate = function (dt) {
+Player.prototype.decelerate = function () {
     this.targetVelocity.z = CONFIG.playerMinForwardVel;
 };
 
-Player.prototype.resetAcceleration = function (dt) {
+Player.prototype.resetForwardAcceleration = function () {
     this.targetVelocity.z = CONFIG.playerDefaultForwardVel;
+};
+
+Player.prototype.resetLateralAcceleration = function () {
     this.targetVelocity.theta = 0;
 };
 

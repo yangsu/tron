@@ -11,7 +11,7 @@ $(document).ready(function () {
         lastUpdate,
         itemManager,
         particleManager,
-        mouseX = window.innerWidth/2, 
+        mouseX = window.innerWidth/2,
         mouseY = window.innerHeight/2,
         started = false,
         paused = false,
@@ -20,11 +20,12 @@ $(document).ready(function () {
         ingamemenu = $('#ingamemenu');
 
     function init() {
-        
+
         if ( !Detector.webgl ) {
             Detector.addGetWebGLMessage();
+            return;
         }
-        
+
         lastUpdate = UTIL.now();
 
         // Scene Initialization
@@ -61,9 +62,9 @@ $(document).ready(function () {
 
         itemManager = new ItemManager();
         particleManager = new ParticleEngine();
-     
+
         skybox = new SkyBox();
-        
+
         // Renderer Initialization
         renderer = new THREE.WebGLRenderer(CONFIG.renderer);
         renderer.autoClear = false;
@@ -159,7 +160,7 @@ $(document).ready(function () {
         statsdom.style.left = '0px';
         statsdom.style.top = '0px';
         document.body.appendChild(statsdom);
-        
+
         setInterval(function () {
             stats.update();
         }, 1000 / 60);
@@ -189,13 +190,13 @@ $(document).ready(function () {
         player.update(dt);
         itemManager.update();
         particleManager.update();
-        
+
         // camera.position.z += CONFIG.cameraVel.z * dt;
         // TODO: Temp solution by placing camera with an offset from player
-        
+
         camera.rotation.x = (window.innerHeight/2 - mouseY)/1000;
         camera.rotation.y = (window.innerWidth/2 - mouseX)/1000;
-        
+
         camera.position.z = player.position.z + 200;
 
         lastUpdate = now;
@@ -206,7 +207,7 @@ $(document).ready(function () {
     animate();
 
     function onMouseMove( event ) {
-        // store the mouseX and mouseY position 
+        // store the mouseX and mouseY position
         mouseX = event.clientX;
         mouseY = event.clientY;
     }
@@ -230,7 +231,7 @@ $(document).ready(function () {
     $('#play').click(function () {
         startmenu.fadeOut('fast', function () {
             started = true;
-            
+
             log('Start Music....');
             var bgMusic = new Audio("sounds/TronMusic1.mp3");
             bgMusic.play();
@@ -258,8 +259,22 @@ $(document).ready(function () {
             // Update lastUpdate timestamp to so dt will be 0 during the pause
             lastUpdate = UTIL.now();
             break;
-        default:
-            player.resetAcceleration();
+        case 65: /* 'A' */
+        case 97: /* 'a' */
+        case 37: /* LEFT */
+            player.resetLateralAcceleration();
+            break;
+        case 38: /* UP */
+            player.resetForwardAcceleration();
+            break;
+        case 68: /* 'D' */
+        case 100:/* 'd' */
+        case 39: /* RIGHT */
+            player.resetLateralAcceleration();
+            break;
+        case 40: /* DOWN */
+            player.resetForwardAcceleration();
+            break;
         }
     });
     $(document).keydown(function (event) {
