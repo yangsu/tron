@@ -73,9 +73,6 @@ $(document).ready(function () {
 
         document.body.appendChild(renderer.domElement);
 
-        // add the mouse move listener
-        document.addEventListener( 'mousemove', onMouseMove, false );
-
         // GLOW COMPOSER
         var renderTargetParameters = {
                 minFilter: THREE.LinearFilter,
@@ -107,8 +104,8 @@ $(document).ready(function () {
         glowcomposer.addPass(renderModelGlow);
         glowcomposer.addPass(hblur);
         glowcomposer.addPass(vblur);
-        //glowcomposer.addPass(hblur);
-       // glowcomposer.addPass(vblur);
+        glowcomposer.addPass(hblur);
+        glowcomposer.addPass(vblur);
 
         // FINAL COMPOSER
         var finalshader = {
@@ -205,12 +202,6 @@ $(document).ready(function () {
     init();
     animate();
 
-    function onMouseMove( event ) {
-        // store the mouseX and mouseY position
-        mouseX = event.clientX;
-        mouseY = event.clientY;
-    }
-
     // Event handlers
     window.ondevicemotion = function (event) {
 
@@ -242,7 +233,9 @@ $(document).ready(function () {
     });
 
     $(document).mousemove(function (e) {
-       //$('#score').html(e.pageX);
+        // store the mouseX and mouseY position
+        mouseX = event.clientX;
+        mouseY = event.clientY;
     });
 
     // Only keyup can capture the key event for the 'esc' key
@@ -300,4 +293,8 @@ $(document).ready(function () {
         // switch (event.which) {
         // }
     });
+    window.onerror= function(err) {
+        console.log(err);
+        $('#score').html(err);
+    };
 });
