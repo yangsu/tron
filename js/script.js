@@ -221,10 +221,6 @@ $(document).ready(function () {
     $('#play').click(function () {
         startmenu.fadeOut('fast', function () {
             started = true;
-
-            log('Start Music....');
-            var bgMusic = new Audio("sounds/TronMusic1.mp3");
-            bgMusic.play();
         });
     });
     $('#resume').click(function () {
