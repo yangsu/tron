@@ -236,6 +236,7 @@ $(document).ready(function () {
 
     // Only keyup can capture the key event for the 'esc' key
     $(document).keyup(function (event) {
+        log(event.which);
         switch (event.which) {
         case 27: /* esc */
             paused = !paused;
@@ -246,6 +247,10 @@ $(document).ready(function () {
             }
             // Update lastUpdate timestamp to so dt will be 0 during the pause
             lastUpdate = UTIL.now();
+            break;
+        case 82: /* R */ // testing
+            log("DEREZZING!");
+            player.Derezz();
             break;
         case 65: /* 'A' */
         case 97: /* 'a' */
