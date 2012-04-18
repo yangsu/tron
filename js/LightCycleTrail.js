@@ -10,25 +10,25 @@ function Trail() {
     var theta = CONFIG.playerPos.theta,
         z = CONFIG.playerPos.z,
         startBottomVertex = UTIL.vtx3(
-            CONFIG.trailRadiusLower * Math.cos(theta),
-            CONFIG.trailRadiusLower * Math.sin(theta),
+            (CONFIG.playerPos.radius + CONFIG.trailRadiusOffset) * Math.cos(theta),
+            (CONFIG.playerPos.radius + CONFIG.trailRadiusOffset) * Math.sin(theta),
             z
         ),
         startTopVertex = UTIL.vtx3(
-            CONFIG.trailRadiusUpper * Math.cos(theta),
-            CONFIG.trailRadiusUpper * Math.sin(theta),
+            (CONFIG.playerPos.radius - CONFIG.trailRadiusOffset) * Math.cos(theta),
+            (CONFIG.playerPos.radius - CONFIG.trailRadiusOffset) * Math.sin(theta),
             z
         ),
         startTunnelSegment = new TrailSegment(startTopVertex, startBottomVertex, CONFIG.playerPos);
 
     this.material = new THREE.MeshLambertMaterial({
-        map: THREE.ImageUtils.loadTexture('img/TrailTexture2.png'),
-        transparent: true
-        // reflectivity: 0.15,
+        map: THREE.ImageUtils.loadTexture('img/TrailTexture3.png'),
+        transparent: true,
+        reflectivity: 0.05,
         // refractionRatio: 0.75
     });
     this.glowMaterial = new THREE.MeshPhongMaterial({
-        map: THREE.ImageUtils.loadTexture('img/TrailTexture2_glow.png'),
+        map: THREE.ImageUtils.loadTexture('img/TrailTexture3_glow.png'),
         ambient: 0x444444,
         color: 0x000000
     });
@@ -90,13 +90,13 @@ function TrailSegment(lastVertexTop, lastVertexBottom, playerPos) {
 
     // Define forward two vertices
     this.frontBottomVertex =  UTIL.vtx3(
-        CONFIG.trailRadiusLower * Math.cos(theta),
-        CONFIG.trailRadiusLower * Math.sin(theta),
+        (playerPos.radius + CONFIG.trailRadiusOffset) * Math.cos(theta),
+        (playerPos.radius + CONFIG.trailRadiusOffset) * Math.sin(theta),
         z
     );
     this.frontTopVertex = UTIL.vtx3(
-        CONFIG.trailRadiusUpper * Math.cos(theta),
-        CONFIG.trailRadiusUpper * Math.sin(theta),
+        (playerPos.radius - CONFIG.trailRadiusOffset) * Math.cos(theta),
+        (playerPos.radius - CONFIG.trailRadiusOffset) * Math.sin(theta),
         z
     );
 

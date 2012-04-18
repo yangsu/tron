@@ -16,19 +16,11 @@ function ParticleEngine() {
         transparent: true
     });
     */
-
-    // Create Particle Geometry(aka Positions)
-    // Need to create streaks of particles
-        // in decreasing size???
-    // can also increase or decrease velocity of particles based on music        
-    
-    // colors should change through particles linearlly
-    // but rate of change can be synced with music
             
     var p, theta, radius, pX, pY, pZ, particle;
     for (p = 0; p < this.particleCount; p += 1) {
         theta = Math.random() * (2 * Math.PI);
-        radius = Math.random() * 75 + CONFIG.tunnelRadius + 100;
+        radius = Math.random() * 75 + CONFIG.tunnelRadius + 125;
 
         pX = radius * Math.cos(theta);
         pY = radius * Math.sin(theta);

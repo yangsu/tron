@@ -11,7 +11,7 @@ function Tunnel(callback) {
     this.imagePosition = 0;
 
     var __self = this,
-        texture_1 = THREE.ImageUtils.loadTexture('img/TunnelTexture_3.png'),
+        texture_1 = THREE.ImageUtils.loadTexture('img/TunnelTexture5.png'),
         j,
         tunnelRing,
         startZ;

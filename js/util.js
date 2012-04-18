@@ -18,6 +18,9 @@ var UTIL = {
                 this.z
             );
         };
+        Coord.prototype.clone = function(){
+            return new UTIL.v3c(this.radius, this.theta, this.z);
+        }
         return new Coord(radius, theta, z);
     },
     now : function () {

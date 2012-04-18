@@ -8,8 +8,8 @@ function Player() {
 
     this.trail = new Trail();
 
-    this.position = CONFIG.playerPos;
-    this.velocity = CONFIG.playerDefaulVel;
+    this.position = CONFIG.playerPos.clone();
+    this.velocity = CONFIG.playerDefaulVel.clone();
     this.targetVelocity = CONFIG.playerDefaulTargetVel;
 
     this.isAlive = true;
@@ -86,7 +86,11 @@ Player.prototype.move = function (dt) {
     {
         this.velocity.radius += CONFIG.playerGravityAcceleration * dt;
         this.position.radius += this.velocity.radius * dt;
+        if(this.position.radius > CONFIG.playerPos.radius){
+            this.position.radius = CONFIG.playerPos.radius;
+        }
     }
+
 
     // Update Rotation
     this.mesh.rotation.z += this.velocity.theta * dt;
@@ -123,7 +127,7 @@ Player.prototype.decelerate = function () {
 };
 
 Player.prototype.jump = function(){
-    this.velocity.radius = CONFIG.defaultPlayerJumpAcceleration;
+    this.velocity.radius = CONFIG.defaultPlayerJumpVel;
 }
 
 Player.prototype.resetForwardAcceleration = function () {

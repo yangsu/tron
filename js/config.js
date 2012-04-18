@@ -25,10 +25,10 @@ var CONFIG = {
     'playerMaxLateralVel' : Math.PI,
     'playerMeshOffest' : -45,
     'playerPos' : UTIL.v3c(75, 1.5 * Math.PI, 0),
-    'playerDefaulVel' : UTIL.v3c(0, 0, -150),
+    'playerDefaulVel' : UTIL.v3c(1, 0, -150),
     'playerDefaulTargetVel' : UTIL.v3c(0, 0, -150),
-    'defaultPlayerJumpAcceleration' : -25,
-    'playerGravityAcceleration' : 20,
+    'defaultPlayerJumpVel' : -450,
+    'playerGravityAcceleration' : 850,
 
     // Tunnel Settings
     'tunnelRadius' : 100,
@@ -44,8 +44,7 @@ var CONFIG = {
 
     // Trail Settings
     'trailLiveSections' : 35,
-    'trailRadiusUpper' : 75,
-    'trailRadiusLower' : 85,
+    'trailRadiusOffset' : 5,
 
     // Light Ring Settings
     'lightRingCount' : 8,

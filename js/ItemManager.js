@@ -21,7 +21,7 @@ ItemManager.prototype.generateItems = function (type, curve, numOfItems) {
     // Consider r is constant for items
     // division = num of items = 10
     var itemPoints = curve.getSpacedPoints(numOfItems),
-        itemRadius = CONFIG.trailRadiusLower,
+        itemRadius = CONFIG.playerPos.radius,
         newPowerUp = null,
         i,
         point3D;
@@ -45,7 +45,7 @@ ItemManager.prototype.update = function () {
         credit.update();
     });
 
-/*
+
     var theta, curve;
     if (Math.random() > 0.99) {
         //var theta = -Math.PI/2;
@@ -56,7 +56,7 @@ ItemManager.prototype.update = function () {
             theta, window.levelProgress - CONFIG.viewDistance * 2
         );
 
-        this.generateItems('powerup', curve, 10);
+        this.generateItems('powerup', curve, 1);
     }
 
     if (Math.random() < 0.005) {
@@ -70,7 +70,7 @@ ItemManager.prototype.update = function () {
 
         this.generateItems('credit', curve, 10);
     }
-    */
+    
 };
 
 function PowerUp(pos) {
@@ -88,7 +88,7 @@ function PowerUp(pos) {
             });
 
         __self.powerUpMesh = new THREE.Mesh(geometry, material);
-        __self.powerUpMesh.scale.set(2.5, 2.5, 2.5);
+        __self.powerUpMesh.scale.set(3, 3, 3);
         __self.powerUpMesh.position = __self.position;
         __self.powerUpMesh.rotation.x = Math.PI / 2;
 
@@ -109,6 +109,7 @@ function Credit(pos) {
         glowparent = new THREE.Object3D(),
         COLOR1 = 0x77bbff,
         COLOR2 = 0x8ec5e5,
+        //COLOR2 = 0x8ec5e5,
         COLOR3 = 0x97a8ba,
         glyph2geom;
     //this.creditMesh = null;
@@ -133,7 +134,7 @@ function Credit(pos) {
     );
     this.glyph.position = this.position;
     //window.scene.add(this.glyph);
-    parent.add(this.glyph);
+    //parent.add(this.glyph);
 
     // GLYPH2 (CORE)
     glyph2geom = new THREE.IcosahedronGeometry(10, 1);
@@ -157,8 +158,8 @@ function Credit(pos) {
         new THREE.MeshBasicMaterial({
             color: COLOR2,
             wireframe: true,
-            opacity: 1,
-            wireframeLinewidth: 4
+            opacity: 0.35,
+            wireframeLinewidth: 2
         })
     );
     this.glyph2wf.position = this.position;
