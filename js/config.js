@@ -27,6 +27,8 @@ var CONFIG = {
     'playerPos' : UTIL.v3c(75, 1.5 * Math.PI, 0),
     'playerDefaulVel' : UTIL.v3c(0, 0, -150),
     'playerDefaulTargetVel' : UTIL.v3c(0, 0, -150),
+    'defaultPlayerJumpAcceleration' : -25,
+    'playerGravityAcceleration' : 20,
 
     // Tunnel Settings
     'tunnelRadius' : 100,

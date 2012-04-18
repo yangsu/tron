@@ -81,6 +81,13 @@ Player.prototype.move = function (dt) {
     this.velocity.theta += (this.targetVelocity.theta - this.velocity.theta) * CONFIG.playerLateralVelMultiplier;
     this.position.theta += this.velocity.theta * dt;
 
+    // Jumping movement
+    if(!(this.position.radius >= CONFIG.playerPos.radius && this.velocity.radius > 0))
+    {
+        this.velocity.radius += CONFIG.playerGravityAcceleration * dt;
+        this.position.radius += this.velocity.radius * dt;
+    }
+
     // Update Rotation
     this.mesh.rotation.z += this.velocity.theta * dt;
 
@@ -114,6 +121,10 @@ Player.prototype.accelerate = function () {
 Player.prototype.decelerate = function () {
     this.targetVelocity.z = CONFIG.playerMinForwardVel;
 };
+
+Player.prototype.jump = function(){
+    this.velocity.radius = CONFIG.defaultPlayerJumpAcceleration;
+}
 
 Player.prototype.resetForwardAcceleration = function () {
     this.targetVelocity.z = CONFIG.playerDefaultForwardVel;

@@ -255,6 +255,7 @@ $(document).ready(function () {
             log("DEREZZING!");
             player.Derezz();
             break;
+        
         case 65: /* 'A' */
         case 97: /* 'a' */
         case 37: /* LEFT */
