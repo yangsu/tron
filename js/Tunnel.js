@@ -19,6 +19,7 @@ function Tunnel(callback) {
     //texture.wrapT = THREE.RepeatWrapping;
     THREE.ImageUtils.loadTexture('img/TunnelMap.png', {}, function (data) {
         __self.imageData = UTIL.getImageData(data);
+        __self.width = __self.imageData.height;
         __self.generateSection(0);
         callback();
     });
@@ -113,7 +114,7 @@ Tunnel.prototype.generateSection = function (startZ) {
 };
 
 Tunnel.prototype.getFace = function (i, j) {
-    if (i <= this.segments.length && i > this.oldestLiveSection) {
+    if (i < this.segments.length && i > this.oldestLiveSection) {
         return this.segments[i].getFace(j);
     } else {
         console.log('Error: Tunnel getFace(' + i + ',' + j + ') index out of bounds');
@@ -190,7 +191,7 @@ function TunnelSegment(startZ, materials, imageData) {
 }
 
 TunnelSegment.prototype.getFace = function (i) {
-    if (i <= this.faces.length && i >= 0) {
+    if (i < this.faces.length && i >= 0) {
         return this.faces[i];
     } else {
         console.log('Error: TunnelSegment getFace(' + i + ') index out of bounds');

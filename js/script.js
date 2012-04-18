@@ -4,6 +4,9 @@
 
 var scene, glowscene, levelProgress;
 
+// CONSTANTS
+TWOPI = 2 * Math.PI;
+
 $(document).ready(function () {
     var camera, renderer,
         finalComposer, glowcomposer, renderTarget,
