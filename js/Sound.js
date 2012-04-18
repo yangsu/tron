@@ -1,7 +1,7 @@
 /*!
  * Sound.js
  *
- * A Web Audio library with no dependencies 
+ * A Web Audio library with no dependencies
  *
  * Copyright 2011 Kevin Ennis
  * kevincennis.com
@@ -15,11 +15,11 @@
     var guid = function(){
         return Date.now();
     },
-    
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~
     // Private lookup for instances of Sound by guid
     cache = {},
-    
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~
     // The Sound constructor
     Sound = function(url){
@@ -37,12 +37,12 @@
         this.gain = this.context.createGainNode();
         this.analyser = this.context.createAnalyser();
         this.analyser.smoothingTimeConstant = 0.4;
-        this.analyser.fftSize = 64;
+        // this.analyser.fftSize = 64;
         this.processor = this.context.createJavaScriptNode(2048, 1, 1);
         cache[this.guid] = this;
         this.load();
     };
-    
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~
     // Load the sound file
     Sound.prototype.load = function(){
@@ -68,14 +68,14 @@
         }, false);
         request.send();
     };
-    
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~
     // Handle events
     Sound.prototype.on = function(type, callback){
         this.callbacks[type] = this.callbacks[type] || [];
         this.callbacks[type].push( callback );
     }
-    
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~
     // Fire events
     Sound.prototype.trigger = function(type){
@@ -85,7 +85,7 @@
             if ( typeof this.callbacks[type][i] == 'function' ) this.callbacks[type][i].apply(this, args);
         }
     }
-    
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~
     // Play the sound file
     Sound.prototype.play = function(){
@@ -106,14 +106,14 @@
         this.source.noteOn(0);
         this.trigger('play');
     }
-    
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~
     // Pause the sound file
     Sound.prototype.pause = function(){
         this.source.disconnect(0);
         this.trigger('pause');
     }
-    
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~
     // Getter/setter for the loop property
     Sound.prototype.loop = function(arg){
@@ -126,7 +126,7 @@
         if ( typeof arg !== 'undefined' && typeof arg == 'boolean' ) this.source.loop = arg;
         return this.source.loop;
     }
-    
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~
     // FFT Analyser
     Sound.prototype.FFT = function(){
@@ -134,7 +134,7 @@
         this.analyser.getByteFrequencyData(this.freqByteData);
         this.trigger('audioprocess', this.freqByteData);
     }
-    
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~
     // Getter/setter for volume (0 - 1)
     Sound.prototype.volume = function(arg){
@@ -148,7 +148,7 @@
         if (arg) this.gain.gain.value = arg;
         return this.gain.gain.value;
     }
-    
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~
     // Getter/setter for convolution volume (0 - 1)
     Sound.prototype.fxVolume = function(arg){
@@ -162,7 +162,7 @@
         if (arg) this.fxGain.gain.value = arg;
         return this.fxGain.gain.value;
     }
-    
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~
     // Load a convolution object
     Sound.prototype.convolution = function(url){
@@ -182,9 +182,9 @@
         }, false);
         request.send();
     }
-    
+
     //~~~~~~~~~~~~~~~~~~~~~~~~~
     // Expose the Sound constructor
     window.Sound = Sound;
-    
+
 }(window));

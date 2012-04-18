@@ -15,24 +15,24 @@ function Player() {
     this.isAlive = true;
     this.DerezzEffect = null;
 
+    this.material = new THREE.MeshLambertMaterial({
+        map: THREE.ImageUtils.loadTexture('img/LightCycle_TextureTest1.png'),
+        transparent : false
+    });
+    this.glowMaterial = new THREE.MeshPhongMaterial({
+        map: THREE.ImageUtils.loadTexture('img/LightCycle_Glow.png'),
+        ambient: 0xFFFFFF,
+        color: 0x000000
+    });
     __self = this;
     loader = new THREE.JSONLoader();
     loader.load('obj/LightCycle.js', function (geometry) {
-        var material = new THREE.MeshLambertMaterial({
-                map: THREE.ImageUtils.loadTexture('img/LightCycle_TextureTest1.png'),
-                transparent : false
-            }),
-            glowMaterial = new THREE.MeshPhongMaterial({
-                map: THREE.ImageUtils.loadTexture('img/LightCycle_Glow.png'),
-                ambient: 0xFFFFFF,
-                color: 0x000000
-            });
 
-        __self.mesh = new THREE.Mesh(geometry, material);
+        __self.mesh = new THREE.Mesh(geometry, __self.material);
         __self.mesh.scale.set(3, 3, 3);
         window.scene.add(__self.mesh);
 
-        __self.glowMesh = new THREE.Mesh(geometry, glowMaterial);
+        __self.glowMesh = new THREE.Mesh(geometry, __self.glowMaterial);
         __self.glowMesh.scale = __self.mesh.scale;
         __self.glowMesh.overdraw = true;
         window.glowscene.add(__self.glowMesh);
@@ -41,7 +41,7 @@ function Player() {
     });
 }
 
-Player.prototype.Derezz = function(){
+Player.prototype.Derezz = function () {
 
     // remove mesh & glow mesh from respective scenes
     window.scene.remove(this.mesh);
@@ -60,7 +60,6 @@ Player.prototype.Derezz = function(){
         vertex.position.addSelf(positionVector);
         particles.vertices.push(vertex);
     }
-    
     // Create effect
     this.DerezzEffect = new Derezz(particles);
 };
@@ -126,7 +125,7 @@ Player.prototype.resetLateralAcceleration = function () {
 
 Player.prototype.update = function (dt) {
 
-    if(this.isAlive){
+    if(this.isAlive) {
         this.move(dt);
         this.trail.update(this.position);
     }
