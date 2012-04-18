@@ -55,6 +55,7 @@
   <script src="js/ParticleEngine.js"></script>
   <script src="js/LightCycleTrail.js"></script>
   <script src="js/SkyBox.js"></script>
+  <script src="js/Derezz.js"></script>
   <script src="js/Detector.js"></script>
   <script src="js/script.js?v=5"></script>
   
@@ -85,7 +86,6 @@
 		uniform sampler2D texture;
 		
 		varying vec3 vColor;
-		
 		void main(){
 			//gl_FragColor = vec4(color, 1.0);
 			gl_FragColor = vec4(color*vColor, 1.0);
