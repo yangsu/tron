@@ -126,7 +126,7 @@ function TunnelSegment(startZ, materials, imageData) {
     this.geometry = new THREE.Geometry();
     this.geometry.dynamic = true;
     this.geometry.materials = materials;
-    this.faces = [];
+    this.faces = new Array(imageData.length);
 
     // var deltaTheta = 2 * Math.PI / CONFIG.tunnelResolution,
     var deltaTheta = 2 * Math.PI / imageData.length,

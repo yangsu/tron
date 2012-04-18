@@ -5,7 +5,6 @@
 function ItemManager(scene) {
 
     this.gameItems = [];
-    this.gameCredits = [];
     this.typeMap = {
         'credit' : Credit,
         'powerup' : PowerUp
@@ -38,16 +37,11 @@ ItemManager.prototype.update = function () {
       // TODO: delete past items too far back
         item.update();
     });
+};
 
-    // need to refactor by creating Item super class
-    // then store all items in gameitems array
-    _.each(this.gameCredits, function (credit) {
-        credit.update();
-    });
-
-
+ItemManager.prototype.genRandom = function() {
     var theta, curve;
-    if (Math.random() > 0.99) {
+    if (Math.random() > 0.95 && PowerUpGeometry) {
         //var theta = -Math.PI/2;
         theta = 360 * Math.random();
         curve = new THREE.QuadraticBezierCurve(
@@ -59,7 +53,7 @@ ItemManager.prototype.update = function () {
         this.generateItems('powerup', curve, 1);
     }
 
-    if (Math.random() < 0.005) {
+    if (Math.random() < 0.05) {
         //var theta = -Math.PI/2;
         theta = 2 * Math.PI * Math.random();
         curve = new THREE.QuadraticBezierCurve(
@@ -70,30 +64,30 @@ ItemManager.prototype.update = function () {
 
         this.generateItems('credit', curve, 10);
     }
-    
 };
 
+var PowerUpGeometry = null;
+var PowerUpMaterial = new THREE.MeshLambertMaterial({
+    map: THREE.ImageUtils.loadTexture('img/LightDisk.png'),
+    transparent : false
+});
+new THREE.JSONLoader().load('obj/LightDisk.js', function (geometry) {
+    PowerUpGeometry = geometry;
+});
+
 function PowerUp(pos) {
-    var __self = this;
     this.powerUpMesh = null;
     this.position = pos;
 
-    new THREE.JSONLoader().load('obj/LightDisk.js', function (geometry) {
+    this.powerUpMesh = new THREE.Mesh(PowerUpGeometry, PowerUpMaterial);
+    this.powerUpMesh.scale.set(3, 3, 3);
+    this.powerUpMesh.position = this.position;
+    this.powerUpMesh.rotation.x = Math.PI / 2;
 
-        // select texture based on type
-        var texture = THREE.ImageUtils.loadTexture('img/LightDisk.png'),
-            material = new THREE.MeshLambertMaterial({
-                map: texture,
-                transparent : false
-            });
+    this.powerUpMesh.geometry.computeBoundingBox();
+    this.boundingBox = this.powerUpMesh.geometry.boundingBox;
 
-        __self.powerUpMesh = new THREE.Mesh(geometry, material);
-        __self.powerUpMesh.scale.set(3, 3, 3);
-        __self.powerUpMesh.position = __self.position;
-        __self.powerUpMesh.rotation.x = Math.PI / 2;
-
-        window.scene.add(__self.powerUpMesh);
-    });
+    window.scene.add(this.powerUpMesh);
 }
 
 PowerUp.prototype.update = function () {
@@ -135,6 +129,10 @@ function Credit(pos) {
     this.glyph.position = this.position;
     //window.scene.add(this.glyph);
     //parent.add(this.glyph);
+
+    // Bounding Box
+    this.glyph.geometry.computeBoundingBox();
+    this.boundingBox = this.glyph.geometry.boundingBox;
 
     // GLYPH2 (CORE)
     glyph2geom = new THREE.IcosahedronGeometry(10, 1);

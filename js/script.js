@@ -297,6 +297,9 @@ $(document).ready(function () {
         case 40: /* DOWN */
             player.decelerate();
             break;
+        case 73:
+            itemManager.genRandom();
+            break;
         }
     });
     $(document).keypress(function (event) {
