@@ -15,6 +15,7 @@ var CONFIG = {
     'cameraVel' : UTIL.v3c(0, 0, -150),
 
     'viewDistance' : 1000,
+
     // Player Settings
     'playerForwardVelMultiplier' : 0.05,
     'playerDefaultForwardVel' : -150,
@@ -26,9 +27,6 @@ var CONFIG = {
     'playerPos' : UTIL.v3c(75, 1.5 * Math.PI, 0),
     'playerDefaulVel' : UTIL.v3c(0, 0, -150),
     'playerDefaulTargetVel' : UTIL.v3c(0, 0, -150),
-    'playerTrail' : UTIL.v3(0.005, 7, 50),
-    'trailRadiusUpper' : 75,
-    'trailRadiusLower' : 85,
 
     // Tunnel Settings
     'tunnelRadius' : 100,
@@ -44,6 +42,8 @@ var CONFIG = {
 
     // Trail Settings
     'trailLiveSections' : 35,
+    'trailRadiusUpper' : 75,
+    'trailRadiusLower' : 85,
 
     // Light Ring Settings
     'lightRingCount' : 8,

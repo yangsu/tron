@@ -151,17 +151,21 @@ function TunnelSegment(startZ, materials, imageData) {
             rsind = radius * Math.sin(theta + deltaTheta);
 
             // Create vertices for current quad in cylinder segment
-            this.geometry.vertices.push(UTIL.vtx3(rcos, rsin, startZ),
-                                        UTIL.vtx3(rcos, rsin, startZ - depth),
-                                        UTIL.vtx3(rcosd, rsind, startZ - depth),
-                                        UTIL.vtx3(rcosd, rsind, startZ));
+            this.geometry.vertices.push(
+                UTIL.vtx3(rcos, rsin, startZ),
+                UTIL.vtx3(rcos, rsin, startZ - depth),
+                UTIL.vtx3(rcosd, rsind, startZ - depth),
+                UTIL.vtx3(rcosd, rsind, startZ)
+            );
 
             // Define normals to point inward
             temp = this.geometry.faces.length * 4;
-            face = new THREE.Face4(temp + 3,
-                                   temp + 2,
-                                   temp + 1,
-                                   temp);
+            face = new THREE.Face4(
+                temp + 3,
+                temp + 2,
+                temp + 1,
+                temp
+            );
 
             face.materialIndex = 0;
             this.geometry.faces.push(face);

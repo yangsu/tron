@@ -10,13 +10,13 @@ function Trail() {
     var theta = CONFIG.playerPos.theta,
         z = CONFIG.playerPos.z,
         startBottomVertex = UTIL.vtx3(
-            CONFIG.trailRadius_Lower * Math.cos(theta),
-            CONFIG.trailRadius_Lower * Math.sin(theta),
+            CONFIG.trailRadiusLower * Math.cos(theta),
+            CONFIG.trailRadiusLower * Math.sin(theta),
             z
         ),
         startTopVertex = UTIL.vtx3(
-            CONFIG.trailRadius_Upper * Math.cos(theta),
-            CONFIG.trailRadius_Upper * Math.sin(theta),
+            CONFIG.trailRadiusUpper * Math.cos(theta),
+            CONFIG.trailRadiusUpper * Math.sin(theta),
             z
         ),
         startTunnelSegment = new TrailSegment(startTopVertex, startBottomVertex, CONFIG.playerPos);
