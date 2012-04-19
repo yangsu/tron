@@ -90,5 +90,24 @@ var UTIL = {
             );
         }
         return column;
+    },
+    generateBoxCoord: function (min, max) {
+        return [
+            min.clone(),
+            UTIL.v3(max.x, min.y, min.z),
+            UTIL.v3(min.x, max.y, min.z),
+            UTIL.v3(min.x, min.y, max.z),
+            UTIL.v3(max.x, max.y, min.z),
+            UTIL.v3(min.x, max.y, max.z),
+            UTIL.v3(max.x, min.y, max.z),
+            max.clone()
+        ];
+    },
+    boxTest: function (pos, min, max) {
+        return (
+            pos.x >= min.x && pos.x <= max.x &&
+            pos.y >= min.y && pos.y <= max.y &&
+            pos.z >= min.z && pos.z <= max.z
+        );
     }
 };

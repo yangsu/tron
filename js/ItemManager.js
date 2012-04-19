@@ -5,7 +5,6 @@
 function ItemManager(scene) {
 
     this.gameItems = [];
-    this.gameCredits = [];
     this.typeMap = {
         'credit' : Credit,
         'powerup' : PowerUp
@@ -37,12 +36,6 @@ ItemManager.prototype.update = function () {
     _.each(this.gameItems, function (item) {
       // TODO: delete past items too far back
         item.update();
-    });
-
-    // need to refactor by creating Item super class
-    // then store all items in gameitems array
-    _.each(this.gameCredits, function (credit) {
-        credit.update();
     });
 
 /*
@@ -92,6 +85,9 @@ function PowerUp(pos) {
         __self.powerUpMesh.position = __self.position;
         __self.powerUpMesh.rotation.x = Math.PI / 2;
 
+        __self.powerUpMesh.geometry.computeBoundingBox();
+        __self.boundingBox = __self.powerUpMesh.geometry;
+
         window.scene.add(__self.powerUpMesh);
     });
 }
@@ -134,6 +130,10 @@ function Credit(pos) {
     this.glyph.position = this.position;
     //window.scene.add(this.glyph);
     parent.add(this.glyph);
+
+    // Bounding Box
+    this.glyph.geometry.computeBoundingBox();
+    this.boundingBox = this.glyph.geometry.boundingBox;
 
     // GLYPH2 (CORE)
     glyph2geom = new THREE.IcosahedronGeometry(10, 1);
