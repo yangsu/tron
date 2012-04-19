@@ -47,6 +47,7 @@ var CONFIG = {
         wireframe : true
     },
     'tunnelLiveSections' : 15, // should be 1 + cameraFar/(segdepth * seg/sec)
+    'tunnelMapData' : null,
 
     // Trail Settings
     'trailMeshOffest' : 45,
@@ -68,10 +69,10 @@ var CONFIG = {
     }),
 
     'init' : function (callback) {
-        var testFinished = function() {
-            if (_.all(CONFIG, function(value, key) {
-                return (value !== null && value !== undefined);
-            })) {
+        var testFinished = function () {
+            if (_.all(CONFIG, function (value, key) {
+                    return (value !== null && value !== undefined);
+                })) {
                 console.log('finished');
                 callback();
             }
@@ -83,6 +84,10 @@ var CONFIG = {
         });
         new THREE.JSONLoader().load('obj/LightCycle.js', function (geometry) {
             CONFIG.playerGeometry = geometry;
+            testFinished();
+        });
+        THREE.ImageUtils.loadTexture('img/TunnelMap.png', {}, function (data) {
+            CONFIG.tunnelMapData = UTIL.getImageData(data);
             testFinished();
         });
     }

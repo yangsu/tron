@@ -2,7 +2,7 @@
  * @author Troy Ferrell & Yang Su
  */
 
-function Tunnel(callback) {
+function Tunnel() {
 
     this.segments = [];
     this.sections = [];
@@ -17,12 +17,8 @@ function Tunnel(callback) {
         startZ;
     //var texture_2 = THREE.ImageUtils.loadTexture('img/TrailTexture_2.png');
     //texture.wrapT = THREE.RepeatWrapping;
-    THREE.ImageUtils.loadTexture('img/TunnelMap.png', {}, function (data) {
-        __self.imageData = UTIL.getImageData(data);
-        __self.width = __self.imageData.height;
-        __self.generateSection(0);
-        callback();
-    });
+    this.imageData = CONFIG.tunnelMapData;
+    this.width = this.imageData.height;
 
     this.material = [
         // new THREE.MeshLambertMaterial(CONFIG.tunnelMaterial),

@@ -21,7 +21,6 @@ $(document).ready(function () {
         mouseY = window.innerHeight / 2,
         started = false,
         paused = false,
-        tunnelInitialized = false,
         resourcesLoaded = false,
         startmenu = $('#startmenu'),
         ingamemenu = $('#ingamemenu');
@@ -63,17 +62,16 @@ $(document).ready(function () {
 
         // Objects
         CONFIG.init(function () {
-            resourcesLoaded = true;
             // Player depends on the resources to be loaded
             player = new Player();
+            tunnel = new Tunnel();
+            itemManager = new ItemManager();
+            particleManager = new ParticleEngine();
+            skybox = new SkyBox();
             collisionManager = new CollisionManager(tunnel, player, itemManager);
+
+            resourcesLoaded = true;
         });
-        tunnel = new Tunnel(function () {
-            tunnelInitialized = true;
-        });
-        itemManager = new ItemManager();
-        particleManager = new ParticleEngine();
-        skybox = new SkyBox();
 
         // Renderer Initialization
         renderer = new THREE.WebGLRenderer(CONFIG.renderer);
@@ -176,7 +174,7 @@ $(document).ready(function () {
     }
 
     function animate() {
-        if (started && !paused && tunnelInitialized && resourcesLoaded) {
+        if (started && !paused && resourcesLoaded) {
             update();
 
             if (window.isMobileDevice) {
