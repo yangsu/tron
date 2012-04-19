@@ -2,7 +2,7 @@
  * @author Troy Ferrell & Yang Su
  */
 
-var scene, glowscene, levelProgress;
+var scene, glowscene, levelProgress, isMobileDevice;
 
 // CONSTANTS
 TWOPI = 2 * Math.PI;
@@ -11,6 +11,7 @@ $(document).ready(function () {
     var camera, renderer,
         finalComposer, glowcomposer, renderTarget,
         tunnel, player,
+        timeLeft,
         lastUpdate,
         itemManager,
         collisionManager,
@@ -30,7 +31,17 @@ $(document).ready(function () {
             Detector.addGetWebGLMessage();
             return;
         }
-
+        
+        if ((navigator.userAgent.indexOf('iPhone') != -1) 
+            || (navigator.userAgent.indexOf('iPod') != -1) 
+            || (navigator.userAgent.indexOf('iPad') != -1)){
+            window.isMobileDevice = true;    
+        }
+        else{
+            window.isMobileDevice = false;
+        }
+          
+        timeLeft = 100.0;
         lastUpdate = UTIL.now();
         // Scene Initialization
         var OFFSET = 6,
@@ -68,12 +79,16 @@ $(document).ready(function () {
         });
         itemManager = new ItemManager();
         particleManager = new ParticleEngine();
-
         skybox = new SkyBox();
-
+        
         // Renderer Initialization
         renderer = new THREE.WebGLRenderer(CONFIG.renderer);
         renderer.autoClear = false;
+        if ((navigator.userAgent.indexOf('iPhone') != -1) || (navigator.userAgent.indexOf('iPod') != -1) || (navigator.userAgent.indexOf('iPad') != -1))
+        {
+            renderer.autoClear = true;
+        }
+        
         renderer.setSize(WIDTH, HEIGHT);
         renderer.setClearColorHex(CONFIG.background, 1.0);
         renderer.clear();
@@ -174,9 +189,13 @@ $(document).ready(function () {
         if (started && !paused && tunnelInitialized && resourcesLoaded) {
             update();
 
-            //renderer.render(scene, camera);
-            glowcomposer.render(0.1);
-            finalcomposer.render(0.1);
+            if(window.isMobileDevice){
+                renderer.render(scene, camera);
+            }
+            else{
+                glowcomposer.render(0.1);
+                finalcomposer.render(0.1);
+            }
         }
         // note: three.js includes requestAnimationFrame shim
         requestAnimationFrame(animate);
@@ -186,15 +205,20 @@ $(document).ready(function () {
         var now = UTIL.now(),
             dt = (now - lastUpdate) / 1000;
 
+        timeLeft -= dt;
+        $('#timerdiv').html('Timer: ' + timeLeft.toFixed(2));
+        
         levelProgress = player.getPosition().z;
 
         // Call update methods to produce animation
         tunnel.update();
         player.update(dt);
         itemManager.update();
-        collisionManager.update();
+        //collisionManager.update();
         particleManager.update();
 
+        checkCollisions();
+        
         // camera.position.z += CONFIG.cameraVel.z * dt;
         // TODO: Temp solution by placing camera with an offset from player
 
@@ -205,6 +229,33 @@ $(document).ready(function () {
 
         lastUpdate = now;
     }
+    
+    function checkCollisions(){
+        
+        // Check collisions for all items
+        
+        _.each(itemManager.gameItems, function (item) {
+            if(collisionManager.checkPlayerItemCollision(player, item)){
+                // Remove Item from view
+                itemManager.remove(item.id);
+                
+                // Update player score
+                player.score += 200;
+                $('#score').html(player.score);                
+            }
+        });
+        
+        // Check that player is still on track
+        if(!collisionManager.checkPlayerTunnelCollision(player, tunnel))
+        {
+            // Possible error: need to make sure tunnel is intialized before checking collisions
+            // KILL PLAYER AMAHAHAAHAH!!!
+            // player.Derezz();
+        }
+        
+        // check collisions for all obstacles
+        // TODO: write code here
+    }
 
     // Initialization
     init();
@@ -213,11 +264,11 @@ $(document).ready(function () {
     // Event handlers
     window.ondevicemotion = function (event) {
 
-        $('#score').html(event.accelerationIncludingGravity.x);
+        //$('#score').html(event.accelerationIncludingGravity.x);
 
-        if (event.accelerationIncludingGravity.x > 1.75) {
+        if (event.accelerationIncludingGravity.x > 2.75) {
             player.accelerateRight();
-        } else if (event.accelerationIncludingGravity.x < -1.75) {
+        } else if (event.accelerationIncludingGravity.x < -2.75) {
             player.accelerateLeft();
         }
 

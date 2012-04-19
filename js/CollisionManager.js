@@ -4,6 +4,7 @@ function CollisionManager(tunnel, player, itemmanager) {
     this.itemmanager = itemmanager;
 }
 
+/*
 CollisionManager.prototype.update = function (dt) {
     var __self = this,
         player = this.player,
@@ -11,12 +12,14 @@ CollisionManager.prototype.update = function (dt) {
         pposcart = ppos.convertToCartesian(),
         theta = Math.abs(ppos.theta) % TWOPI,
         face = null;
-        
-        if(ppos.theta < 0)
-        {
-            theta = TWOPI - theta;// 360 - 80
-        }
+    
+    // If actual theta is negative, convert to corresponding postive angle value    
+    if(ppos.theta < 0)
+    {
+        theta = TWOPI - theta;// 360 - 80
+    }
 
+    // Find index for face corresponding to player's position
     this.i = Math.floor(Math.abs(ppos.z) / CONFIG.tunnelSegmentDepth);
     this.j = Math.floor((theta/TWOPI) * this.tunnel.width );
     //this.j = Math.floor(theta / (TWOPI / this.tunnel.width));
@@ -70,6 +73,46 @@ CollisionManager.prototype.update = function (dt) {
     });
 
 };
+*/
+CollisionManager.prototype.checkPlayerTunnelCollision = function(player, tunnel){
+    var ppos = player.position,
+        pposcart = ppos.convertToCartesian(),
+        theta = Math.abs(ppos.theta) % TWOPI,
+        face = null;
+    
+    // If actual theta is negative, convert to corresponding postive angle value    
+    if(ppos.theta < 0)
+    {
+        theta = TWOPI - theta;// 360 - 80
+    }
+
+    // Find index for face corresponding to player's position
+    this.i = Math.floor(Math.abs(ppos.z) / CONFIG.tunnelSegmentDepth);
+    this.j = Math.floor((theta/TWOPI) * this.tunnel.width );
+    //this.j = Math.floor(theta / (TWOPI / this.tunnel.width));
+    face = this.tunnel.getFace(this.i, this.j);
+    
+    if (!face) {
+        log("off");
+        // Not on a tunnel face
+    } else {
+        log("on");
+        // on a tunnel face
+    }
+    
+    return (face != null);
+}
+
+CollisionManager.prototype.checkPlayerItemCollision = function(player, item){
+    var pposcart = player.position.convertToCartesian();
+        
+    return CollisionManager.prototype.boundingCylinderHitTest(
+                pposcart,
+                player.boundingCylinder,
+                item.position,
+                item.boundingSphere);
+}
+
 
 CollisionManager.prototype.boundingBoxHitTest = function (first, firstpos, second, secondpos) {
     if (!first || !second || !firstpos || !secondpos) return false;
