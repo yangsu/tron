@@ -112,5 +112,8 @@ var UTIL = {
             pos.y >= min.y && pos.y <= max.y &&
             pos.z >= min.z && pos.z <= max.z
         );
+    },
+    lateralDistance: function (vec1, vec2) {
+        return Math.sqrt(Math.pow(vec2.x - vec1.x, 2) + Math.pow(vec2.y - vec1.y, 2));
     }
 };

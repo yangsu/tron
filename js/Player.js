@@ -27,17 +27,23 @@ function Player() {
     __self = this;
     loader = new THREE.JSONLoader();
     loader.load('obj/LightCycle.js', function (geometry) {
-
+        var scale = CONFIG.playerScale;
         __self.mesh = new THREE.Mesh(geometry, __self.material);
-        __self.mesh.scale.set(3, 3, 3);
+        __self.mesh.scale.set(scale, scale, scale);
         __self.mesh.geometry.computeBoundingBox();
         __self.boundingBox = __self.mesh.geometry.boundingBox;
         // __self.mesh.geometry.computeBoundingSphere();
         // __self.boundingSphere = __self.mesh.geometry.boundingSphere;
-        var temp = __self.boundingBox.max.clone().subSelf(__self.boundingBox.min);
+        var box = __self.boundingBox,
+            temp = box.max.clone().subSelf(box.min);
         __self.boundingSphere = {
             radius: Math.max(temp.x, temp.y)/2,
-            offset: temp.z * 3 - Math.max(temp.x, temp.y)/2
+            offset: temp.z * scale - Math.max(temp.x, temp.y)/2
+        };
+        __self.boundingCylinder = {
+            minz : box.min.z * scale,
+            maxz : box.max.z * scale,
+            radius : Math.max(temp.x, temp.y)/2
         };
 
         window.scene.add(__self.mesh);
@@ -149,7 +155,7 @@ Player.prototype.update = function (dt) {
 
     if(this.isAlive) {
         this.move(dt);
-	this.trail.update(this.position.clone());
+        this.trail.update(this.position.clone());
     }
     else{
         this.DerezzEffect.update(dt);

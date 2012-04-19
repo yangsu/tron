@@ -11,7 +11,6 @@ CollisionManager.prototype.update = function (dt) {
         pposcart = ppos.convertToCartesian(),
         theta = Math.abs(ppos.theta) % TWOPI,
         face = null;
-    pposcart.z -= player.boundingSphere.offset;
 
     this.i = Math.floor(Math.abs(ppos.z) / CONFIG.tunnelSegmentDepth);
     this.j = Math.floor(theta / (TWOPI / this.tunnel.width));
@@ -35,17 +34,33 @@ CollisionManager.prototype.update = function (dt) {
     //         $('#score').html('not');
     //     }
     // });
+
     // Bounding Spheres
+    // Bounding Sphere hack
+    // pposcart.z -= player.boundingSphere.offset;
+    // _.each(this.itemmanager.gameItems, function (item) {
+    //     if (CollisionManager.prototype.boundingSphereHitTest(
+    //             pposcart,
+    //             player.boundingSphere,
+    //             item.position,
+    //             item.boundingSphere
+    //         )) {
+    //         __self.itemmanager.remove(item.id);
+    //     }
+    // });
+
+    // Bounding Cylinder
     _.each(this.itemmanager.gameItems, function (item) {
-        if (CollisionManager.prototype.boundingSphereHitTest(
+        if (CollisionManager.prototype.boundingCylinderHitTest(
                 pposcart,
-                player.boundingSphere,
+                player.boundingCylinder,
                 item.position,
                 item.boundingSphere
             )) {
             __self.itemmanager.remove(item.id);
         }
     });
+
 };
 
 CollisionManager.prototype.boundingBoxHitTest = function (first, firstpos, second, secondpos) {
@@ -67,4 +82,11 @@ CollisionManager.prototype.boundingBoxHitTest = function (first, firstpos, secon
 CollisionManager.prototype.boundingSphereHitTest = function (first, firstBoundingSphere, second, secondBoundingSphere) {
     if (!first || !firstBoundingSphere || !second || !secondBoundingSphere) return false;
     return first.distanceTo(second) <= (firstBoundingSphere.radius + secondBoundingSphere.radius);
+};
+
+CollisionManager.prototype.boundingCylinderHitTest = function (playerPos, playerBoundingCylinder, item, itemBoundingSphere) {
+    if (!playerPos || !playerBoundingCylinder || !item || !itemBoundingSphere) return false;
+    return UTIL.lateralDistance(item, playerPos) <= (playerBoundingCylinder.radius + itemBoundingSphere.radius) &&
+           (item.z - playerPos.z - itemBoundingSphere.radius) >= playerBoundingCylinder.minz &&
+           (item.z - playerPos.z + itemBoundingSphere.radius) <= playerBoundingCylinder.maxz;
 };
