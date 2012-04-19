@@ -109,8 +109,8 @@ $(document).ready(function () {
         glowcomposer.addPass(renderModelGlow);
         glowcomposer.addPass(hblur);
         glowcomposer.addPass(vblur);
-        glowcomposer.addPass(hblur);
-        glowcomposer.addPass(vblur);
+        //glowcomposer.addPass(hblur);
+        //glowcomposer.addPass(vblur);
 
         // FINAL COMPOSER
         var finalshader = {

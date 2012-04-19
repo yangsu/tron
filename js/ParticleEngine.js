@@ -55,11 +55,37 @@ function ParticleEngine() {
 
     this.uniforms.texture.texture.wrapS = this.uniforms.texture.texture.wrapT = THREE.RepeatWrapping;
 
+     this.shader = {
+            vertexShader: [
+                'attribute float size;',
+                'attribute vec3 ca;',
+                'varying vec3 vColor;',
+                'void main(){',
+                    'vColor = ca;',
+                    'vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);',
+                    'gl_PointSize = size;',
+                    'gl_Position = projectionMatrix * mvPosition;',
+                '}'
+            ].join('\n'),
+
+            fragmentShader: [
+                'uniform vec3 color;',
+                'uniform sampler2D texture;',
+                'varying vec3 vColor;',
+                'void main(){',
+                    //'gl_FragColor = vec4(color, 1.0);',
+                    'gl_FragColor = vec4(color*vColor, 1.0);',
+                    //'gl_FragColor = gl_FragColor * texture2D(texture, gl_PointCoord);',
+                '}'
+            ].join('\n')
+        };
+
+
     this.shaderMaterial = new THREE.ShaderMaterial( {
         uniforms:       this.uniforms,
         attributes:     this.attributes,
-        vertexShader:   document.getElementById( 'vertexshader' ).textContent,
-        fragmentShader: document.getElementById( 'fragmentshader' ).textContent,
+        vertexShader:   this.shader.vertexShader,//document.getElementById( 'vertexshader' ).textContent,
+        fragmentShader: this.shader.fragmentShader,//document.getElementById( 'fragmentshader' ).textContent,
         blending: THREE.AdditiveBlending,
         transparent: true
     });
@@ -72,14 +98,12 @@ function ParticleEngine() {
         sizes.push(Math.random() * 10 + 5);
         colors[v] = new THREE.Color( 0xffffff );
         
-        //log(verts[v].position.z);
         var value = Math.abs(verts[v].position.z)/(CONFIG.viewDistance*20);
         colors[v].setHSV(0.55, 0.75, 1.0);//value );
         //colors[v].setHSV(Math.random(), Math.random(), Math.random());
     }
 
     this.particleSystem = new THREE.ParticleSystem(this.particles, this.shaderMaterial);
-    //this.particleSystem = new THREE.ParticleSystem(this.particles, pMaterial);
     this.particleSystem.sortParticles = true;
     this.particleSystem.dynamic = true;
 
@@ -97,20 +121,16 @@ function ParticleEngine() {
     
     bgMusic.on('audioprocess', function(input){
        var bars = input.length; 
-       var i = 0, sum = 0, newSize = 15;
-       for(; i < bars/4; i++){
-           sum += input[i];
-       }
        
-
-       if(sum > 3900){
-           newSize = 25;
-       }
-       
+       var i = 0, vertex, index; 
        for(i = 0; i < __self.attributes.size.value.length; i++){
-           __self.attributes.size.value[i] = newSize;
-           //__self.attributes = sum/3000;
-           //__self.attributes.size.value[i] = Math.random() * 15 + 5;
+          // __self.attributes.size.value[i] = newSize;
+           
+           vertex = __self.particles.vertices[i];
+           index = bars - 1 - Math.floor( (Math.abs(vertex.position.z)/Math.abs(window.levelProgress - CONFIG.viewDistance*20)) * bars);
+           
+           __self.attributes.size.value[i] = input[index]/50;
+            //vertex.position.addSelf();
        }
        __self.attributes.size.needsUpdate = true;
        

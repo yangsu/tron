@@ -12,10 +12,8 @@ function Player() {
     this.velocity = CONFIG.playerDefaulVel;
     this.targetVelocity = CONFIG.playerDefaulTargetVel;
 
-    this.bikeParticleSystem = null;
-    this.particles = null;
-    this.vertexCount = 0;
     this.isAlive = true;
+    this.DerezzEffect = null;
 
     this.material = new THREE.MeshLambertMaterial({
         map: THREE.ImageUtils.loadTexture('img/LightCycle_TextureTest1.png'),
@@ -49,57 +47,21 @@ Player.prototype.Derezz = function () {
     window.scene.remove(this.mesh);
     window.glowscene.remove(this.glowMesh);
 
+    // Kill player
     this.isAlive = false;
 
-    // Copy geometry vertices into particle system
-    this.particles = new THREE.Geometry();
-    var vertex, i, positionVector = this.position.convertToCartesian();
-    for (i = 0; i < this.mesh.geometry.vertices.length; i += 1) {
+     // Transform vertices into current position points;
+    var particles = new THREE.Geometry();
+    var vertex, positionVector = this.position.convertToCartesian();
+    for(var i = 0; i < this.mesh.geometry.vertices.length; i += 1)
+    {
         vertex = this.mesh.geometry.vertices[i].clone();
         vertex.position.multiplyScalar(3);
-        vertex.position.addSelf(this.position.convertToCartesian());
-        this.particles.vertices.push(vertex);
+        vertex.position.addSelf(positionVector);
+        particles.vertices.push(vertex);
     }
-
-    // Set Shader Material Parameters
-    this.attributes = {
-        size: { type: 'f', value: [] },
-        ca:   { type: 'c', value: [] }
-    };
-
-    this.uniforms = {
-        amplitude: { type: 'f', value: 1.0 },
-        color:     { type: 'c', value: new THREE.Color(0xFFFFFF) },
-        texture:   { type: 't', value: 0, texture: THREE.ImageUtils.loadTexture('img/LightCycle_TextureTest1.png') }
-    };
-
-    //this.uniforms.texture.texture.wrapS = this.uniforms.texture.texture.wrapT = THREE.RepeatWrapping;
-
-    this.shaderMaterial = new THREE.ShaderMaterial({
-        uniforms:       this.uniforms,
-        attributes:     this.attributes,
-        vertexShader:   document.getElementById('vertexshader').textContent,
-        fragmentShader: document.getElementById('fragmentshader').textContent,
-        blending: THREE.AdditiveBlending,
-        transparent: true
-    });
-
-    // Modify attributes of shader on per-particle basis
-    var sizes = this.attributes.size.value;
-    var colors = this.attributes.ca.value;
-
-    for (var v = 0; v < this.mesh.geometry.vertices.length; v += 1) {
-        sizes.push(10);
-        //sizes.push(Math.random() * 10 + 5);
-        colors[v] = new THREE.Color(0xffffff);
-    }
-
-    this.bikeParticleSystem = new THREE.ParticleSystem(this.particles, this.shaderMaterial);
-    this.bikeParticleSystem.sortParticles = true;
-    this.bikeParticleSystem.dynamic = true;
-    this.bikeParticleSystem.geometry.__dirtyVertices = true;
-
-    window.scene.add(this.bikeParticleSystem);
+    // Create effect
+    this.DerezzEffect = new Derezz(particles);
 };
 
 Player.prototype.getPosition = function () {
@@ -168,14 +130,6 @@ Player.prototype.update = function (dt) {
         this.trail.update(this.position);
     }
     else{
-
-        for (var i = 0; i < this.particles.vertices.length; i += 1)
-        {
-            particle = this.particles.vertices[i];
-
-            particle.position.z += Math.random() * 15;
-        }
-
-        this.bikeParticleSystem.geometry.__dirtyVertices = true;
+        this.DerezzEffect.update(dt);
     }
 };
