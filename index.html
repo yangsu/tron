@@ -53,11 +53,12 @@
   <script src="js/Player.js"></script>
   <script src="js/ItemManager.js"></script>
   <script src="js/ParticleEngine.js"></script>
+  <script src="js/CollisionManager.js"></script>
   <script src="js/LightCycleTrail.js"></script>
   <script src="js/SkyBox.js"></script>
   <script src="js/Detector.js"></script>
   <script src="js/script.js?v=5"></script>
-  
+
   <script src="js/Sound.js"></script>
 
   <script src="js/postprocessing/EffectComposer.js"></script>
@@ -72,7 +73,7 @@
 		attribute float size;
 		attribute vec3 ca;
 		varying vec3 vColor;
-		
+
 		void main(){
 			vColor = ca;
 			vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
@@ -83,9 +84,9 @@
 	<script type="x-shader/x-fragment" id="fragmentshader">
 		uniform vec3 color;
 		uniform sampler2D texture;
-		
+
 		varying vec3 vColor;
-		
+
 		void main(){
 			//gl_FragColor = vec4(color, 1.0);
 			gl_FragColor = vec4(color*vColor, 1.0);

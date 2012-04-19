@@ -113,7 +113,7 @@ Tunnel.prototype.generateSection = function (startZ) {
 };
 
 Tunnel.prototype.getFace = function (i, j) {
-    if (i <= this.segments.length && i >= 0) {
+    if (i <= this.segments.length && i > this.oldestLiveSection) {
         return this.segments[i].getFace(j);
     } else {
         console.log('Error: Tunnel getFace(' + i + ',' + j + ') index out of bounds');
@@ -125,6 +125,7 @@ function TunnelSegment(startZ, materials, imageData) {
     this.geometry = new THREE.Geometry();
     this.geometry.dynamic = true;
     this.geometry.materials = materials;
+    this.faces = [];
 
     // var deltaTheta = 2 * Math.PI / CONFIG.tunnelResolution,
     var deltaTheta = 2 * Math.PI / imageData.length,
@@ -169,6 +170,7 @@ function TunnelSegment(startZ, materials, imageData) {
 
             face.materialIndex = 0;
             this.geometry.faces.push(face);
+            this.faces[i] = face;
 
             // Configure UV Texturing coord data
             faceuv = [
@@ -188,8 +190,8 @@ function TunnelSegment(startZ, materials, imageData) {
 }
 
 TunnelSegment.prototype.getFace = function (i) {
-    if (i <= this.geometry.faces.length && i >= 0) {
-        return this.geometry.faces[i];
+    if (i <= this.faces.length && i >= 0) {
+        return this.faces[i];
     } else {
         console.log('Error: TunnelSegment getFace(' + i + ') index out of bounds');
         return null;

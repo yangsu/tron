@@ -10,6 +10,7 @@ $(document).ready(function () {
         tunnel, player,
         lastUpdate,
         itemManager,
+        collisionManager,
         particleManager,
         mouseX = window.innerWidth/2,
         mouseY = window.innerHeight/2,
@@ -60,6 +61,7 @@ $(document).ready(function () {
         player = new Player();
 
         itemManager = new ItemManager();
+        collisionManager = new CollisionManager(tunnel, player, itemManager);
         particleManager = new ParticleEngine();
 
         skybox = new SkyBox();
@@ -185,6 +187,7 @@ $(document).ready(function () {
         tunnel.update();
         player.update(dt);
         itemManager.update();
+        collisionManager.update();
         particleManager.update();
 
         // camera.position.z += CONFIG.cameraVel.z * dt;
