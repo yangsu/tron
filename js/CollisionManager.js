@@ -11,6 +11,7 @@ CollisionManager.prototype.update = function (dt) {
         pposcart = ppos.convertToCartesian(),
         theta = Math.abs(ppos.theta) % TWOPI,
         face = null;
+    pposcart.z -= player.boundingSphere.offset;
 
     this.i = Math.floor(Math.abs(ppos.z) / CONFIG.tunnelSegmentDepth);
     this.j = Math.floor(theta / (TWOPI / this.tunnel.width));
@@ -62,6 +63,7 @@ CollisionManager.prototype.boundingBoxHitTest = function (first, firstpos, secon
         return UTIL.boxTest(coord, firstmin, firstmax);
     });
 };
+
 CollisionManager.prototype.boundingSphereHitTest = function (first, firstBoundingSphere, second, secondBoundingSphere) {
     if (!first || !firstBoundingSphere || !second || !secondBoundingSphere) return false;
     return first.distanceTo(second) <= (firstBoundingSphere.radius + secondBoundingSphere.radius);

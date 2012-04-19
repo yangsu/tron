@@ -32,8 +32,14 @@ function Player() {
         __self.mesh.scale.set(3, 3, 3);
         __self.mesh.geometry.computeBoundingBox();
         __self.boundingBox = __self.mesh.geometry.boundingBox;
-        __self.mesh.geometry.computeBoundingSphere();
-        __self.boundingSphere = __self.mesh.geometry.boundingSphere;
+        // __self.mesh.geometry.computeBoundingSphere();
+        // __self.boundingSphere = __self.mesh.geometry.boundingSphere;
+        var temp = __self.boundingBox.max.clone().subSelf(__self.boundingBox.min);
+        __self.boundingSphere = {
+            radius: Math.max(temp.x, temp.y)/2,
+            offset: temp.z * 3 - Math.max(temp.x, temp.y)/2
+        };
+
         window.scene.add(__self.mesh);
 
         __self.glowMesh = new THREE.Mesh(geometry, __self.glowMaterial);
@@ -132,7 +138,7 @@ Player.prototype.decelerate = function () {
 
 Player.prototype.jump = function(){
     this.velocity.radius = CONFIG.defaultPlayerJumpVel;
-}
+};
 
 Player.prototype.resetForwardAcceleration = function () {
     this.targetVelocity.z = CONFIG.playerDefaultForwardVel;
