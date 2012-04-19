@@ -11,6 +11,7 @@ $(document).ready(function () {
     var camera, renderer,
         finalComposer, glowcomposer, renderTarget,
         tunnel, player,
+        timeLeft,
         lastUpdate,
         itemManager,
         collisionManager,
@@ -39,7 +40,7 @@ $(document).ready(function () {
             window.isMobileDevice = false;
         }
           
-        
+        timeLeft = 100.0;
         lastUpdate = UTIL.now();
 
         // Scene Initialization
@@ -202,6 +203,9 @@ $(document).ready(function () {
         var now = UTIL.now(),
             dt = (now - lastUpdate) / 1000;
 
+        timeLeft -= dt;
+        $('#timerdiv').html('Timer: ' + timeLeft.toFixed(2));
+        
         levelProgress = player.getPosition().z;
 
         // Call update methods to produce animation
