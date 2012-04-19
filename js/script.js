@@ -2,7 +2,7 @@
  * @author Troy Ferrell & Yang Su
  */
 
-var scene, glowscene, levelProgress;
+var scene, glowscene, levelProgress, isMobileDevice;
 
 // CONSTANTS
 TWOPI = 2 * Math.PI;
@@ -29,7 +29,17 @@ $(document).ready(function () {
             Detector.addGetWebGLMessage();
             return;
         }
-
+        
+        if ((navigator.userAgent.indexOf('iPhone') != -1) 
+            || (navigator.userAgent.indexOf('iPod') != -1) 
+            || (navigator.userAgent.indexOf('iPad') != -1)){
+            window.isMobileDevice = true;    
+        }
+        else{
+            window.isMobileDevice = false;
+        }
+          
+        
         lastUpdate = UTIL.now();
 
         // Scene Initialization
@@ -66,12 +76,16 @@ $(document).ready(function () {
         itemManager = new ItemManager();
         collisionManager = new CollisionManager(tunnel, player, itemManager);
         particleManager = new ParticleEngine();
-
         skybox = new SkyBox();
-
+        
         // Renderer Initialization
         renderer = new THREE.WebGLRenderer(CONFIG.renderer);
         renderer.autoClear = false;
+        if ((navigator.userAgent.indexOf('iPhone') != -1) || (navigator.userAgent.indexOf('iPod') != -1) || (navigator.userAgent.indexOf('iPad') != -1))
+        {
+            renderer.autoClear = true;
+        }
+        
         renderer.setSize(WIDTH, HEIGHT);
         renderer.setClearColorHex(CONFIG.background, 1.0);
         renderer.clear();
@@ -172,9 +186,13 @@ $(document).ready(function () {
         if (started && !paused && tunnelInitialized) {
             update();
 
-            //renderer.render(scene, camera);
-            glowcomposer.render(0.1);
-            finalcomposer.render(0.1);
+            if(window.isMobileDevice){
+                renderer.render(scene, camera);
+            }
+            else{
+                glowcomposer.render(0.1);
+                finalcomposer.render(0.1);
+            }
         }
         // note: three.js includes requestAnimationFrame shim
         requestAnimationFrame(animate);
@@ -195,7 +213,6 @@ $(document).ready(function () {
 
         checkCollisions();
         
-
         // camera.position.z += CONFIG.cameraVel.z * dt;
         // TODO: Temp solution by placing camera with an offset from player
 
@@ -243,9 +260,9 @@ $(document).ready(function () {
 
         //$('#score').html(event.accelerationIncludingGravity.x);
 
-        if (event.accelerationIncludingGravity.x > 1.75) {
+        if (event.accelerationIncludingGravity.x > 2.75) {
             player.accelerateRight();
-        } else if (event.accelerationIncludingGravity.x < -1.75) {
+        } else if (event.accelerationIncludingGravity.x < -2.75) {
             player.accelerateLeft();
         }
 

@@ -101,39 +101,45 @@ function ParticleEngine() {
 
     window.scene.add(this.particleSystem);
     
-    // Initialize BgMusic
-    var __self = this;
-    
-    //var bgMusic = new Audio("sounds/TronMusic1.mp3");
-    var bgMusic = new Sound("sounds/TronMusic1.mp3");
-    bgMusic.volume(0.7);
-    bgMusic.on('load', function(){
-        // set intialized sound
-    });
-    
-    bgMusic.on('audioprocess', function(input){
-       var bars = input.length; 
-       
-       var i = 0, vertex, index, percentage; 
-       for(i = 0; i < __self.attributes.size.value.length; i++){
-          // __self.attributes.size.value[i] = newSize;
+    this.loadMusic();
+}
+
+ParticleEngine.prototype.loadMusic = function(){
+    if(!window.isMobileDevice){
+        // Initialize BgMusic
+        var __self = this;
+        
+        //var bgMusic = new Audio("sounds/TronMusic1.mp3");
+        var bgMusic = new Sound("sounds/TronMusic1.mp3");
+        bgMusic.volume(0.7);
+        bgMusic.on('load', function(){
+            // set intialized sound
+        });
+        
+        bgMusic.on('audioprocess', function(input){
+           var bars = input.length; 
            
-           vertex = __self.particles.vertices[i];
-           percentage = Math.abs(vertex.position.z)/Math.abs(window.levelProgress - CONFIG.viewDistance*20);
-           index = bars - 1 - Math.floor( percentage * bars);
+           var i = 0, vertex, index, percentage; 
+           for(i = 0; i < __self.attributes.size.value.length; i++){
+              // __self.attributes.size.value[i] = newSize;
+               
+               vertex = __self.particles.vertices[i];
+               percentage = Math.abs(vertex.position.z)/Math.abs(window.levelProgress - CONFIG.viewDistance*20);
+               index = bars - 1 - Math.floor( percentage * bars);
+               
+               __self.attributes.size.value[i] = input[index]/50;
+                //vertex.position.addSelf();
+           }
+           __self.attributes.size.needsUpdate = true;
            
-           __self.attributes.size.value[i] = input[index]/50;
-            //vertex.position.addSelf();
-       }
-       __self.attributes.size.needsUpdate = true;
-       
-    });
-    
-    bgMusic.on('progress', function(loaded, total){
-        var progress = loaded / total;
-    });
-    
-    bgMusic.play();
+        });
+        
+        bgMusic.on('progress', function(loaded, total){
+            var progress = loaded / total;
+        });
+        
+        bgMusic.play();
+    }
 }
 
 // NEed to refactor code
