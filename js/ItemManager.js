@@ -38,6 +38,10 @@ ItemManager.prototype.update = function () {
       // TODO: delete past items too far back
         item.update();
     });
+    
+    if(Math.random() < 0.05){
+        this.genRandom(true);
+    }
 };
 
 ItemManager.prototype.remove = function (i) {
@@ -47,7 +51,7 @@ ItemManager.prototype.remove = function (i) {
     }
 };
 
-ItemManager.prototype.genRandom = function () {
+ItemManager.prototype.genRandom = function (PowerUpGeometry) {
     var theta, curve;
     if (PowerUpGeometry) {
         //var theta = -Math.PI/2;
@@ -60,16 +64,17 @@ ItemManager.prototype.genRandom = function () {
 
         this.generateItems('powerup', curve, 1);
     }
-
-    //var theta = -Math.PI/2;
-    theta = 2 * Math.PI * Math.random();
-    curve = new THREE.QuadraticBezierCurve(
-        theta, window.levelProgress - CONFIG.viewDistance,
-        theta + Math.PI / 2, window.levelProgress - CONFIG.viewDistance * 1.5,
-        theta + Math.PI, window.levelProgress - CONFIG.viewDistance * 2
-    );
-
-    this.generateItems('credit', curve, 10);
+    else{
+        //var theta = -Math.PI/2;
+        theta = 2 * Math.PI * Math.random();
+        curve = new THREE.QuadraticBezierCurve(
+            theta, window.levelProgress - CONFIG.viewDistance,
+            theta + Math.PI / 2, window.levelProgress - CONFIG.viewDistance * 1.5,
+            theta + Math.PI, window.levelProgress - CONFIG.viewDistance * 2
+        );
+    
+        this.generateItems('credit', curve, 10);
+    }
 };
 
 var PowerUpGeometry = null;
@@ -94,7 +99,8 @@ function PowerUp(pos) {
     this.boundingBox = this.mesh.geometry.boundingBox;
     this.mesh.geometry.computeBoundingSphere();
     this.boundingSphere = this.mesh.geometry.boundingSphere;
-
+    this.boundingSphere.radius *= 3;
+    
     window.scene.add(this.mesh);
 }
 

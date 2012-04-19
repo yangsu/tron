@@ -87,6 +87,8 @@ CollisionManager.prototype.boundingSphereHitTest = function (first, firstBoundin
 CollisionManager.prototype.boundingCylinderHitTest = function (playerPos, playerBoundingCylinder, item, itemBoundingSphere) {
     if (!playerPos || !playerBoundingCylinder || !item || !itemBoundingSphere) return false;
     return UTIL.lateralDistance(item, playerPos) <= (playerBoundingCylinder.radius + itemBoundingSphere.radius) &&
-           (item.z - playerPos.z - itemBoundingSphere.radius) >= playerBoundingCylinder.minz &&
-           (item.z - playerPos.z + itemBoundingSphere.radius) <= playerBoundingCylinder.maxz;
+            (item.z + itemBoundingSphere.radius) >= (playerBoundingCylinder.minz + playerPos.z) &&
+            (item.z - itemBoundingSphere.radius) <= (playerBoundingCylinder.maxz + playerPos.z);
+          // (item.z - playerPos.z - itemBoundingSphere.radius) >= playerBoundingCylinder.minz &&
+           //(item.z - playerPos.z + itemBoundingSphere.radius) <= playerBoundingCylinder.maxz;
 };

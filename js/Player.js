@@ -40,6 +40,7 @@ function Player() {
             radius: Math.max(temp.x, temp.y)/2,
             offset: temp.z * scale - Math.max(temp.x, temp.y)/2
         };
+        
         __self.boundingCylinder = {
             minz : box.min.z * scale,
             maxz : box.max.z * scale,
