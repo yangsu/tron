@@ -11,13 +11,21 @@ CollisionManager.prototype.update = function (dt) {
         pposcart = ppos.convertToCartesian(),
         theta = Math.abs(ppos.theta) % TWOPI,
         face = null;
+        
+        if(ppos.theta < 0)
+        {
+            theta = TWOPI - theta;// 360 - 80
+        }
 
     this.i = Math.floor(Math.abs(ppos.z) / CONFIG.tunnelSegmentDepth);
-    this.j = Math.floor(theta / (TWOPI / this.tunnel.width));
+    this.j = Math.floor((theta/TWOPI) * this.tunnel.width );
+    //this.j = Math.floor(theta / (TWOPI / this.tunnel.width));
     face = this.tunnel.getFace(this.i, this.j);
     if (!face) {
+        log("off");
         // Not on a tunnel face
     } else {
+        log("on");
         // on a tunnel face
     }
 
