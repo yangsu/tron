@@ -29,6 +29,12 @@ var CONFIG = {
     'playerDefaulTargetVel' : UTIL.v3c(0, 0, -150),
     'defaultPlayerJumpVel' : -450,
     'playerGravityAcceleration' : 850,
+    'playerGlowMaterial' : new THREE.MeshPhongMaterial({
+        map: THREE.ImageUtils.loadTexture('img/LightCycle_Glow.png'),
+        ambient: 0xFFFFFF,
+        color: 0x000000
+    }),
+    'playerGeometry' : null,
 
     // Tunnel Settings
     'tunnelRadius' : 100,
@@ -52,5 +58,32 @@ var CONFIG = {
     'lightColor' : 0xFFFFFF,
     'lightIntensity' : 0.55,
     'lightRange' : 800,
-    'lightIntensityStep' : 0.05
+    'lightIntensityStep' : 0.05,
+
+    // Items Settings
+    'PowerUpMesh' : null,
+    'PowerUpMaterial' : new THREE.MeshLambertMaterial({
+        map: THREE.ImageUtils.loadTexture('img/LightDisk.png'),
+        transparent : false
+    }),
+
+    'init' : function (callback) {
+        var testFinished = function() {
+            if (_.all(CONFIG, function(value, key) {
+                return (value !== null && value !== undefined);
+            })) {
+                console.log('finished');
+                callback();
+            }
+        };
+
+        new THREE.JSONLoader().load('obj/LightDisk.js', function (geometry) {
+            CONFIG.PowerUpMesh = geometry;
+            testFinished();
+        });
+        new THREE.JSONLoader().load('obj/LightCycle.js', function (geometry) {
+            CONFIG.playerGeometry = geometry;
+            testFinished();
+        });
+    }
 };

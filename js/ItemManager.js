@@ -38,7 +38,7 @@ ItemManager.prototype.update = function () {
       // TODO: delete past items too far back
         item.update();
     });
-    
+
     if(Math.random() < 0.05){
         this.genRandom(true);
     }
@@ -51,9 +51,9 @@ ItemManager.prototype.remove = function (i) {
     }
 };
 
-ItemManager.prototype.genRandom = function (PowerUpGeometry) {
+ItemManager.prototype.genRandom = function () {
     var theta, curve;
-    if (PowerUpGeometry) {
+    if (CONFIG.PowerUpMesh) {
         //var theta = -Math.PI/2;
         theta = 360 * Math.random();
         curve = new THREE.QuadraticBezierCurve(
@@ -72,25 +72,16 @@ ItemManager.prototype.genRandom = function (PowerUpGeometry) {
             theta + Math.PI / 2, window.levelProgress - CONFIG.viewDistance * 1.5,
             theta + Math.PI, window.levelProgress - CONFIG.viewDistance * 2
         );
-    
+
         this.generateItems('credit', curve, 10);
     }
 };
-
-var PowerUpGeometry = null;
-var PowerUpMaterial = new THREE.MeshLambertMaterial({
-    map: THREE.ImageUtils.loadTexture('img/LightDisk.png'),
-    transparent : false
-});
-new THREE.JSONLoader().load('obj/LightDisk.js', function (geometry) {
-    PowerUpGeometry = geometry;
-});
 
 function PowerUp(pos) {
     this.mesh = null;
     this.position = pos;
 
-    this.mesh = new THREE.Mesh(PowerUpGeometry, PowerUpMaterial);
+    this.mesh = new THREE.Mesh(CONFIG.PowerUpMesh, CONFIG.PowerUpMaterial);
     this.mesh.scale.set(3, 3, 3);
     this.mesh.position = this.position;
     this.mesh.rotation.x = Math.PI / 2;
@@ -100,7 +91,7 @@ function PowerUp(pos) {
     this.mesh.geometry.computeBoundingSphere();
     this.boundingSphere = this.mesh.geometry.boundingSphere;
     this.boundingSphere.radius *= 3;
-    
+
     window.scene.add(this.mesh);
 }
 

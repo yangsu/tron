@@ -20,6 +20,7 @@ $(document).ready(function () {
         started = false,
         paused = false,
         tunnelInitialized = false,
+        resourcesLoaded = false,
         startmenu = $('#startmenu'),
         ingamemenu = $('#ingamemenu');
 
@@ -31,7 +32,6 @@ $(document).ready(function () {
         }
 
         lastUpdate = UTIL.now();
-
         // Scene Initialization
         var OFFSET = 6,
             WIDTH = window.innerWidth - OFFSET,
@@ -57,14 +57,16 @@ $(document).ready(function () {
         glowscene.add(new THREE.AmbientLight(0xFFFFFF));
 
         // Objects
+        CONFIG.init(function () {
+            resourcesLoaded = true;
+            // Player depends on the resources to be loaded
+            player = new Player();
+            collisionManager = new CollisionManager(tunnel, player, itemManager);
+        });
         tunnel = new Tunnel(function () {
             tunnelInitialized = true;
         });
-
-        player = new Player();
-
         itemManager = new ItemManager();
-        collisionManager = new CollisionManager(tunnel, player, itemManager);
         particleManager = new ParticleEngine();
 
         skybox = new SkyBox();
@@ -169,7 +171,7 @@ $(document).ready(function () {
     }
 
     function animate() {
-        if (started && !paused && tunnelInitialized) {
+        if (started && !paused && tunnelInitialized && resourcesLoaded) {
             update();
 
             //renderer.render(scene, camera);

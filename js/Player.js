@@ -3,9 +3,6 @@
  */
 
 function Player() {
-    var __self,
-        loader;
-
     this.trail = new Trail();
 
     this.position = CONFIG.playerPos.clone();
@@ -19,43 +16,36 @@ function Player() {
         map: THREE.ImageUtils.loadTexture('img/LightCycle_TextureTest1.png'),
         transparent : false
     });
-    this.glowMaterial = new THREE.MeshPhongMaterial({
-        map: THREE.ImageUtils.loadTexture('img/LightCycle_Glow.png'),
-        ambient: 0xFFFFFF,
-        color: 0x000000
-    });
-    __self = this;
-    loader = new THREE.JSONLoader();
-    loader.load('obj/LightCycle.js', function (geometry) {
-        var scale = CONFIG.playerScale;
-        __self.mesh = new THREE.Mesh(geometry, __self.material);
-        __self.mesh.scale.set(scale, scale, scale);
-        __self.mesh.geometry.computeBoundingBox();
-        __self.boundingBox = __self.mesh.geometry.boundingBox;
-        // __self.mesh.geometry.computeBoundingSphere();
-        // __self.boundingSphere = __self.mesh.geometry.boundingSphere;
-        var box = __self.boundingBox,
-            temp = box.max.clone().subSelf(box.min);
-        __self.boundingSphere = {
-            radius: Math.max(temp.x, temp.y)/2,
-            offset: temp.z * scale - Math.max(temp.x, temp.y)/2
-        };
-        
-        __self.boundingCylinder = {
-            minz : box.min.z * scale,
-            maxz : box.max.z * scale,
-            radius : Math.max(temp.x, temp.y)/2
-        };
+    this.glowMaterial = CONFIG.playerGlowMaterial;
 
-        window.scene.add(__self.mesh);
+    var scale = CONFIG.playerScale;
+    this.mesh = new THREE.Mesh(CONFIG.playerGeometry, this.material);
+    this.mesh.scale.set(scale, scale, scale);
+    this.mesh.geometry.computeBoundingBox();
+    this.boundingBox = this.mesh.geometry.boundingBox;
+    // this.mesh.geometry.computeBoundingSphere();
+    // this.boundingSphere = this.mesh.geometry.boundingSphere;
+    var box = this.boundingBox,
+        temp = box.max.clone().subSelf(box.min);
+    this.boundingSphere = {
+        radius: Math.max(temp.x, temp.y)/2,
+        offset: temp.z * scale - Math.max(temp.x, temp.y)/2
+    };
 
-        __self.glowMesh = new THREE.Mesh(geometry, __self.glowMaterial);
-        __self.glowMesh.scale = __self.mesh.scale;
-        __self.glowMesh.overdraw = true;
-        window.glowscene.add(__self.glowMesh);
+    this.boundingCylinder = {
+        minz : box.min.z * scale,
+        maxz : box.max.z * scale,
+        radius : Math.max(temp.x, temp.y)/2
+    };
 
-        __self.updatePosition();
-    });
+    window.scene.add(this.mesh);
+
+    this.glowMesh = new THREE.Mesh(CONFIG.playerGeometry, this.glowMaterial);
+    this.glowMesh.scale = this.mesh.scale;
+    this.glowMesh.overdraw = true;
+    window.glowscene.add(this.glowMesh);
+
+    this.updatePosition();
 }
 
 Player.prototype.Derezz = function () {
