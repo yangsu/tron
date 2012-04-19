@@ -21,14 +21,28 @@ CollisionManager.prototype.update = function (dt) {
         // on a tunnel face
     }
 
+    // Bounding box
+    // _.each(this.itemmanager.gameItems, function (item) {
+    //     if (CollisionManager.prototype.boundingBoxHitTest(
+    //             player.boundingBox,
+    //             pposcart,
+    //             item.boundingBox,
+    //             item.position
+    //         )) {
+    //         $('#score').html('hit');
+    //     } else {
+    //         $('#score').html('not');
+    //     }
+    // });
+    // Bounding Spheres
     _.each(this.itemmanager.gameItems, function (item) {
-        if (CollisionManager.prototype.boundingBoxHitTest(
-                player.boundingBox,
+        if (CollisionManager.prototype.boundingSphereHitTest(
                 pposcart,
-                item.boundingBox,
-                item.position
+                player.boundingSphere,
+                item.position,
+                item.boundingSphere
             )) {
-            console.log('hit');
+            __self.itemmanager.remove(item.id);
         }
     });
 };
@@ -47,4 +61,8 @@ CollisionManager.prototype.boundingBoxHitTest = function (first, firstpos, secon
     }) || _.any(secondcoords, function (coord) {
         return UTIL.boxTest(coord, firstmin, firstmax);
     });
+};
+CollisionManager.prototype.boundingSphereHitTest = function (first, firstBoundingSphere, second, secondBoundingSphere) {
+    if (!first || !firstBoundingSphere || !second || !secondBoundingSphere) return false;
+    return first.distanceTo(second) <= (firstBoundingSphere.radius + secondBoundingSphere.radius);
 };
