@@ -5,7 +5,9 @@ function CollisionManager(tunnel, player, itemmanager) {
 }
 
 CollisionManager.prototype.update = function (dt) {
-    var ppos = this.player.position,
+    var __self = this,
+        player = this.player,
+        ppos = player.position,
         pposcart = ppos.convertToCartesian(),
         theta = Math.abs(ppos.theta) % TWOPI,
         face = null;
@@ -20,18 +22,29 @@ CollisionManager.prototype.update = function (dt) {
     }
 
     _.each(this.itemmanager.gameItems, function (item) {
-        if (this.boundingBoxHitTest(this.player.boundingBox, item.boundingBox)) {
+        if (CollisionManager.prototype.boundingBoxHitTest(
+                player.boundingBox,
+                pposcart,
+                item.boundingBox,
+                item.position
+            )) {
             console.log('hit');
         }
     });
 };
 
-CollisionManager.prototype.boundingBoxHitTest = function (first, second) {
-    var firstcoords = UTIL.generateBoxCoord(first),
-        secondcoords = UTIL.generateBoxCoord(second);
+CollisionManager.prototype.boundingBoxHitTest = function (first, firstpos, second, secondpos) {
+    if (!first || !second || !firstpos || !secondpos) return false;
+    if (!first.min || !second.min || !first.max || !second.max || !firstpos || !secondpos) debugger;
+    var firstmin = first.min.clone().addSelf(firstpos);
+    var firstmax = first.max.clone().addSelf(firstpos);
+    var firstcoords = UTIL.generateBoxCoord(firstmin, firstmax);
+    var secondmin = second.min.clone().addSelf(secondpos);
+    var secondmax = second.max.clone().addSelf(secondpos);
+    var secondcoords = UTIL.generateBoxCoord(secondmin, secondmax);
     return _.any(firstcoords, function (coord) {
-        return UTIL.boxTest(coord, second.min, second.max);
+        return UTIL.boxTest(coord, secondmin, secondmax);
     }) || _.any(secondcoords, function (coord) {
-        return UTIL.boxTest(coord, first.min, first.max);
+        return UTIL.boxTest(coord, firstmin, firstmax);
     });
 };

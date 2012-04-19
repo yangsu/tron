@@ -30,7 +30,8 @@ function Player() {
 
         __self.mesh = new THREE.Mesh(geometry, __self.material);
         __self.mesh.scale.set(3, 3, 3);
-        __self.boundingBox = __self.mesh.geometry.computeBoundingBox();
+        __self.mesh.geometry.computeBoundingBox();
+        __self.boundingBox = __self.mesh.geometry.boundingBox;
         window.scene.add(__self.mesh);
 
         __self.glowMesh = new THREE.Mesh(geometry, __self.glowMaterial);
