@@ -10,13 +10,13 @@ function Trail() {
     var theta = CONFIG.playerPos.theta,
         z = CONFIG.playerPos.z,
         startBottomVertex = UTIL.vtx3(
-            (CONFIG.playerPos.radius + CONFIG.trailRadiusOffset) * Math.cos(theta),
-            (CONFIG.playerPos.radius + CONFIG.trailRadiusOffset) * Math.sin(theta),
+            (CONFIG.playerPos.radius + CONFIG.trailHeight) * Math.cos(theta),
+            (CONFIG.playerPos.radius + CONFIG.trailHeight) * Math.sin(theta),
             z
         ),
         startTopVertex = UTIL.vtx3(
-            (CONFIG.playerPos.radius - CONFIG.trailRadiusOffset) * Math.cos(theta),
-            (CONFIG.playerPos.radius - CONFIG.trailRadiusOffset) * Math.sin(theta),
+            (CONFIG.playerPos.radius - CONFIG.trailHeight) * Math.cos(theta),
+            (CONFIG.playerPos.radius - CONFIG.trailHeight) * Math.sin(theta),
             z
         ),
         startTunnelSegment = new TrailSegment(startTopVertex, startBottomVertex, CONFIG.playerPos);
@@ -58,6 +58,8 @@ Trail.prototype.update = function (playerPosition) {
 };
 
 Trail.prototype.generateSegment = function (playerPosition) {
+    // Add offset so the trail originates from the back
+    playerPosition.z += CONFIG.trailMeshOffest;
     var newSegment = new TrailSegment(
             this.lastSegment.frontTopVertex,
             this.lastSegment.frontBottomVertex,
@@ -90,13 +92,13 @@ function TrailSegment(lastVertexTop, lastVertexBottom, playerPos) {
 
     // Define forward two vertices
     this.frontBottomVertex =  UTIL.vtx3(
-        (playerPos.radius + CONFIG.trailRadiusOffset) * Math.cos(theta),
-        (playerPos.radius + CONFIG.trailRadiusOffset) * Math.sin(theta),
+        (playerPos.radius + CONFIG.trailHeight) * Math.cos(theta),
+        (playerPos.radius + CONFIG.trailHeight) * Math.sin(theta),
         z
     );
     this.frontTopVertex = UTIL.vtx3(
-        (playerPos.radius - CONFIG.trailRadiusOffset) * Math.cos(theta),
-        (playerPos.radius - CONFIG.trailRadiusOffset) * Math.sin(theta),
+        (playerPos.radius - CONFIG.trailHeight) * Math.cos(theta),
+        (playerPos.radius - CONFIG.trailHeight) * Math.sin(theta),
         z
     );
 

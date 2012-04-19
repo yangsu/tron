@@ -17,13 +17,13 @@ var CONFIG = {
     'viewDistance' : 1000,
 
     // Player Settings
+    'playerScale' : 3,
     'playerForwardVelMultiplier' : 0.05,
     'playerDefaultForwardVel' : -150,
     'playerMaxForwardVel' : -600,
     'playerMinForwardVel' : 0,
     'playerLateralVelMultiplier' : 0.25,
     'playerMaxLateralVel' : Math.PI,
-    'playerMeshOffest' : -45,
     'playerPos' : UTIL.v3c(75, 1.5 * Math.PI, 0),
     'playerDefaulVel' : UTIL.v3c(1, 0, -150),
     'playerDefaulTargetVel' : UTIL.v3c(0, 0, -150),
@@ -43,8 +43,9 @@ var CONFIG = {
     'tunnelLiveSections' : 15, // should be 1 + cameraFar/(segdepth * seg/sec)
 
     // Trail Settings
+    'trailMeshOffest' : 45,
     'trailLiveSections' : 35,
-    'trailRadiusOffset' : 5,
+    'trailHeight' : 5,
 
     // Light Ring Settings
     'lightRingCount' : 8,

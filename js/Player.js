@@ -27,11 +27,25 @@ function Player() {
     __self = this;
     loader = new THREE.JSONLoader();
     loader.load('obj/LightCycle.js', function (geometry) {
-
+        var scale = CONFIG.playerScale;
         __self.mesh = new THREE.Mesh(geometry, __self.material);
-        __self.mesh.scale.set(3, 3, 3);
+        __self.mesh.scale.set(scale, scale, scale);
         __self.mesh.geometry.computeBoundingBox();
         __self.boundingBox = __self.mesh.geometry.boundingBox;
+        // __self.mesh.geometry.computeBoundingSphere();
+        // __self.boundingSphere = __self.mesh.geometry.boundingSphere;
+        var box = __self.boundingBox,
+            temp = box.max.clone().subSelf(box.min);
+        __self.boundingSphere = {
+            radius: Math.max(temp.x, temp.y)/2,
+            offset: temp.z * scale - Math.max(temp.x, temp.y)/2
+        };
+        __self.boundingCylinder = {
+            minz : box.min.z * scale,
+            maxz : box.max.z * scale,
+            radius : Math.max(temp.x, temp.y)/2
+        };
+
         window.scene.add(__self.mesh);
 
         __self.glowMesh = new THREE.Mesh(geometry, __self.glowMaterial);
@@ -102,9 +116,6 @@ Player.prototype.move = function (dt) {
 Player.prototype.updatePosition = function () {
     if (this.mesh !== null) {
         this.mesh.position = this.position.convertToCartesian();
-        // Offset mesh so the back of the mesh at the current position
-        this.mesh.position.z += CONFIG.playerMeshOffest;
-
         // Update Glow Mesh
         this.glowMesh.rotation = this.mesh.rotation;
         this.glowMesh.position = this.mesh.position;
@@ -129,7 +140,7 @@ Player.prototype.decelerate = function () {
 
 Player.prototype.jump = function(){
     this.velocity.radius = CONFIG.defaultPlayerJumpVel;
-}
+};
 
 Player.prototype.resetForwardAcceleration = function () {
     this.targetVelocity.z = CONFIG.playerDefaultForwardVel;
@@ -143,7 +154,7 @@ Player.prototype.update = function (dt) {
 
     if(this.isAlive) {
         this.move(dt);
-        this.trail.update(this.position);
+        this.trail.update(this.position.clone());
     }
     else{
         this.DerezzEffect.update(dt);

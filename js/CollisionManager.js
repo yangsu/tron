@@ -21,16 +21,46 @@ CollisionManager.prototype.update = function (dt) {
         // on a tunnel face
     }
 
+    // Bounding box
+    // _.each(this.itemmanager.gameItems, function (item) {
+    //     if (CollisionManager.prototype.boundingBoxHitTest(
+    //             player.boundingBox,
+    //             pposcart,
+    //             item.boundingBox,
+    //             item.position
+    //         )) {
+    //         $('#score').html('hit');
+    //     } else {
+    //         $('#score').html('not');
+    //     }
+    // });
+
+    // Bounding Spheres
+    // Bounding Sphere hack
+    // pposcart.z -= player.boundingSphere.offset;
+    // _.each(this.itemmanager.gameItems, function (item) {
+    //     if (CollisionManager.prototype.boundingSphereHitTest(
+    //             pposcart,
+    //             player.boundingSphere,
+    //             item.position,
+    //             item.boundingSphere
+    //         )) {
+    //         __self.itemmanager.remove(item.id);
+    //     }
+    // });
+
+    // Bounding Cylinder
     _.each(this.itemmanager.gameItems, function (item) {
-        if (CollisionManager.prototype.boundingBoxHitTest(
-                player.boundingBox,
+        if (CollisionManager.prototype.boundingCylinderHitTest(
                 pposcart,
-                item.boundingBox,
-                item.position
+                player.boundingCylinder,
+                item.position,
+                item.boundingSphere
             )) {
-            console.log('hit');
+            __self.itemmanager.remove(item.id);
         }
     });
+
 };
 
 CollisionManager.prototype.boundingBoxHitTest = function (first, firstpos, second, secondpos) {
@@ -47,4 +77,16 @@ CollisionManager.prototype.boundingBoxHitTest = function (first, firstpos, secon
     }) || _.any(secondcoords, function (coord) {
         return UTIL.boxTest(coord, firstmin, firstmax);
     });
+};
+
+CollisionManager.prototype.boundingSphereHitTest = function (first, firstBoundingSphere, second, secondBoundingSphere) {
+    if (!first || !firstBoundingSphere || !second || !secondBoundingSphere) return false;
+    return first.distanceTo(second) <= (firstBoundingSphere.radius + secondBoundingSphere.radius);
+};
+
+CollisionManager.prototype.boundingCylinderHitTest = function (playerPos, playerBoundingCylinder, item, itemBoundingSphere) {
+    if (!playerPos || !playerBoundingCylinder || !item || !itemBoundingSphere) return false;
+    return UTIL.lateralDistance(item, playerPos) <= (playerBoundingCylinder.radius + itemBoundingSphere.radius) &&
+           (item.z - playerPos.z - itemBoundingSphere.radius) >= playerBoundingCylinder.minz &&
+           (item.z - playerPos.z + itemBoundingSphere.radius) <= playerBoundingCylinder.maxz;
 };
