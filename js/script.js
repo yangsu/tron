@@ -190,8 +190,11 @@ $(document).ready(function () {
         tunnel.update();
         player.update(dt);
         itemManager.update();
-        collisionManager.update();
+        //collisionManager.update();
         particleManager.update();
+
+        checkCollisions();
+        
 
         // camera.position.z += CONFIG.cameraVel.z * dt;
         // TODO: Temp solution by placing camera with an offset from player
@@ -203,6 +206,33 @@ $(document).ready(function () {
 
         lastUpdate = now;
     }
+    
+    function checkCollisions(){
+        
+        // Check collisions for all items
+        
+        _.each(itemManager.gameItems, function (item) {
+            if(collisionManager.checkPlayerItemCollision(player, item)){
+                // Remove Item from view
+                itemManager.remove(item.id);
+                
+                // Update player score
+                player.score += 200;
+                $('#score').html(player.score);                
+            }
+        });
+        
+        // Check that player is still on track
+        if(!collisionManager.checkPlayerTunnelCollision(player, tunnel))
+        {
+            // Possible error: need to make sure tunnel is intialized before checking collisions
+            // KILL PLAYER AMAHAHAAHAH!!!
+            // player.Derezz();
+        }
+        
+        // check collisions for all obstacles
+        // TODO: write code here
+    }
 
     // Initialization
     init();
@@ -211,7 +241,7 @@ $(document).ready(function () {
     // Event handlers
     window.ondevicemotion = function (event) {
 
-        $('#score').html(event.accelerationIncludingGravity.x);
+        //$('#score').html(event.accelerationIncludingGravity.x);
 
         if (event.accelerationIncludingGravity.x > 1.75) {
             player.accelerateRight();

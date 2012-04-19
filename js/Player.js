@@ -13,6 +13,7 @@ function Player() {
     this.targetVelocity = CONFIG.playerDefaulTargetVel;
 
     this.isAlive = true;
+    this.score = 0;
     this.DerezzEffect = null;
 
     this.material = new THREE.MeshLambertMaterial({
