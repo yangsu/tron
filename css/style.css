@@ -109,6 +109,16 @@ canvas {
     z-index: 5;
 }
 
+#timerdiv {
+	position: fixed;
+	top: 0;
+	left: 45%;
+	color: #47C5D8;
+	width: 100px;
+	text-align: center;
+	z-index: 5;
+}
+
 
 @media only screen and (min-width: 35em) {
 

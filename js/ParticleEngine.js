@@ -114,12 +114,13 @@ function ParticleEngine() {
     bgMusic.on('audioprocess', function(input){
        var bars = input.length; 
        
-       var i = 0, vertex, index; 
+       var i = 0, vertex, index, percentage; 
        for(i = 0; i < __self.attributes.size.value.length; i++){
           // __self.attributes.size.value[i] = newSize;
            
            vertex = __self.particles.vertices[i];
-           index = bars - 1 - Math.floor( (Math.abs(vertex.position.z)/Math.abs(window.levelProgress - CONFIG.viewDistance*20)) * bars);
+           percentage = Math.abs(vertex.position.z)/Math.abs(window.levelProgress - CONFIG.viewDistance*20);
+           index = bars - 1 - Math.floor( percentage * bars);
            
            __self.attributes.size.value[i] = input[index]/50;
             //vertex.position.addSelf();

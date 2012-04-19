@@ -93,7 +93,6 @@ Player.prototype.move = function (dt) {
         }
     }
 
-
     // Update Rotation
     this.mesh.rotation.z += this.velocity.theta * dt;
 
