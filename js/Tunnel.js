@@ -19,6 +19,7 @@ function Tunnel(callback) {
     //texture.wrapT = THREE.RepeatWrapping;
     THREE.ImageUtils.loadTexture('img/TunnelMap.png', {}, function (data) {
         __self.imageData = UTIL.getImageData(data);
+        __self.width = __self.imageData.height;
         __self.generateSection(0);
         callback();
     });
