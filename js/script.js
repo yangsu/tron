@@ -5,7 +5,7 @@
 var scene, glowscene, levelProgress, isMobileDevice;
 
 // CONSTANTS
-TWOPI = 2 * Math.PI;
+var TWOPI = 2 * Math.PI;
 
 $(document).ready(function () {
     var camera, renderer,
@@ -16,8 +16,9 @@ $(document).ready(function () {
         itemManager,
         collisionManager,
         particleManager,
-        mouseX = window.innerWidth/2,
-        mouseY = window.innerHeight/2,
+        skybox,
+        mouseX = window.innerWidth / 2,
+        mouseY = window.innerHeight / 2,
         started = false,
         paused = false,
         tunnelInitialized = false,
@@ -27,20 +28,13 @@ $(document).ready(function () {
 
     function init() {
 
-        if ( !Detector.webgl ) {
+        if (!Detector.webgl) {
             Detector.addGetWebGLMessage();
             return;
         }
-        
-        if ((navigator.userAgent.indexOf('iPhone') != -1) 
-            || (navigator.userAgent.indexOf('iPod') != -1) 
-            || (navigator.userAgent.indexOf('iPad') != -1)){
-            window.isMobileDevice = true;    
-        }
-        else{
-            window.isMobileDevice = false;
-        }
-          
+
+        window.isMobileDevice = navigator.userAgent.search(/iPhone|iPod|iPad/) !== -1;
+
         timeLeft = 100.0;
         lastUpdate = UTIL.now();
         // Scene Initialization
@@ -80,15 +74,11 @@ $(document).ready(function () {
         itemManager = new ItemManager();
         particleManager = new ParticleEngine();
         skybox = new SkyBox();
-        
+
         // Renderer Initialization
         renderer = new THREE.WebGLRenderer(CONFIG.renderer);
-        renderer.autoClear = false;
-        if ((navigator.userAgent.indexOf('iPhone') != -1) || (navigator.userAgent.indexOf('iPod') != -1) || (navigator.userAgent.indexOf('iPad') != -1))
-        {
-            renderer.autoClear = true;
-        }
-        
+        renderer.autoClear = isMobileDevice;
+
         renderer.setSize(WIDTH, HEIGHT);
         renderer.setClearColorHex(CONFIG.background, 1.0);
         renderer.clear();
@@ -108,16 +98,16 @@ $(document).ready(function () {
                 renderTargetParameters
             );
 
-        var effectFXAA = new THREE.ShaderPass(THREE.ShaderExtras['fxaa']);
-        effectFXAA.uniforms['resolution'].value.set(1 / WIDTH, 1 / HEIGHT);
+        var effectFXAA = new THREE.ShaderPass(THREE.ShaderExtras.fxaa);
+        effectFXAA.uniforms.resolution.value.set(1 / WIDTH, 1 / HEIGHT);
 
-        var hblur = new THREE.ShaderPass(THREE.ShaderExtras['horizontalBlur']);
-        var vblur = new THREE.ShaderPass(THREE.ShaderExtras['verticalBlur']);
+        var hblur = new THREE.ShaderPass(THREE.ShaderExtras.horizontalBlur);
+        var vblur = new THREE.ShaderPass(THREE.ShaderExtras.verticalBlur);
 
         var bluriness = 3;
 
-        hblur.uniforms['h'].value = bluriness / WIDTH;
-        vblur.uniforms['v'].value = bluriness / HEIGHT;
+        hblur.uniforms.h.value = bluriness / WIDTH;
+        vblur.uniforms.v.value = bluriness / HEIGHT;
 
         var renderModelGlow = new THREE.RenderPass(glowscene, camera);
 
@@ -189,10 +179,9 @@ $(document).ready(function () {
         if (started && !paused && tunnelInitialized && resourcesLoaded) {
             update();
 
-            if(window.isMobileDevice){
+            if (window.isMobileDevice) {
                 renderer.render(scene, camera);
-            }
-            else{
+            } else {
                 glowcomposer.render(0.1);
                 finalcomposer.render(0.1);
             }
@@ -207,7 +196,7 @@ $(document).ready(function () {
 
         timeLeft -= dt;
         $('#timerdiv').html('Timer: ' + timeLeft.toFixed(2));
-        
+
         levelProgress = player.getPosition().z;
 
         // Call update methods to produce animation
@@ -218,41 +207,40 @@ $(document).ready(function () {
         particleManager.update();
 
         checkCollisions();
-        
+
         // camera.position.z += CONFIG.cameraVel.z * dt;
         // TODO: Temp solution by placing camera with an offset from player
 
-        camera.rotation.x = (window.innerHeight/2 - mouseY)/1000;
-        camera.rotation.y = (window.innerWidth/2 - mouseX)/1000;
+        camera.rotation.x = (window.innerHeight / 2 - mouseY) / 1000;
+        camera.rotation.y = (window.innerWidth / 2 - mouseX) / 1000;
 
         camera.position.z = player.position.z + 200;
 
         lastUpdate = now;
     }
-    
-    function checkCollisions(){
-        
+
+    function checkCollisions() {
+
         // Check collisions for all items
-        
+
         _.each(itemManager.gameItems, function (item) {
-            if(collisionManager.checkPlayerItemCollision(player, item)){
+            if (collisionManager.checkPlayerItemCollision(player, item)) {
                 // Remove Item from view
                 itemManager.remove(item.id);
-                
+
                 // Update player score
                 player.score += 200;
-                $('#score').html(player.score);                
+                $('#score').html(player.score);
             }
         });
-        
+
         // Check that player is still on track
-        if(!collisionManager.checkPlayerTunnelCollision(player, tunnel))
-        {
+        if (!collisionManager.checkPlayerTunnelCollision(player, tunnel)) {
             // Possible error: need to make sure tunnel is intialized before checking collisions
             // KILL PLAYER AMAHAHAAHAH!!!
             // player.Derezz();
         }
-        
+
         // check collisions for all obstacles
         // TODO: write code here
     }
@@ -295,7 +283,6 @@ $(document).ready(function () {
 
     // Only keyup can capture the key event for the 'esc' key
     $(document).keyup(function (event) {
-        log(event.which);
         switch (event.which) {
         case 27: /* esc */
             paused = !paused;
@@ -308,7 +295,6 @@ $(document).ready(function () {
             lastUpdate = UTIL.now();
             break;
         case 82: /* R */ // testing
-            log("DEREZZING!");
             player.Derezz();
             break;
         case 32: /* SPACE */
@@ -359,7 +345,7 @@ $(document).ready(function () {
         // switch (event.which) {
         // }
     });
-    window.onerror= function(err) {
+    window.onerror = function (err) {
         console.log(err);
         $('#score').html(err);
     };

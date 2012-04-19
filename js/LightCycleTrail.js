@@ -24,7 +24,7 @@ function Trail() {
     this.material = new THREE.MeshLambertMaterial({
         map: THREE.ImageUtils.loadTexture('img/TrailTexture3.png'),
         transparent: true,
-        reflectivity: 0.05,
+        reflectivity: 0.05
         // refractionRatio: 0.75
     });
     this.glowMaterial = new THREE.MeshPhongMaterial({

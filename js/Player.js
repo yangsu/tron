@@ -19,24 +19,24 @@ function Player() {
     });
     this.glowMaterial = CONFIG.playerGlowMaterial;
 
-    var scale = CONFIG.playerScale;
     this.mesh = new THREE.Mesh(CONFIG.playerGeometry, this.material);
-    this.mesh.scale.set(scale, scale, scale);
+    this.mesh.scale.set(CONFIG.playerScale, CONFIG.playerScale, CONFIG.playerScale);
     this.mesh.geometry.computeBoundingBox();
     this.boundingBox = this.mesh.geometry.boundingBox;
     // this.mesh.geometry.computeBoundingSphere();
     // this.boundingSphere = this.mesh.geometry.boundingSphere;
     var box = this.boundingBox,
-        temp = box.max.clone().subSelf(box.min);
+        temp = box.max.clone().subSelf(box.min),
+        radius = Math.max(temp.x, temp.y) / 2;
     this.boundingSphere = {
-        radius: Math.max(temp.x, temp.y)/2,
-        offset: temp.z * scale - Math.max(temp.x, temp.y)/2
+        radius: radius,
+        offset: temp.z * CONFIG.playerScale - radius
     };
 
     this.boundingCylinder = {
-        minz : box.min.z * scale,
-        maxz : box.max.z * scale,
-        radius : Math.max(temp.x, temp.y)/2
+        minz : box.min.z * CONFIG.playerScale,
+        maxz : box.max.z * CONFIG.playerScale,
+        radius : radius
     };
 
     window.scene.add(this.mesh);
@@ -59,15 +59,15 @@ Player.prototype.Derezz = function () {
     this.isAlive = false;
 
      // Transform vertices into current position points;
-    var particles = new THREE.Geometry();
-    var vertex, positionVector = this.position.convertToCartesian();
-    for(var i = 0; i < this.mesh.geometry.vertices.length; i += 1)
-    {
-        vertex = this.mesh.geometry.vertices[i].clone();
-        vertex.position.multiplyScalar(3);
-        vertex.position.addSelf(positionVector);
-        particles.vertices.push(vertex);
-    }
+    var particles = new THREE.Geometry(),
+        positionVector = this.position.convertToCartesian();
+    _.each(this.mesh.geometry.vertices, function (vertex) {
+        var newVertex = vertex.clone();
+        newVertex.position.multiplyScalar(3);
+        newVertex.position.addSelf(positionVector);
+        particles.vertices.push(newVertex);
+    });
+
     // Create effect
     this.DerezzEffect = new Derezz(particles);
 };
@@ -90,11 +90,10 @@ Player.prototype.move = function (dt) {
     this.position.theta += this.velocity.theta * dt;
 
     // Jumping movement
-    if(!(this.position.radius >= CONFIG.playerPos.radius && this.velocity.radius > 0))
-    {
+    if (!(this.position.radius >= CONFIG.playerPos.radius && this.velocity.radius > 0)) {
         this.velocity.radius += CONFIG.playerGravityAcceleration * dt;
         this.position.radius += this.velocity.radius * dt;
-        if(this.position.radius > CONFIG.playerPos.radius){
+        if (this.position.radius > CONFIG.playerPos.radius) {
             this.position.radius = CONFIG.playerPos.radius;
         }
     }
@@ -130,7 +129,7 @@ Player.prototype.decelerate = function () {
     this.targetVelocity.z = CONFIG.playerMinForwardVel;
 };
 
-Player.prototype.jump = function(){
+Player.prototype.jump = function () {
     this.velocity.radius = CONFIG.defaultPlayerJumpVel;
 };
 
@@ -143,12 +142,10 @@ Player.prototype.resetLateralAcceleration = function () {
 };
 
 Player.prototype.update = function (dt) {
-
-    if(this.isAlive) {
+    if (this.isAlive) {
         this.move(dt);
         this.trail.update(this.position.clone());
-    }
-    else{
+    } else {
         this.DerezzEffect.update(dt);
     }
 };

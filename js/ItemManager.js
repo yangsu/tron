@@ -39,7 +39,7 @@ ItemManager.prototype.update = function () {
         item.update();
     });
 
-    if(Math.random() < 0.05){
+    if (Math.random() < 0.05) {
         this.genRandom(true);
     }
 };
@@ -63,8 +63,7 @@ ItemManager.prototype.genRandom = function () {
         );
 
         this.generateItems('powerup', curve, 1);
-    }
-    else{
+    } else {
         //var theta = -Math.PI/2;
         theta = 2 * Math.PI * Math.random();
         curve = new THREE.QuadraticBezierCurve(
@@ -116,8 +115,8 @@ function Credit(pos) {
     //this.creditMesh = null;
     this.position = pos;
 
-    this.parent = new THREE.Object3D(),
-    this.glowsparent = new THREE.Object3D(),
+    this.parent = new THREE.Object3D();
+    this.glowsparent = new THREE.Object3D();
 
     window.scene.add(this.parent);
 
