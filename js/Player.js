@@ -111,9 +111,6 @@ Player.prototype.move = function (dt) {
 Player.prototype.updatePosition = function () {
     if (this.mesh !== null) {
         this.mesh.position = this.position.convertToCartesian();
-        // Offset mesh so the back of the mesh at the current position
-        this.mesh.position.z += CONFIG.playerMeshOffest;
-
         // Update Glow Mesh
         this.glowMesh.rotation = this.mesh.rotation;
         this.glowMesh.position = this.mesh.position;
@@ -152,7 +149,7 @@ Player.prototype.update = function (dt) {
 
     if(this.isAlive) {
         this.move(dt);
-        this.trail.update(this.position);
+	this.trail.update(this.position.clone());
     }
     else{
         this.DerezzEffect.update(dt);
