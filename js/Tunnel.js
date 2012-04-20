@@ -57,9 +57,6 @@ Tunnel.prototype.update = function () {
         }
     }
 
-    // can't dynamically add lights to scene???
-    // maybe instead of splicing array up everytime
-
     var firstLightRing = this.lights[0],
         lastLightRing = this.lights[this.lights.length - 1];
     if (Math.abs(firstLightRing.z) < Math.abs(window.levelProgress) - CONFIG.viewDistance) {
