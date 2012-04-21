@@ -35,7 +35,7 @@ $(document).ready(function () {
         window.isMobileDevice = navigator.userAgent.search(/iPhone|iPod|iPad/) !== -1;
 
         timeLeft = 100.0;
-        lastUpdate = UTIL.now();
+
         // Scene Initialization
         var OFFSET = 6,
             WIDTH = window.innerWidth - OFFSET,
@@ -264,6 +264,7 @@ $(document).ready(function () {
     };
 
     $('#play').click(function () {
+        lastUpdate = UTIL.now();
         startmenu.fadeOut('fast', function () {
             started = true;
         });
