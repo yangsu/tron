@@ -23,6 +23,7 @@ var CONFIG = {
     'playerMaxForwardVel' : -600,
     'playerMinForwardVel' : 0,
     'playerLateralVelMultiplier' : 0.25,
+    'playerRotationalMultiplier' : 0.25,
     'playerMaxLateralVel' : Math.PI,
     'playerPos' : UTIL.v3c(75, 1.5 * Math.PI, 0),
     'playerDefaulVel' : UTIL.v3c(1, 0, -150),

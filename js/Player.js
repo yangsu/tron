@@ -13,6 +13,8 @@ function Player() {
     this.score = 0;
     this.DerezzEffect = null;
 
+this.targetRotation = 0;
+
     this.material = new THREE.MeshLambertMaterial({
         map: THREE.ImageUtils.loadTexture('img/LightCycle_TextureTest1.png'),
         transparent : false
@@ -70,6 +72,7 @@ Player.prototype.Derezz = function () {
 
     // Create effect
     this.DerezzEffect = new Derezz(particles);
+   
 };
 
 Player.prototype.getPosition = function () {
@@ -100,13 +103,19 @@ Player.prototype.move = function (dt) {
 
     // Update Rotation
     this.mesh.rotation.z += this.velocity.theta * dt;
-
+	
+	// use x rotation for jump??
+	// use y for laterial motion???
+	//this.mesh.rotation.y += (this.targetRotation - this.mesh.rotation.y) * CONFIG.playerRotationalMultiplier;
+	
+	
     this.updatePosition();
 };
 
 Player.prototype.updatePosition = function () {
     if (this.mesh !== null) {
         this.mesh.position = this.position.convertToCartesian();
+        
         // Update Glow Mesh
         this.glowMesh.rotation = this.mesh.rotation;
         this.glowMesh.position = this.mesh.position;
@@ -115,10 +124,14 @@ Player.prototype.updatePosition = function () {
 
 Player.prototype.accelerateLeft = function () {
     this.targetVelocity.theta = -CONFIG.playerMaxLateralVel;
+    
+    //this.mesh.rotation.y = Math.PI/12;
 };
 
 Player.prototype.accelerateRight = function () {
     this.targetVelocity.theta = CONFIG.playerMaxLateralVel;
+    
+    //this.mesh.rotation.y = -Math.PI/12;
 };
 
 Player.prototype.accelerate = function () {

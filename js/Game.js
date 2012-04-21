@@ -103,6 +103,8 @@ Game.prototype.update = function() {
     this.itemManager.update();
     this.particleManager.update();
 
+	this.skybox.update();
+
     this.checkCollisions();
 
     // camera.position.z += CONFIG.cameraVel.z * dt;
