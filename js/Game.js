@@ -1,21 +1,23 @@
 /**
- * @author Troy
+ * @author Troy Ferrell & Yang Su
  */
 
-function Game(){
+function Game() {
 
-    // GAME INITALIZATION
-    this.started = false, this.paused = false, this.resourceLoaded = false,
+    // Game Initalization
+    this.started = false;
+    this.paused = false;
+    this.resourceLoaded = false;
     this.lastUpdate = UTIL.now();
 
-    // INIT
+    // Init
     this.lastUpdate = UTIL.now();
 
     // Scene Initialization
-    this.OFFSET = 6,
-        this.WIDTH = window.innerWidth - this.OFFSET,
-        this.HEIGHT = window.innerHeight - this.OFFSET,
-        this.ASPECT = this.WIDTH / this.HEIGHT;
+    this.OFFSET = 6;
+    this.WIDTH = window.innerWidth - this.OFFSET;
+    this.HEIGHT = window.innerHeight - this.OFFSET;
+    this.ASPECT = this.WIDTH / this.HEIGHT;
 
     // Camera Setup
     this.camera = new THREE.PerspectiveCamera(
@@ -35,10 +37,10 @@ function Game(){
     window.glowscene = new THREE.Scene();
     window.glowscene.add(new THREE.AmbientLight(0xFFFFFF));
 
-    // Objects
+    // Wrap the function to be called while preserving the context
     CONFIG.init((function (ctx) {
         return function () {
-            // Player depends on the resources to be loaded
+            // Objects
             ctx.player = new Player();
             ctx.tunnel = new Tunnel();
             ctx.itemManager = new ItemManager();
@@ -67,7 +69,7 @@ function Game(){
     this.animate();
 }
 
-Game.prototype.animate = function(){
+Game.prototype.animate = function () {
     if (this.started && !this.paused && this.resourcesLoaded) {
         this.update();
 
@@ -78,7 +80,7 @@ Game.prototype.animate = function(){
             this.finalcomposer.render(0.1);
         }
     }
-
+    // Preserve context
     var callback = (function (ctx) {
             return function () {
                 ctx.animate();
@@ -88,7 +90,7 @@ Game.prototype.animate = function(){
     requestAnimationFrame(callback);
 };
 
-Game.prototype.update = function() {
+Game.prototype.update = function () {
     var now = UTIL.now(),
         dt = (now - this.lastUpdate) / 1000;
 
@@ -116,7 +118,7 @@ Game.prototype.update = function() {
 };
 
 
-Game.prototype.checkCollisions = function() {
+Game.prototype.checkCollisions = function () {
     var __self = this;
     // Check collisions for all items
     _.each(this.itemManager.gameItems, function (item) {
@@ -142,76 +144,76 @@ Game.prototype.checkCollisions = function() {
 };
 
 
-Game.prototype.mouseMoved = function(mx, my){
-      this.mouseX = mx;
-      this.mouseY = my;
+Game.prototype.mouseMoved = function (mx, my) {
+    this.mouseX = mx;
+    this.mouseY = my;
 };
 
-Game.prototype.keyDown = function(key){
+Game.prototype.keyDown = function (key) {
     switch (key) {
-        case 65: /* 'A' */
-        case 97: /* 'a' */
-        case 37: /* LEFT */
-            this.player.accelerateLeft();
-            break;
-        case 38: /* UP */
-            this.player.accelerate();
-            break;
-        case 68: /* 'D' */
-        case 100:/* 'd' */
-        case 39: /* RIGHT */
-            this.player.accelerateRight();
-            break;
-        case 40: /* DOWN */
-            this.player.decelerate();
-            break;
-        case 73:
-            this.itemManager.genRandom();
-            break;
+    case 65: /* 'A' */
+    case 97: /* 'a' */
+    case 37: /* LEFT */
+        this.player.accelerateLeft();
+        break;
+    case 38: /* UP */
+        this.player.accelerate();
+        break;
+    case 68: /* 'D' */
+    case 100:/* 'd' */
+    case 39: /* RIGHT */
+        this.player.accelerateRight();
+        break;
+    case 40: /* DOWN */
+        this.player.decelerate();
+        break;
+    case 73:
+        this.itemManager.genRandom();
+        break;
     }
 };
 
-Game.prototype.keyUp = function(key){
+Game.prototype.keyUp = function (key) {
     switch (key) {
-        case 27: /* esc */
-            // TODO: figure out how to handle pausing???
-            /*
-            paused = !paused;
-            if (paused) {
-                ingamemenu.fadeIn();
-            } else {
-                ingamemenu.fadeOut();
-            }
-            // Update lastUpdate timestamp to so dt will be 0 during the pause
-            lastUpdate = UTIL.now();
-            */
-            break;
-        case 82: /* R */ // testing
-            this.player.Derezz();
-            break;
-        case 32: /* SPACE */
-            this.player.jump();
-            break;
-        case 65: /* 'A' */
-        case 97: /* 'a' */
-        case 37: /* LEFT */
-            this.player.resetLateralAcceleration();
-            break;
-        case 38: /* UP */
-            this.player.resetForwardAcceleration();
-            break;
-        case 68: /* 'D' */
-        case 100:/* 'd' */
-        case 39: /* RIGHT */
-            this.player.resetLateralAcceleration();
-            break;
-        case 40: /* DOWN */
-            this.player.resetForwardAcceleration();
-            break;
+    case 27: /* esc */
+        // TODO: figure out how to handle pausing???
+        /*
+        paused = !paused;
+        if (paused) {
+            ingamemenu.fadeIn();
+        } else {
+            ingamemenu.fadeOut();
         }
+        // Update lastUpdate timestamp to so dt will be 0 during the pause
+        lastUpdate = UTIL.now();
+        */
+        break;
+    case 82: /* R */ // testing
+        this.player.Derezz();
+        break;
+    case 32: /* SPACE */
+        this.player.jump();
+        break;
+    case 65: /* 'A' */
+    case 97: /* 'a' */
+    case 37: /* LEFT */
+        this.player.resetLateralAcceleration();
+        break;
+    case 38: /* UP */
+        this.player.resetForwardAcceleration();
+        break;
+    case 68: /* 'D' */
+    case 100:/* 'd' */
+    case 39: /* RIGHT */
+        this.player.resetLateralAcceleration();
+        break;
+    case 40: /* DOWN */
+        this.player.resetForwardAcceleration();
+        break;
+    }
 };
 
-Game.prototype.initPostProcessing = function(){
+Game.prototype.initPostProcessing = function () {
     // GLOW COMPOSER
     var renderTargetParameters = {
             minFilter: THREE.LinearFilter,
