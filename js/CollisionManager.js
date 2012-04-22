@@ -1,7 +1,5 @@
-function CollisionManager(tunnel, player, itemmanager) {
-    this.tunnel = tunnel;
-    this.player = player;
-    this.itemmanager = itemmanager;
+function CollisionManager(){
+	this.test = 5;
 }
 
 /*
@@ -86,10 +84,10 @@ CollisionManager.prototype.checkPlayerTunnelCollision = function (player, tunnel
     }
 
     // Find index for face corresponding to player's position
-    this.i = Math.floor(Math.abs(ppos.z) / CONFIG.tunnelSegmentDepth);
-    this.j = Math.floor((theta / TWOPI) * this.tunnel.width);
+    var i = Math.floor(Math.abs(ppos.z) / CONFIG.tunnelSegmentDepth),
+    	j = Math.floor((theta / TWOPI) * tunnel.width);
     //this.j = Math.floor(theta / (TWOPI / this.tunnel.width));
-    face = this.tunnel.getFace(this.i, this.j);
+    face = tunnel.getFace(i, j);
 
     if (!face) {
         // Not on a tunnel face

@@ -4,7 +4,7 @@
 
 function SkyBox() {
     // http://learningthreejs.com/data/lets_do_a_sky/docs/lets_do_a_sky.html
-    var urlPrefix   = 'img/TronSkyBox/',
+    var urlPrefix   = 'img/SpaceSkybox/',
         urls = [
             urlPrefix + 'PosX.png',
             urlPrefix + 'NegX.png',
@@ -33,4 +33,6 @@ function SkyBox() {
 
 SkyBox.prototype.update = function () {
     // need to move box to keep up with position of player???
+    
+    this.skyboxMesh.position.z = window.levelProgress;
 };
