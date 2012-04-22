@@ -14,7 +14,7 @@ function ParticleEngine() {
     });
     */
     var theta, radius, pX, pY, pZ, particle;
-    _.times(CONFIG.particleCount, function () {
+    _.times(CONFIG.particleCount, UTIL.wrap(this, function () {
         theta = Math.random() * TWOPI;
         radius = Math.random() * 75 + CONFIG.tunnelRadius + 125;
 
@@ -26,7 +26,7 @@ function ParticleEngine() {
         particle.velocity = UTIL.v3(0, 0, Math.random());
 
         this.particles.vertices.push(particle);
-    });
+    }));
 
     // Set Shader Material Parameters
     this.attributes = {
@@ -112,7 +112,7 @@ ParticleEngine.prototype.loadMusic = function(){
             var bars = input.length,
                 index,
                 percentage;
-           _.each(__self.particles.vertices, function (vertex) {
+           _.each(__self.particles.vertices, function (vertex, i) {
                percentage = Math.abs(vertex.position.z)/Math.abs(window.levelProgress - CONFIG.viewDistance*20);
                index = bars - 1 - Math.floor(percentage * bars);
 

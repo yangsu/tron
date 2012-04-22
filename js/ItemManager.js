@@ -106,8 +106,7 @@ PowerUp.prototype.remove = function () {
 
 // Need to refactor & decide on design
 function Credit(pos) {
-    var __self = this,
-        COLOR1 = 0x77bbff,
+    var COLOR1 = 0x77bbff,
         COLOR2 = 0x8ec5e5,
         //COLOR2 = 0x8ec5e5,
         COLOR3 = 0x97a8ba,

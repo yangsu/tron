@@ -38,19 +38,17 @@ function Game() {
     window.glowscene.add(new THREE.AmbientLight(0xFFFFFF));
 
     // Wrap the function to be called while preserving the context
-    CONFIG.init((function (ctx) {
-        return function () {
-            // Objects
-            ctx.player = new Player();
-            ctx.tunnel = new Tunnel();
-            ctx.itemManager = new ItemManager();
-            ctx.particleManager = new ParticleEngine();
-            ctx.skybox = new SkyBox();
-            ctx.collisionManager = new CollisionManager();
+    CONFIG.init(UTIL.wrap(this, function () {
+        // Objects
+        this.player = new Player();
+        this.tunnel = new Tunnel();
+        this.itemManager = new ItemManager();
+        this.particleManager = new ParticleEngine();
+        this.skybox = new SkyBox();
+        this.collisionManager = new CollisionManager();
 
-            ctx.resourcesLoaded = true;
-        };
-    }(this)));
+        this.resourcesLoaded = true;
+    }));
 
     // Renderer Initialization
     this.renderer = new THREE.WebGLRenderer(CONFIG.renderer);
@@ -119,18 +117,17 @@ Game.prototype.update = function () {
 
 
 Game.prototype.checkCollisions = function () {
-    var __self = this;
     // Check collisions for all items
     _.each(this.itemManager.gameItems, function (item) {
-        if (__self.collisionManager.checkPlayerItemCollision(__self.player, item)) {
+        if (this.collisionManager.checkPlayerItemCollision(this.player, item)) {
             // Remove Item from view
-            __self.itemManager.remove(item.id);
+            this.itemManager.remove(item.id);
 
             // Update player score
-            __self.player.score += 200;
-            $('#score').html(__self.player.score);
+            this.player.score += 200;
+            $('#score').html(this.player.score);
         }
-    });
+    }, this);
 
     // Check that player is still on track
     if (!this.collisionManager.checkPlayerTunnelCollision(this.player, this.tunnel)) {
