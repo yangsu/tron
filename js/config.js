@@ -70,6 +70,14 @@ var CONFIG = {
         transparent : false
     }),
 
+    // Particle Settings
+    'particleCount' : 2000,
+    'particleTexture' : THREE.ImageUtils.loadTexture('img/Particle.png'),
+
+    // Sound Settings
+    'bgSound' : 'sounds/TronMusic1.mp3',
+    'soundVolume' : 0.7,
+
     'init' : function (callback) {
         var testFinished = function () {
             if (_.all(CONFIG, function (value, key) {
