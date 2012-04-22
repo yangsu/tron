@@ -14,8 +14,6 @@ function Player() {
     this.score = 0;
     this.DerezzEffect = null;
 
-this.targetRotation = 0;
-
     this.material = new THREE.MeshLambertMaterial({
         map: THREE.ImageUtils.loadTexture('img/LightCycle_TextureTest1.png'),
         transparent : false

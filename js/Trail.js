@@ -80,25 +80,25 @@ Trail.prototype.generateSegment = function (playerPosition) {
 };
 
 
-function TrailSegment(lastVertexTop, lastVertexBottom, playerPos) {
+function TrailSegment(lastVertexTop, lastVertexBottom, playerPosition) {
 
     this.geometry = new THREE.Geometry();
     this.geometry.dynamic = true;
 
-    var theta = playerPos.theta,
-        z = playerPos.z,
+    var theta = playerPosition.theta,
+        z = playerPosition.z,
         face,
         faceuv;
 
     // Define forward two vertices
     this.frontBottomVertex =  UTIL.vtx3(
-        (playerPos.radius + CONFIG.trailHeight) * Math.cos(theta),
-        (playerPos.radius + CONFIG.trailHeight) * Math.sin(theta),
+        (playerPosition.radius + CONFIG.trailHeight) * Math.cos(theta),
+        (playerPosition.radius + CONFIG.trailHeight) * Math.sin(theta),
         z
     );
     this.frontTopVertex = UTIL.vtx3(
-        (playerPos.radius - CONFIG.trailHeight) * Math.cos(theta),
-        (playerPos.radius - CONFIG.trailHeight) * Math.sin(theta),
+        (playerPosition.radius - CONFIG.trailHeight) * Math.cos(theta),
+        (playerPosition.radius - CONFIG.trailHeight) * Math.sin(theta),
         z
     );
 
