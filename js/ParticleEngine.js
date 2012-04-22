@@ -1,5 +1,5 @@
 /**
- * @author Troy
+ * @author Troy Ferrell & Yang Su
  */
 
 function ParticleEngine() {

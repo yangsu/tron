@@ -91,7 +91,6 @@ $(document).ready(function () {
     });
 
     window.onerror = function (err) {
-        console.log(err);
         $('#score').html(err);
     };
 });
