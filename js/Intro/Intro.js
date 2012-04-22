@@ -6,6 +6,7 @@ function Intro(){
     
     // Init
     this.lastUpdate = UTIL.now();
+    this.resourceLoaded = false;
     this.scene, this.camera, this.renderer;
      
     // Scene Initialization
@@ -40,32 +41,18 @@ function Intro(){
 	// add to the scene
 	this.scene.add(pointLight);
 	    
-    // Intro Parameters
-    // draw bottom pen and top pen
-    
-    var myPath = [new THREE.Vector2(-100, 0), new THREE.Vector2(0, 100), new THREE.Vector2(100, 0)];
-    var rotations = [0, 0, 0];
-    
-    this.topPen = new Pen(this.scene, myPath, rotations);
-    
-    /* TESTING****
-	// set up the sphere vars
-	var radius = 50, segments = 16, rings = 16;
-	// create the sphere's material
-	var sphereMaterial = new THREE.MeshLambertMaterial(
-	{
-	  // a gorgeous red.
-	  color: 0xCC0000
-	});
-    
-	// create a new mesh with sphere geometry -
-	// we will cover the sphereMaterial next!
-	var sphere = new THREE.Mesh(new THREE.SphereGeometry(radius, segments,rings),
-	   							sphereMaterial);
-
-	// add the sphere to the scene
-	this.scene.add(sphere);
-	*/
+    // Wrap the function to be called while preserving the context
+    CONFIG.init(UTIL.wrap(this, function () {
+        // Objects
+        //TESTING**
+        var myPath = [new UTIL.v2(-100, 0), new UTIL.v2(-25, 0), new UTIL.v2(-25, 100), new UTIL.v2(0, 100), new UTIL.v2(0, 0), new UTIL.v2(10, 0),
+        new UTIL.v2(30,0), new UTIL.v2(50,0)];
+        
+        var rotations = [0, Math.PI/2, -Math.PI/2, -Math.PI/2, Math.PI/2, 0, 0, 0];
+        
+        this.topPen = new Pen(this.scene, myPath, rotations);
+        this.resourcesLoaded = true;
+    }));
 
     // Renderer Initialization
     this.renderer = new THREE.WebGLRenderer(CONFIG.renderer);
@@ -81,10 +68,11 @@ function Intro(){
 
 
 Intro.prototype.animate = function() {
-
-	this.update();
-
-    this.renderer.render(this.scene, this.camera);
+    if (this.resourcesLoaded){
+    	this.update();
+    
+        this.renderer.render(this.scene, this.camera);
+    }    
     
     // Preserve context
     var callback = (function (ctx) {
