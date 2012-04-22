@@ -12,6 +12,7 @@ $(document).ready(function () {
         mouseY = window.innerHeight / 2,
         startmenu = $('#startmenu'),
         ingamemenu = $('#ingamemenu'),
+        myIntro,
         myGame;
 
     function init() {
@@ -24,7 +25,8 @@ $(document).ready(function () {
         window.isMobileDevice = navigator.userAgent.search(/iPhone|iPod|iPad/) !== -1;
 
 		// INIT Game.js or intro.js
-		myGame = new Game();
+		myIntro = new Intro();
+		//myGame = new Game();
 
         // Stats Initialization
         var stats = new Stats(),
@@ -63,11 +65,11 @@ $(document).ready(function () {
     $('#play').click(function () {
         lastUpdate = UTIL.now();
         startmenu.fadeOut('fast', function () {
-            myGame.started = true;
+            //myGame.started = true;
         });
     });
     $('#resume').click(function () {
-        myGame.paused = false;
+        //myGame.paused = false;
         ingamemenu.fadeOut();
     });
 
@@ -75,15 +77,15 @@ $(document).ready(function () {
         // store the mouseX and mouseY position
         mouseX = event.clientX;
         mouseY = event.clientY;
-        myGame.mouseMoved(mouseX, mouseY);
+        //myGame.mouseMoved(mouseX, mouseY);
     });
 
     // Only keyup can capture the key event for the 'esc' key
     $(document).keyup(function (event) {
-        myGame.keyUp(event.which);
+        //myGame.keyUp(event.which);
     });
     $(document).keydown(function (event) {
-        myGame.keyDown(event.which);
+        //myGame.keyDown(event.which);
     });
     $(document).keypress(function (event) {
         // switch (event.which) {
