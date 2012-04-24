@@ -2,9 +2,10 @@
  * @author Troy Ferrell & Yang Su
  */
 
-var introScene, gameScene, glowscene, 
+var introScene, gameScene, glowscene,
     levelProgress, isMobileDevice,
-    renderer;
+    renderer,
+    myGame;
 
 // CONSTANTS
 var TWOPI = 2 * Math.PI;
@@ -14,8 +15,7 @@ $(document).ready(function () {
         mouseY = window.innerHeight / 2,
         startmenu = $('#startmenu'),
         ingamemenu = $('#ingamemenu'),
-        myIntro,
-        myGame;
+        myIntro;
 
     function init() {
 
@@ -25,8 +25,8 @@ $(document).ready(function () {
         }
 
         window.isMobileDevice = navigator.userAgent.search(/iPhone|iPod|iPad/) !== -1;
-		
-		
+
+
 		// TODO: to fix multiple scenes solution
 		// http://demo.bkcore.com/threejs/webgl_rendermanager.html
 		// Scene Initialization
@@ -34,16 +34,16 @@ $(document).ready(function () {
             WIDTH = window.innerWidth - OFFSET,
             HEIGHT = window.innerHeight - OFFSET,
             ASPECT = WIDTH / HEIGHT;
-            
+
         // Renderer Initialization
         window.renderer = new THREE.WebGLRenderer(CONFIG.renderer);
         window.renderer.autoClear = window.isMobileDevice;
-        
+
         window.renderer.setSize(WIDTH, HEIGHT);
         window.renderer.setClearColorHex(CONFIG.background, 1.0);
         window.renderer.clear();
 
-        document.body.appendChild(window.renderer.domElement);  
+        document.body.appendChild(window.renderer.domElement);
 
         // INIT Game.js or intro.js
         myIntro = new Intro();
@@ -91,7 +91,7 @@ $(document).ready(function () {
             if(myGame == null){
                myGame = new Game();
             }
-            
+
             // switch to my game
             myIntro.unloadView();
             myGame.loadView();
@@ -108,7 +108,7 @@ $(document).ready(function () {
         // store the mouseX and mouseY position
         mouseX = event.clientX;
         mouseY = event.clientY;
-        
+
         //myIntro.drawMouse(mouseX, mouseY);
         if(myGame != null){
             myGame.mouseMoved(mouseX, mouseY);

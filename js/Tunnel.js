@@ -12,8 +12,7 @@ function Tunnel(scene) {
     this.oldestLiveSection = 0;
     this.imagePosition = 0;
 
-    var __self = this,
-        texture_1 = THREE.ImageUtils.loadTexture('img/TunnelTexture5.png'),
+    var texture_1 = THREE.ImageUtils.loadTexture('img/TunnelTexture5.png'),
         j,
         tunnelRing,
         startZ;
@@ -35,6 +34,8 @@ function Tunnel(scene) {
         }),
         new THREE.MeshFaceMaterial()
     ];
+
+    // this.generateSection(0);
 
     this.lights = [];
     startZ = -CONFIG.tunnelSegmentPerSection * CONFIG.tunnelSegmentDepth;
@@ -58,6 +59,9 @@ Tunnel.prototype.update = function () {
             this.oldestLiveSection += 1;
         }
     }
+
+    // can't dynamically add lights to scene???
+    // maybe instead of splicing array up everytime
 
     var firstLightRing = this.lights[0],
         lastLightRing = this.lights[this.lights.length - 1];
@@ -106,10 +110,17 @@ Tunnel.prototype.generateSection = function (startZ) {
         // End level here, wrap map for now
         this.imagePosition = 0;
     }
+
+    // TODO avoid using globals. Probably need to implement an event system
+    if (Math.abs(startZ) >= CONFIG.viewDistance * 0.9 &&
+        myGame.player.position.z === CONFIG.playerPos.z) {
+        // Finished generating all tunnel sections in sight initially
+        myGame.player.targetVelocity = CONFIG.playerDefaulTargetVel.clone();
+    }
 };
 
 Tunnel.prototype.getFace = function (i, j) {
-    if (i < this.segments.length && i > this.oldestLiveSection) {
+    if (i < this.segments.length && i >= this.oldestLiveSection) {
         return this.segments[i].getFace(j);
     } else {
         console.log('Error: Tunnel getFace(' + i + ',' + j + ') index out of bounds');

@@ -29,7 +29,7 @@ function Game() {
     );
     this.camera.position = CONFIG.cameraPos;
     //this.camera.position.z = 300;
-    
+
     // Scene setup
     this.gameScene = new THREE.Scene();
     this.gameScene.add(this.camera);
@@ -45,27 +45,27 @@ function Game() {
       // a gorgeous red.
       color: 0xCC0000
     });
-    
+
     // create a new mesh with sphere geometry -
     // we will cover the sphereMaterial next!
     var sphere = new THREE.Mesh(
        new THREE.SphereGeometry(radius,
        segments,
        rings),
-    
+
        sphereMaterial);
-    
+
     // add the sphere to the scene
     this.gameScene.add(sphere);
 
     // create a point light
     var pointLight = new THREE.PointLight( 0xFFFFFF );
-    
+
     // set its position
     pointLight.position.x = 10;
     pointLight.position.y = 50;
     pointLight.position.z = 130;
-    
+
     // add to the scene
     this.gameScene.add(pointLight);
 */
@@ -103,7 +103,7 @@ Game.prototype.animate = function () {
     if(this.viewLoaded){
         if (this.started && !this.paused && this.resourcesLoaded) {
             this.update();
-            
+
             log('game');
             if (window.isMobileDevice) {
                 window.renderer.render(this.gameScene, this.camera);
@@ -112,7 +112,7 @@ Game.prototype.animate = function () {
                 this.finalcomposer.render(0.1);
             }
         }
-        
+
         // Preserve context
         var callback = (function (ctx) {
                 return function () {
@@ -164,7 +164,7 @@ Game.prototype.checkCollisions = function () {
             $('#score').html(this.player.score);
         }
     }, this);
-    
+
     // Check that player is still on track
     if (!this.collisionManager.checkPlayerTunnelCollision(this.player, this.tunnel)) {
         // Possible error: need to make sure tunnel is intialized before checking collisions
