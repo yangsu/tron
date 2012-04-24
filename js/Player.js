@@ -7,7 +7,7 @@ function Player() {
 
     this.position = CONFIG.playerPos.clone();
     this.velocity = CONFIG.playerDefaulVel.clone();
-    this.targetVelocity = CONFIG.playerDefaulTargetVel;
+    this.targetVelocity = CONFIG.playerDefaulVel.clone();
     this.targetRotation = 0;
 
     this.isAlive = true;

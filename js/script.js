@@ -2,7 +2,7 @@
  * @author Troy Ferrell & Yang Su
  */
 
-var scene, glowscene, levelProgress, isMobileDevice;
+var scene, glowscene, levelProgress, isMobileDevice, myGame;
 
 // CONSTANTS
 var TWOPI = 2 * Math.PI;
@@ -11,8 +11,7 @@ $(document).ready(function () {
     var mouseX = window.innerWidth / 2,
         mouseY = window.innerHeight / 2,
         startmenu = $('#startmenu'),
-        ingamemenu = $('#ingamemenu'),
-        myGame;
+        ingamemenu = $('#ingamemenu');
 
     function init() {
 

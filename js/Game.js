@@ -133,7 +133,7 @@ Game.prototype.checkCollisions = function () {
     if (!this.collisionManager.checkPlayerTunnelCollision(this.player, this.tunnel)) {
         // Possible error: need to make sure tunnel is intialized before checking collisions
         // KILL PLAYER AMAHAHAAHAH!!!
-        // this.player.Derezz();
+        this.player.Derezz();
     }
 
     // check collisions for all obstacles

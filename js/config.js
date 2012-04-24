@@ -27,7 +27,7 @@ var CONFIG = {
     'playerRotationMultiplier' : 0.25,
     'playerMaxLateralVel' : Math.PI,
     'playerPos' : UTIL.v3c(75, 1.5 * Math.PI, 0),
-    'playerDefaulVel' : UTIL.v3c(1, 0, -150),
+    'playerDefaulVel' : UTIL.v3c(1, 0, 0),
     'playerDefaulTargetVel' : UTIL.v3c(0, 0, -150),
     'defaultPlayerJumpVel' : -450,
     'playerGravityAcceleration' : 850,
