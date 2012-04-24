@@ -2,8 +2,8 @@
  * @author Troy Ferrell
  */
 
-function Derezz(geometry){
-    
+function Derezz(scene, geometry){
+    this.scene = scene;
     this.particleGeo = geometry;
 
     // Set Shader Material Parameters
@@ -70,7 +70,7 @@ function Derezz(geometry){
     this.particleSystem.dynamic = true;
     this.particleSystem.geometry.__dirtyVertices = true;
 
-    window.gameScene.add(this.particleSystem);
+    this.scene.add(this.particleSystem);
 }
 
 Derezz.prototype.update = function(dt){

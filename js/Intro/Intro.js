@@ -24,7 +24,6 @@ function Intro(){
         CONFIG.cameraFar
     );
     this.camera.position.z = 300;
-    //this.camera.position = CONFIG.cameraPos;
 
     // Scene setup
     this.introScene = new THREE.Scene();
@@ -70,16 +69,6 @@ function Intro(){
         
         this.tronPen = new Pen(this.introScene, tronPath, tronRotations);
         this.resourcesLoaded = true;
-        /*
-        //TESTING**
-        var myPath = [new UTIL.v2(-500, 0), new UTIL.v2(-25, 0), new UTIL.v2(-25, 100), new UTIL.v2(0, 100), new UTIL.v2(0, 0), new UTIL.v2(10, 0),
-        new UTIL.v2(30,0), new UTIL.v2(50,0)];
-        
-        var rotations = [0, Math.PI/2, -Math.PI/2, -Math.PI/2, Math.PI/2, 0, 0, 0];
-        
-        this.topPen = new Pen(this.scene, myPath, rotations);
-        this.resourcesLoaded = true;
-        */
     }));
 }
 
@@ -91,10 +80,6 @@ Intro.prototype.loadView = function(){
 
 Intro.prototype.unloadView = function(){
     this.viewLoaded = false;
-}
-
-Intro.prototype.drawMouse = function(mx, my){
-    log(mx,window.innerHeight - my);
 }
 
 Intro.prototype.animate = function() {
@@ -123,7 +108,6 @@ Intro.prototype.update = function() {
         dt = (now - this.lastUpdate) / 1000;
 
     this.tronPen.update(dt);
-	//this.topPen.update(dt);
 	
 	this.lastUpdate = now;
 }

@@ -74,7 +74,7 @@ Player.prototype.Derezz = function () {
     });
 
     // Create effect
-    this.DerezzEffect = new Derezz(particles);
+    this.DerezzEffect = new Derezz(this.scene, particles);
 
 };
 

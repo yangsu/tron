@@ -89,12 +89,14 @@ CollisionManager.prototype.checkPlayerTunnelCollision = function (player, tunnel
     face = tunnel.getFace(i, j);
 
     if (!face) {
+        
         // Not on a tunnel face
     } else {
+        
         // on a tunnel face
     }
 
-    return (face !== null);
+    return (face != null);
 };
 
 CollisionManager.prototype.checkPlayerItemCollision = function (player, item) {

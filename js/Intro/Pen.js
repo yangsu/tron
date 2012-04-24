@@ -53,7 +53,8 @@ function Pen(scene, path, rotations){
     
     this.lastVec3 = startVec3;
     this.lineMaterial = new THREE.LineBasicMaterial({
-        color: 0x47C5D8
+        color: 0x47C5D8,
+        linewidth: 3
         //color: 0x0000FF,
         //linewidth:
         //vertexColors: array
