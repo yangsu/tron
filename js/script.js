@@ -26,7 +26,9 @@ $(document).ready(function () {
 
 		// INIT Game.js or intro.js
 		myIntro = new Intro();
-		//myGame = new Game();
+		myIntro.loadView();
+		
+		myGame = new Game();
 
         // Stats Initialization
         var stats = new Stats(),
@@ -65,18 +67,27 @@ $(document).ready(function () {
     $('#play').click(function () {
         lastUpdate = UTIL.now();
         startmenu.fadeOut('fast', function () {
-            //myGame.started = true;
+            if(myGame == null){
+               // myGame = new Game();
+            }
+            
+            // switch to my game
+            //myIntro.unloadView();
+            myGame.loadView();
+            myGame.started = true;
         });
     });
     $('#resume').click(function () {
-        //myGame.paused = false;
+        myGame.paused = false;
         ingamemenu.fadeOut();
     });
 
-    $(document).mousemove(function (e) {
+// mousemove
+    $(document).mouseup(function (e) {
         // store the mouseX and mouseY position
         mouseX = event.clientX;
         mouseY = event.clientY;
+        myIntro.drawMouse(mouseX, mouseY);
         //myGame.mouseMoved(mouseX, mouseY);
     });
 

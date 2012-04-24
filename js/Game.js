@@ -61,10 +61,18 @@ function Game() {
     this.initPostProcessing();
 
     // Attach to DOM
-    document.body.appendChild(this.renderer.domElement);
+    //document.body.appendChild(this.renderer.domElement);
 
     // Start animation
     this.animate();
+}
+
+Game.prototype.loadView = function(){
+    document.body.appendChild(this.renderer.domElement);    
+}
+
+Game.prototype.unloadView = function(){
+    document.body.removeChild(this.renderer.domElement);
 }
 
 Game.prototype.animate = function () {

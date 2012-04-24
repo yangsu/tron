@@ -44,7 +44,7 @@ function Pen(scene, path, rotations){
 	// error using playerGeometry - need to call config.init
     this.penMesh = new THREE.Mesh(CONFIG.playerGeometry, this.material);
     this.penMesh.position = startVec3;
-    this.penMesh.scale.set(1.25,1.25,1.25);
+   //this.penMesh.scale.set(1.25,1.25,1.25);
     this.penMesh.rotation.x = Math.PI/2;
     this.penMesh.rotation.y = Math.PI/2;
     
@@ -53,7 +53,8 @@ function Pen(scene, path, rotations){
     
     this.lastVec3 = startVec3;
     this.lineMaterial = new THREE.LineBasicMaterial({
-        color: 0x0000FF,
+        color: 0x47C5D8
+        //color: 0x0000FF,
         //linewidth:
         //vertexColors: array
     });
@@ -73,7 +74,7 @@ Pen.prototype.update = function(dt){
 	
     if(!this.isDone){ 
         var pos;
-        if(this.timer + dt > 1){
+        if(this.timer + dt*CONFIG.PenDrawSpeed > 1){
             pos = this.curve.getPoint(1);
             
             if(this.pathIndex == this.penPath.length - 1){
@@ -88,7 +89,7 @@ Pen.prototype.update = function(dt){
             this.pathIndex += 1;
             this.timer = 0;
         }else{
-            this.timer += dt;
+            this.timer += dt*CONFIG.PenDrawSpeed;
             pos = this.curve.getPoint(this.timer);
         }
        
@@ -99,7 +100,6 @@ Pen.prototype.update = function(dt){
         //this.line.geometry.vertices.push(new THREE.Vertex(new THREE.Vector3(pos.x, pos.y, 0)));
         //this.line.geometry.__dirtyVertices = true;
         //this.line.geometry.dynamic = true;
-        
         
         // Create & add new line segment
         var lineGeo = new THREE.Geometry();
