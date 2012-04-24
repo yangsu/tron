@@ -122,8 +122,16 @@ $(document).ready(function () {
         }
     });
     $(document).keydown(function (event) {
-        if(myGame != null){
-            myGame.keyDown(event.which);
+        switch(event.which){
+            case 82: /* R */ // testing restart
+                //myGame = new Game();
+                //myGame.loadView();
+            break;
+            default:
+                if(myGame != null){
+                    myGame.keyDown(event.which);
+                }
+            break;  
         }
     });
     $(document).keypress(function (event) {

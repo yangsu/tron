@@ -35,40 +35,6 @@ function Game() {
     this.gameScene.add(this.camera);
     this.gameScene.add(new THREE.AmbientLight(0xAAAAAA));
 
-    // Testing*
-    /*
-    // set up the sphere vars
-    var radius = 50, segments = 16, rings = 16;
-    // create the sphere's material
-    var sphereMaterial = new THREE.MeshLambertMaterial(
-    {
-      // a gorgeous red.
-      color: 0xCC0000
-    });
-
-    // create a new mesh with sphere geometry -
-    // we will cover the sphereMaterial next!
-    var sphere = new THREE.Mesh(
-       new THREE.SphereGeometry(radius,
-       segments,
-       rings),
-
-       sphereMaterial);
-
-    // add the sphere to the scene
-    this.gameScene.add(sphere);
-
-    // create a point light
-    var pointLight = new THREE.PointLight( 0xFFFFFF );
-
-    // set its position
-    pointLight.position.x = 10;
-    pointLight.position.y = 50;
-    pointLight.position.z = 130;
-
-    // add to the scene
-    this.gameScene.add(pointLight);
-*/
     // Glow Scene setup
     this.glowScene = new THREE.Scene();
     this.glowScene.add(new THREE.AmbientLight(0xFFFFFF));
@@ -87,6 +53,10 @@ function Game() {
     }));
 
     this.initPostProcessing();
+}
+
+Game.prototype.newGame = function(){
+    // need to reset propoerties necessary for new game??
 }
 
 Game.prototype.loadView = function(){
@@ -220,9 +190,6 @@ Game.prototype.keyUp = function (key) {
         // Update lastUpdate timestamp to so dt will be 0 during the pause
         lastUpdate = UTIL.now();
         */
-        break;
-    case 82: /* R */ // testing
-        this.player.Derezz();
         break;
     case 32: /* SPACE */
         this.player.jump();
