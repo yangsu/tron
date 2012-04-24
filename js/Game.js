@@ -86,7 +86,7 @@ function Game() {
         this.resourcesLoaded = true;
     }));
 
-    //this.initPostProcessing();
+    this.initPostProcessing();
 }
 
 Game.prototype.loadView = function(){
@@ -105,12 +105,12 @@ Game.prototype.animate = function () {
             this.update();
             
             log('game');
-            //if (window.isMobileDevice) {
+            if (window.isMobileDevice) {
                 window.renderer.render(this.gameScene, this.camera);
-            /*} else {
+            } else {
                 this.glowcomposer.render(0.1);
                 this.finalcomposer.render(0.1);
-            }*/
+            }
         }
         
         // Preserve context
@@ -143,8 +143,8 @@ Game.prototype.update = function () {
     // camera.position.z += CONFIG.cameraVel.z * dt;
     // TODO: Temp solution by placing camera with an offset from player
 
-    this.camera.rotation.x = (window.innerHeight / 2 - this.mouseY) / 1000;
-    this.camera.rotation.y = (window.innerWidth / 2 - this.mouseX) / 1000;
+    //this.camera.rotation.x = (window.innerHeight / 2 - this.mouseY) / 1000;
+    //this.camera.rotation.y = (window.innerWidth / 2 - this.mouseX) / 1000;
 
     this.camera.position.z = this.player.position.z + 200;
 

@@ -108,16 +108,23 @@ $(document).ready(function () {
         // store the mouseX and mouseY position
         mouseX = event.clientX;
         mouseY = event.clientY;
-        myIntro.drawMouse(mouseX, mouseY);
-        //myGame.mouseMoved(mouseX, mouseY);
+        
+        //myIntro.drawMouse(mouseX, mouseY);
+        if(myGame != null){
+            myGame.mouseMoved(mouseX, mouseY);
+        }
     });
 
     // Only keyup can capture the key event for the 'esc' key
     $(document).keyup(function (event) {
-        //myGame.keyUp(event.which);
+        if(myGame != null){
+            myGame.keyUp(event.which);
+        }
     });
     $(document).keydown(function (event) {
-        //myGame.keyDown(event.which);
+        if(myGame != null){
+            myGame.keyDown(event.which);
+        }
     });
     $(document).keypress(function (event) {
         // switch (event.which) {
