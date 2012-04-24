@@ -2,7 +2,8 @@
  * @author Troy Ferrell & Yang Su
  */
 
-function ParticleEngine() {
+function ParticleEngine(scene) {
+    this.scene = scene;
     this.particles = new THREE.Geometry();
     /*
     pMaterial = new THREE.ParticleBasicMaterial({
@@ -92,7 +93,7 @@ function ParticleEngine() {
     this.particleSystem.sortParticles = true;
     this.particleSystem.dynamic = true;
 
-    window.scene.add(this.particleSystem);
+    this.scene.add(this.particleSystem);
 
     this.loadMusic();
 }

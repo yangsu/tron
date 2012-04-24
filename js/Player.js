@@ -2,8 +2,12 @@
  * @author Troy Ferrell & Yang Su
  */
 
-function Player() {
-    this.trail = new Trail();
+function Player(scene, glowscene) {
+    
+    this.scene = scene;
+    this.glowScene = glowscene;
+    
+    this.trail = new Trail(scene, glowscene);
 
     this.position = CONFIG.playerPos.clone();
     this.velocity = CONFIG.playerDefaulVel.clone();
@@ -40,12 +44,12 @@ function Player() {
         radius : radius
     };
 
-    window.scene.add(this.mesh);
+    this.scene.add(this.mesh);
 
     this.glowMesh = new THREE.Mesh(CONFIG.playerGeometry, this.glowMaterial);
     this.glowMesh.scale = this.mesh.scale;
     this.glowMesh.overdraw = true;
-    window.glowscene.add(this.glowMesh);
+    this.glowScene.add(this.glowMesh);
 
     this.updatePosition();
 }
@@ -53,8 +57,8 @@ function Player() {
 Player.prototype.Derezz = function () {
 
     // remove mesh & glow mesh from respective scenes
-    window.scene.remove(this.mesh);
-    window.glowscene.remove(this.glowMesh);
+    this.scene.remove(this.mesh);
+    this.glowScene.remove(this.glowMesh);
 
     // Kill player
     this.isAlive = false;

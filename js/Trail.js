@@ -1,7 +1,11 @@
 /**
  * @author Troy Ferrell & Yang Su
  */
-function Trail() {
+function Trail(scene, glowscene) {
+    
+    this.scene = scene;
+    this.glowScene = glowscene;
+    
     this.segments = [];
     this.segmentMeshes = [];
     this.glowSegmentMeshes = [];
@@ -45,11 +49,11 @@ Trail.prototype.update = function (playerPosition) {
     // delete any stale trail segments
     if (this.segmentMeshes.length - this.oldestLiveSection > CONFIG.trailLiveSections) {
         // Remove from scene
-        window.scene.remove(this.segmentMeshes[this.oldestLiveSection]);
+        this.scene.remove(this.segmentMeshes[this.oldestLiveSection]);
         // Remove from segmentMeshes
         delete this.segmentMeshes[this.oldestLiveSection];
         // Remove from glowscene
-        window.glowscene.remove(this.glowSegmentMeshes[this.oldestLiveSection]);
+        this.glowScene.remove(this.glowSegmentMeshes[this.oldestLiveSection]);
         // Remove from glowSegmentMeshes
         delete this.glowSegmentMeshes[this.oldestLiveSection];
         // Move counter along
@@ -72,11 +76,11 @@ Trail.prototype.generateSegment = function (playerPosition) {
 
     newMesh = new THREE.Mesh(newSegment.geometry, this.material);
     this.segmentMeshes.push(newMesh);
-    window.scene.add(newMesh);
+    this.scene.add(newMesh);
 
     newMesh = new THREE.Mesh(newSegment.geometry, this.glowMaterial);
     this.glowSegmentMeshes.push(newMesh);
-    window.glowscene.add(newMesh);
+    this.glowScene.add(newMesh);
 };
 
 

@@ -70,7 +70,7 @@ function Derezz(geometry){
     this.particleSystem.dynamic = true;
     this.particleSystem.geometry.__dirtyVertices = true;
 
-    window.scene.add(this.particleSystem);
+    window.gameScene.add(this.particleSystem);
 }
 
 Derezz.prototype.update = function(dt){

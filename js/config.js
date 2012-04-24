@@ -1,4 +1,6 @@
 var CONFIG = {
+    // Intro Settings
+    'PenDrawSpeed' : 3,
     // Renderer Settings
     'renderer' : {
         antialias: true,

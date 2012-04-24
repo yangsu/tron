@@ -2,7 +2,10 @@
  * @author Troy Ferrell & Yang Su
  */
 
-var scene, glowscene, levelProgress, isMobileDevice, myGame;
+var introScene, gameScene, glowscene,
+    levelProgress, isMobileDevice,
+    renderer,
+    myGame;
 
 // CONSTANTS
 var TWOPI = 2 * Math.PI;
@@ -11,7 +14,8 @@ $(document).ready(function () {
     var mouseX = window.innerWidth / 2,
         mouseY = window.innerHeight / 2,
         startmenu = $('#startmenu'),
-        ingamemenu = $('#ingamemenu');
+        ingamemenu = $('#ingamemenu'),
+        myIntro;
 
     function init() {
 
@@ -22,8 +26,30 @@ $(document).ready(function () {
 
         window.isMobileDevice = navigator.userAgent.search(/iPhone|iPod|iPad/) !== -1;
 
-		// INIT Game.js or intro.js
-		myGame = new Game();
+
+		// TODO: to fix multiple scenes solution
+		// http://demo.bkcore.com/threejs/webgl_rendermanager.html
+		// Scene Initialization
+        var OFFSET = 6,
+            WIDTH = window.innerWidth - OFFSET,
+            HEIGHT = window.innerHeight - OFFSET,
+            ASPECT = WIDTH / HEIGHT;
+
+        // Renderer Initialization
+        window.renderer = new THREE.WebGLRenderer(CONFIG.renderer);
+        window.renderer.autoClear = window.isMobileDevice;
+
+        window.renderer.setSize(WIDTH, HEIGHT);
+        window.renderer.setClearColorHex(CONFIG.background, 1.0);
+        window.renderer.clear();
+
+        document.body.appendChild(window.renderer.domElement);
+
+        // INIT Game.js or intro.js
+        myIntro = new Intro();
+
+        // Load initial view
+        myIntro.loadView();
 
         // Stats Initialization
         var stats = new Stats(),
@@ -62,6 +88,13 @@ $(document).ready(function () {
     $('#play').click(function () {
         lastUpdate = UTIL.now();
         startmenu.fadeOut('fast', function () {
+            if(myGame == null){
+               myGame = new Game();
+            }
+
+            // switch to my game
+            myIntro.unloadView();
+            myGame.loadView();
             myGame.started = true;
         });
     });
@@ -70,19 +103,28 @@ $(document).ready(function () {
         ingamemenu.fadeOut();
     });
 
-    $(document).mousemove(function (e) {
+// mousemove
+    $(document).mouseup(function (e) {
         // store the mouseX and mouseY position
         mouseX = event.clientX;
         mouseY = event.clientY;
-        myGame.mouseMoved(mouseX, mouseY);
+
+        //myIntro.drawMouse(mouseX, mouseY);
+        if(myGame != null){
+            myGame.mouseMoved(mouseX, mouseY);
+        }
     });
 
     // Only keyup can capture the key event for the 'esc' key
     $(document).keyup(function (event) {
-        myGame.keyUp(event.which);
+        if(myGame != null){
+            myGame.keyUp(event.which);
+        }
     });
     $(document).keydown(function (event) {
-        myGame.keyDown(event.which);
+        if(myGame != null){
+            myGame.keyDown(event.which);
+        }
     });
     $(document).keypress(function (event) {
         // switch (event.which) {

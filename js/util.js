@@ -1,4 +1,7 @@
 var UTIL = {
+    v2 : function(x,y){
+        return new THREE.Vector2(x,y);
+    },
     v3 : function (x, y, z) {
         return new THREE.Vector3(x, y, z);
     },

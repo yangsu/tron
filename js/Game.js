@@ -8,6 +8,7 @@ function Game() {
     this.started = false;
     this.paused = false;
     this.resourceLoaded = false;
+    this.viewLoaded = false;
     this.lastUpdate = UTIL.now();
 
     // Init
@@ -27,65 +28,100 @@ function Game() {
         CONFIG.cameraFar
     );
     this.camera.position = CONFIG.cameraPos;
+    //this.camera.position.z = 300;
 
     // Scene setup
-    window.scene = new THREE.Scene();
-    window.scene.add(this.camera);
-    window.scene.add(new THREE.AmbientLight(0xAAAAAA));
+    this.gameScene = new THREE.Scene();
+    this.gameScene.add(this.camera);
+    this.gameScene.add(new THREE.AmbientLight(0xAAAAAA));
 
+    // Testing*
+    /*
+    // set up the sphere vars
+    var radius = 50, segments = 16, rings = 16;
+    // create the sphere's material
+    var sphereMaterial = new THREE.MeshLambertMaterial(
+    {
+      // a gorgeous red.
+      color: 0xCC0000
+    });
+
+    // create a new mesh with sphere geometry -
+    // we will cover the sphereMaterial next!
+    var sphere = new THREE.Mesh(
+       new THREE.SphereGeometry(radius,
+       segments,
+       rings),
+
+       sphereMaterial);
+
+    // add the sphere to the scene
+    this.gameScene.add(sphere);
+
+    // create a point light
+    var pointLight = new THREE.PointLight( 0xFFFFFF );
+
+    // set its position
+    pointLight.position.x = 10;
+    pointLight.position.y = 50;
+    pointLight.position.z = 130;
+
+    // add to the scene
+    this.gameScene.add(pointLight);
+*/
     // Glow Scene setup
-    window.glowscene = new THREE.Scene();
-    window.glowscene.add(new THREE.AmbientLight(0xFFFFFF));
+    this.glowScene = new THREE.Scene();
+    this.glowScene.add(new THREE.AmbientLight(0xFFFFFF));
 
     // Wrap the function to be called while preserving the context
     CONFIG.init(UTIL.wrap(this, function () {
         // Objects
-        this.player = new Player();
-        this.tunnel = new Tunnel();
-        this.itemManager = new ItemManager();
-        this.particleManager = new ParticleEngine();
-        this.skybox = new SkyBox();
+        this.player = new Player(this.gameScene, this.glowScene);
+        this.tunnel = new Tunnel(this.gameScene);
+        this.itemManager = new ItemManager(this.gameScene);
+        this.particleManager = new ParticleEngine(this.gameScene);
+        this.skybox = new SkyBox(this.gameScene);
         this.collisionManager = new CollisionManager();
 
         this.resourcesLoaded = true;
     }));
 
-    // Renderer Initialization
-    this.renderer = new THREE.WebGLRenderer(CONFIG.renderer);
-    this.renderer.autoClear = window.isMobileDevice;
-
-    this.renderer.setSize(this.WIDTH, this.HEIGHT);
-    this.renderer.setClearColorHex(CONFIG.background, 1.0);
-    this.renderer.clear();
-
     this.initPostProcessing();
+}
 
-    // Attach to DOM
-    document.body.appendChild(this.renderer.domElement);
-
+Game.prototype.loadView = function(){
+    this.viewLoaded = true;
     // Start animation
     this.animate();
 }
 
-Game.prototype.animate = function () {
-    if (this.started && !this.paused && this.resourcesLoaded) {
-        this.update();
+Game.prototype.unloadView = function(){
+    this.viewLoaded = false;
+}
 
-        if (window.isMobileDevice) {
-            this.renderer.render(this.scene, this.camera);
-        } else {
-            this.glowcomposer.render(0.1);
-            this.finalcomposer.render(0.1);
+Game.prototype.animate = function () {
+    if(this.viewLoaded){
+        if (this.started && !this.paused && this.resourcesLoaded) {
+            this.update();
+
+            log('game');
+            if (window.isMobileDevice) {
+                window.renderer.render(this.gameScene, this.camera);
+            } else {
+                this.glowcomposer.render(0.1);
+                this.finalcomposer.render(0.1);
+            }
         }
+
+        // Preserve context
+        var callback = (function (ctx) {
+                return function () {
+                    ctx.animate();
+                };
+            }(this));
+        // note: three.js includes requestAnimationFrame shim
+        requestAnimationFrame(callback);
     }
-    // Preserve context
-    var callback = (function (ctx) {
-            return function () {
-                ctx.animate();
-            };
-        }(this));
-    // note: three.js includes requestAnimationFrame shim
-    requestAnimationFrame(callback);
 };
 
 Game.prototype.update = function () {
@@ -107,8 +143,8 @@ Game.prototype.update = function () {
     // camera.position.z += CONFIG.cameraVel.z * dt;
     // TODO: Temp solution by placing camera with an offset from player
 
-    this.camera.rotation.x = (window.innerHeight / 2 - this.mouseY) / 1000;
-    this.camera.rotation.y = (window.innerWidth / 2 - this.mouseX) / 1000;
+    //this.camera.rotation.x = (window.innerHeight / 2 - this.mouseY) / 1000;
+    //this.camera.rotation.y = (window.innerWidth / 2 - this.mouseX) / 1000;
 
     this.camera.position.z = this.player.position.z + 200;
 
@@ -235,9 +271,9 @@ Game.prototype.initPostProcessing = function () {
     hblur.uniforms.h.value = bluriness / this.WIDTH;
     vblur.uniforms.v.value = bluriness / this.HEIGHT;
 
-    var renderModelGlow = new THREE.RenderPass(window.glowscene, this.camera);
+    var renderModelGlow = new THREE.RenderPass(this.glowScene, this.camera);
 
-    this.glowcomposer = new THREE.EffectComposer(this.renderer, renderTargetGlow);
+    this.glowcomposer = new THREE.EffectComposer(window.renderer, renderTargetGlow);
 
     this.glowcomposer.addPass(renderModelGlow);
     this.glowcomposer.addPass(hblur);
@@ -273,13 +309,13 @@ Game.prototype.initPostProcessing = function () {
     };
     finalshader.uniforms['tGlow'].texture = this.glowcomposer.renderTarget2;
 
-    var renderModel = new THREE.RenderPass(window.scene, this.camera);
+    var renderModel = new THREE.RenderPass(this.gameScene, this.camera);
     var finalPass = new THREE.ShaderPass(finalshader);
     finalPass.needsSwap = true;
     finalPass.renderToScreen = true;
 
     this.finalcomposer = new THREE.EffectComposer(
-        this.renderer,
+        window.renderer,
         new THREE.WebGLRenderTarget(this.WIDTH, this.HEIGHT, renderTargetParameters)
     );
 

@@ -1,4 +1,5 @@
-function LightRing (startZ) {
+function LightRing (scene, startZ) {
+    this.scene = scene;
     this.lights = [];
     this.rising = false;
     this.z = startZ;
@@ -19,7 +20,7 @@ function LightRing (startZ) {
         newLight.position.z = startZ;
 
         this.lights.push(newLight);
-        window.scene.add(newLight);
+        this.scene.add(newLight);
     }
 }
 

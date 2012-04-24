@@ -2,7 +2,10 @@
  * @author Troy
  */
 
-function SkyBox() {
+function SkyBox(scene) {
+    
+    this.scene = scene;
+    
     // http://learningthreejs.com/data/lets_do_a_sky/docs/lets_do_a_sky.html
     var urlPrefix   = 'img/SpaceSkybox/',
         urls = [
@@ -28,7 +31,7 @@ function SkyBox() {
     // If you turn camera around, won't see skybox
     this.skyboxMesh.flipSided = true;
 
-    window.scene.add(this.skyboxMesh);
+    this.scene.add(this.skyboxMesh);
 }
 
 SkyBox.prototype.update = function () {
