@@ -56,26 +56,27 @@ function Player(scene, glowscene) {
 
 Player.prototype.Derezz = function () {
 
-    // remove mesh & glow mesh from respective scenes
-    this.scene.remove(this.mesh);
-    this.glowScene.remove(this.glowMesh);
-
-    // Kill player
-    this.isAlive = false;
-
-     // Transform vertices into current position points;
-    var particles = new THREE.Geometry(),
-        positionVector = this.position.convertToCartesian();
-    _.each(this.mesh.geometry.vertices, function (vertex) {
-        var newVertex = vertex.clone();
-        newVertex.position.multiplyScalar(3);
-        newVertex.position.addSelf(positionVector);
-        particles.vertices.push(newVertex);
-    });
-
-    // Create effect
-    this.DerezzEffect = new Derezz(this.scene, particles);
-
+    if(this.isAlive){
+        // remove mesh & glow mesh from respective scenes
+        this.scene.remove(this.mesh);
+        this.glowScene.remove(this.glowMesh);
+    
+        // Kill player
+        this.isAlive = false;
+    
+         // Transform vertices into current position points;
+        var particles = new THREE.Geometry(),
+            positionVector = this.position.convertToCartesian();
+        _.each(this.mesh.geometry.vertices, function (vertex) {
+            var newVertex = vertex.clone();
+            newVertex.position.multiplyScalar(3);
+            newVertex.position.addSelf(positionVector);
+            particles.vertices.push(newVertex);
+        });
+    
+        // Create effect
+        this.DerezzEffect = new Derezz(this.scene, particles);
+    }
 };
 
 Player.prototype.getPosition = function () {
