@@ -7,8 +7,9 @@ function Intro(){
     // Init
     this.lastUpdate = UTIL.now();
     this.resourceLoaded = false;
-    this.scene, this.camera, this.renderer;
-     
+    this.camera;
+    this.viewLoaded = false;
+    
     // Scene Initialization
     var OFFSET = 6,
         WIDTH = window.innerWidth - OFFSET,
@@ -26,9 +27,9 @@ function Intro(){
     //this.camera.position = CONFIG.cameraPos;
 
     // Scene setup
-    this.scene = new THREE.Scene();
-    this.scene.add(this.camera);
-    //this.scene.add(new THREE.AmbientLight(0xAAAAAA));
+    this.introScene = new THREE.Scene();
+    this.introScene.add(this.camera);
+    //window.introScene.add(new THREE.AmbientLight(0xAAAAAA));
     
     // create a point light
 	var pointLight = new THREE.PointLight( 0xFFFFFF );
@@ -39,7 +40,7 @@ function Intro(){
 	pointLight.position.z = 130;
 	
 	// add to the scene
-	this.scene.add(pointLight);
+	this.introScene.add(pointLight);
 	    
     // Wrap the function to be called while preserving the context
     CONFIG.init(UTIL.wrap(this, function () {
@@ -67,7 +68,7 @@ function Intro(){
                             Math.PI/2, -Math.PI/2,     -Math.PI/2, Math.PI, -Math.PI/2, Math.PI/2];
                             //0, 0, 0, 0, 0, 0, 0, 0];
         
-        this.tronPen = new Pen(this.scene, tronPath, tronRotations);
+        this.tronPen = new Pen(this.introScene, tronPath, tronRotations);
         this.resourcesLoaded = true;
         /*
         //TESTING**
@@ -80,69 +81,41 @@ function Intro(){
         this.resourcesLoaded = true;
         */
     }));
-
-    // Renderer Initialization
-    this.renderer = new THREE.WebGLRenderer(CONFIG.renderer);
-
-    this.renderer.setSize(WIDTH, HEIGHT);
-    this.renderer.setClearColorHex(CONFIG.background, 1.0);
-    this.renderer.clear();
-
-    //document.body.appendChild(this.renderer.domElement);
-    
-    this.lastMouseTouch = null;
-     this.lineMaterial = new THREE.LineBasicMaterial({
-        color: 0x0000FF,
-        //linewidth:
-        //vertexColors: array
-    });
-    
-    this.animate();
 }
 
 
 Intro.prototype.loadView = function(){
-   // TODO: keep one dom element renderer???
-   // document.body.appendChild(this.renderer.domElement);    
+    this.viewLoaded = true;
+    this.animate();
 }
 
 Intro.prototype.unloadView = function(){
-    document.body.removeChild(this.renderer.domElement);
+    this.viewLoaded = false;
 }
 
 Intro.prototype.drawMouse = function(mx, my){
-    if(this.lastMouseTouch == null){
-        this.lastMouseTouch = UTIL.v2(mx - window.innerWidth/2, my - window.innerHeight/2);
-    }else{
-        var lineGeo = new THREE.Geometry();
-        lineGeo.vertices.push(new THREE.Vertex(this.lastMouseTouch));
-        lineGeo.vertices.push(new THREE.Vertex(UTIL.v2(mx - window.innerWidth/2, my - window.innerHeight/2)));
-        var line = new THREE.Line(lineGeo, this.lineMaterial);
-        this.scene.add(line);
-        
-        this.lastMouseTouch = null;
-    }
-    
     log(mx,window.innerHeight - my);
 }
 
-
 Intro.prototype.animate = function() {
-    if (this.resourcesLoaded){
-    	this.update();
-    
-        this.renderer.render(this.scene, this.camera);
-    }    
-    
-    // Preserve context
-    var callback = (function (ctx) {
-            return function () {
-                ctx.animate();
-            };
-        }(this));
+    if(this.viewLoaded){
+        if (this.resourcesLoaded){
+        	this.update();
         
-    // note: three.js includes requestAnimationFrame shim
-    requestAnimationFrame(callback);
+            log('test');
+            window.renderer.render(this.introScene, this.camera);
+        }    
+        
+        // Preserve context
+        var callback = (function (ctx) {
+                return function () {
+                    ctx.animate();
+                };
+            }(this));
+            
+        // note: three.js includes requestAnimationFrame shim
+        requestAnimationFrame(callback);
+    }
 }
 
 Intro.prototype.update = function() {

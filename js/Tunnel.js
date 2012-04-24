@@ -2,7 +2,9 @@
  * @author Troy Ferrell & Yang Su
  */
 
-function Tunnel() {
+function Tunnel(scene) {
+
+    this.scene = scene;
 
     this.segments = [];
     this.sections = [];
@@ -37,7 +39,7 @@ function Tunnel() {
     this.lights = [];
     startZ = -CONFIG.tunnelSegmentPerSection * CONFIG.tunnelSegmentDepth;
     for (j = 0; j < 3; j += 1) {
-        tunnelRing = new LightRing(startZ - CONFIG.viewDistance * j);
+        tunnelRing = new LightRing(this.scene,startZ - CONFIG.viewDistance * j);
         this.lights.push(tunnelRing);
     }
 }
@@ -49,7 +51,7 @@ Tunnel.prototype.update = function () {
         this.generateSection(-this.segments.length * CONFIG.tunnelSegmentDepth);
         if (this.sections.length - this.oldestLiveSection > CONFIG.tunnelLiveSections) {
             // Remove from scene
-            window.scene.remove(this.sections[this.oldestLiveSection]);
+            this.scene.remove(this.sections[this.oldestLiveSection]);
             // Remove from sections
             delete this.sections[this.oldestLiveSection];
             // Move counter along
@@ -97,7 +99,7 @@ Tunnel.prototype.generateSection = function (startZ) {
     // Create a single mesh
     newMesh = new THREE.Mesh(geometry, this.material[this.material.length - 1]);
     this.sections.push(newMesh);
-    window.scene.add(newMesh);
+    this.scene.add(newMesh);
 
     this.imagePosition += CONFIG.tunnelSegmentPerSection;
     if (this.imagePosition >= this.imageData.width) {

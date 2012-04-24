@@ -2,7 +2,9 @@
  * @author Troy Ferrell & Yang Su
  */
 
-var scene, glowscene, levelProgress, isMobileDevice;
+var introScene, gameScene, glowscene, 
+    levelProgress, isMobileDevice,
+    renderer;
 
 // CONSTANTS
 var TWOPI = 2 * Math.PI;
@@ -23,12 +25,31 @@ $(document).ready(function () {
         }
 
         window.isMobileDevice = navigator.userAgent.search(/iPhone|iPod|iPad/) !== -1;
-
-		// INIT Game.js or intro.js
-		myIntro = new Intro();
-		myIntro.loadView();
 		
-		myGame = new Game();
+		
+		// TODO: to fix multiple scenes solution
+		// http://demo.bkcore.com/threejs/webgl_rendermanager.html
+		// Scene Initialization
+        var OFFSET = 6,
+            WIDTH = window.innerWidth - OFFSET,
+            HEIGHT = window.innerHeight - OFFSET,
+            ASPECT = WIDTH / HEIGHT;
+            
+        // Renderer Initialization
+        window.renderer = new THREE.WebGLRenderer(CONFIG.renderer);
+        window.renderer.autoClear = window.isMobileDevice;
+        
+        window.renderer.setSize(WIDTH, HEIGHT);
+        window.renderer.setClearColorHex(CONFIG.background, 1.0);
+        window.renderer.clear();
+
+        document.body.appendChild(window.renderer.domElement);  
+
+        // INIT Game.js or intro.js
+        myIntro = new Intro();
+
+        // Load initial view
+        myIntro.loadView();
 
         // Stats Initialization
         var stats = new Stats(),
@@ -68,11 +89,11 @@ $(document).ready(function () {
         lastUpdate = UTIL.now();
         startmenu.fadeOut('fast', function () {
             if(myGame == null){
-               // myGame = new Game();
+               myGame = new Game();
             }
             
             // switch to my game
-            //myIntro.unloadView();
+            myIntro.unloadView();
             myGame.loadView();
             myGame.started = true;
         });

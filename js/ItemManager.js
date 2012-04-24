@@ -3,7 +3,7 @@
  */
 
 function ItemManager(scene) {
-
+    this.scene = scene;
     this.gameItems = [];
     this.typeMap = {
         'credit' : Credit,
@@ -26,7 +26,7 @@ ItemManager.prototype.generateItems = function (type, curve, numOfItems) {
         point3D;
     for (i = 0; i < numOfItems; i += 1) {
         point3D = UTIL.v3c(itemRadius, itemPoints[i].x, itemPoints[i].y);
-        newPowerUp = new (this.typeMap[type])(point3D.convertToCartesian());
+        newPowerUp = new (this.typeMap[type])(this.scene, point3D.convertToCartesian());
         newPowerUp.id = this.gameItems.length;
         this.gameItems.push(newPowerUp);
     }
@@ -76,7 +76,8 @@ ItemManager.prototype.genRandom = function () {
     }
 };
 
-function PowerUp(pos) {
+function PowerUp(scene, pos) {
+    this.scene = scene;
     this.mesh = null;
     this.position = pos;
 
@@ -91,7 +92,7 @@ function PowerUp(pos) {
     this.boundingSphere = this.mesh.geometry.boundingSphere;
     this.boundingSphere.radius *= 3;
 
-    window.scene.add(this.mesh);
+    this.scene.add(this.mesh);
 }
 
 PowerUp.prototype.update = function () {
@@ -101,11 +102,13 @@ PowerUp.prototype.update = function () {
 };
 
 PowerUp.prototype.remove = function () {
-    window.scene.remove(this.mesh);
+    this.scene.remove(this.mesh);
 };
 
 // Need to refactor & decide on design
-function Credit(pos) {
+function Credit(scene, pos) {
+    this.scene = scene;
+    
     var COLOR1 = 0x77bbff,
         COLOR2 = 0x8ec5e5,
         //COLOR2 = 0x8ec5e5,
@@ -117,13 +120,13 @@ function Credit(pos) {
     this.parent = new THREE.Object3D();
     this.glowsparent = new THREE.Object3D();
 
-    window.scene.add(this.parent);
+    this.scene.add(this.parent);
 
     // GLOW CONTAINER (used for occluder)
     this.glowsparent.position = this.parent.position;
     this.glowsparent.rotation = this.parent.rotation;
     this.glowsparent.scale = this.parent.scale;
-    window.glowscene.add(this.glowsparent);
+    //window.glowscene.add(this.glowsparent);
 
     // GLYPH (BIG ONE)
     this.glyph = new THREE.Mesh(
@@ -136,7 +139,7 @@ function Credit(pos) {
         })
     );
     this.glyph.position = this.position;
-    //window.scene.add(this.glyph);
+    //this.scene.add(this.glyph);
     //this.parent.add(this.glyph);
 
     // Bounding Box
@@ -174,7 +177,7 @@ function Credit(pos) {
     this.glyph2wf.position = this.position;
     this.glyph2wf.rotation = this.glyph2.rotation;
     this.glyph2wf.scale.x = this.glyph2wf.scale.y = this.glyph2wf.scale.z = this.glyph2.scale.x + 0.01;
-    //window.scene.add(this.glyph2wf);
+    //this.scene.add(this.glyph2wf);
     this.parent.add(this.glyph2wf);
 
     // GLYPHE2 GLOW OCCLUDER
@@ -196,8 +199,8 @@ function Credit(pos) {
 }
 
 Credit.prototype.remove = function () {
-    window.scene.remove(this.parent);
-    window.glowscene.remove(this.glowsparent);
+    this.scene.remove(this.parent);
+    //.glowscene.remove(this.glowsparent);
 };
 
 Credit.prototype.update = function () {
