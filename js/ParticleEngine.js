@@ -63,7 +63,7 @@ function ParticleEngine(scene) {
             'void main(){',
                 //'gl_FragColor = vec4(color, 1.0);',
                 'gl_FragColor = vec4(color*vColor, 1.0);',
-                //'gl_FragColor = gl_FragColor * texture2D(texture, gl_PointCoord);',
+                'gl_FragColor = gl_FragColor * texture2D(texture, gl_PointCoord);',
             '}'
         ].join('\n')
     };
@@ -81,7 +81,7 @@ function ParticleEngine(scene) {
     var sizes = this.attributes.size.value,
         colors = this.attributes.ca.value;
     _.each(this.particles.vertices, function(vertex, v) {
-        sizes.push(Math.random() * 10 + 5);
+        sizes.push(3);
         colors[v] = new THREE.Color(0xFFFFFF);
 
         var value = Math.abs(vertex.position.z)/(CONFIG.viewDistance * 20);
@@ -114,11 +114,12 @@ ParticleEngine.prototype.loadMusic = function(){
                 index,
                 percentage;
            _.each(__self.particles.vertices, function (vertex, i) {
-               percentage = Math.abs(vertex.position.z)/Math.abs(window.levelProgress - CONFIG.viewDistance*20);
+               percentage = (Math.abs(vertex.position.z) - Math.abs(window.levelProgress))/Math.abs(CONFIG.viewDistance*20);
+               //(Math.abs(window.levelProgress - CONFIG.viewDistance*20) - Math.abs(window.levelProgress));
+               
                index = bars - 1 - Math.floor(percentage * bars);
 
-               __self.attributes.size.value[i] = input[index]/50;
-                //vertex.position.addSelf();
+               __self.attributes.size.value[i] = input[index]/100 + 3;
            });
            __self.attributes.size.needsUpdate = true;
         });
