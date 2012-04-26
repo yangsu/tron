@@ -8,7 +8,8 @@ var introScene, gameScene, glowscene,
     myGame;
 
 // CONSTANTS
-var TWOPI = 2 * Math.PI;
+var TWOPI = 2 * Math.PI,
+    HALFPI = Math.PI / 2;
 
 $(document).ready(function () {
     var mouseX = window.innerWidth / 2,
@@ -27,9 +28,9 @@ $(document).ready(function () {
         window.isMobileDevice = navigator.userAgent.search(/iPhone|iPod|iPad/) !== -1;
 
 
-		// TODO: to fix multiple scenes solution
-		// http://demo.bkcore.com/threejs/webgl_rendermanager.html
-		// Scene Initialization
+        // TODO: to fix multiple scenes solution
+        // http://demo.bkcore.com/threejs/webgl_rendermanager.html
+        // Scene Initialization
         var OFFSET = 6,
             WIDTH = window.innerWidth - OFFSET,
             HEIGHT = window.innerHeight - OFFSET,
@@ -88,8 +89,8 @@ $(document).ready(function () {
     $('#play').click(function () {
         lastUpdate = UTIL.now();
         startmenu.fadeOut('fast', function () {
-            if(myGame == null){
-               myGame = new Game();
+            if (!myGame) {
+                myGame = new Game();
             }
 
             // switch to my game
@@ -110,28 +111,28 @@ $(document).ready(function () {
         mouseY = event.clientY;
 
         //myIntro.drawMouse(mouseX, mouseY);
-        if(myGame != null){
+        if (myGame) {
             myGame.mouseMoved(mouseX, mouseY);
         }
     });
 
     // Only keyup can capture the key event for the 'esc' key
     $(document).keyup(function (event) {
-        if(myGame != null){
+        if (myGame) {
             myGame.keyUp(event.which);
         }
     });
     $(document).keydown(function (event) {
-        switch(event.which){
-            case 82: /* R */ // testing restart
-                //myGame = new Game();
-                //myGame.loadView();
+        switch (event.which) {
+        case 82: /* R */ // testing restart
+            //myGame = new Game();
+            //myGame.loadView();
             break;
-            default:
-                if(myGame != null){
-                    myGame.keyDown(event.which);
-                }
-            break;  
+        default:
+            if (myGame) {
+                myGame.keyDown(event.which);
+            }
+            break;
         }
     });
     $(document).keypress(function (event) {

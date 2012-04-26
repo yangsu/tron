@@ -1,4 +1,7 @@
 var CONFIG = {
+    // Color Presets
+    'white' : new THREE.Color(0xFFFFFF),
+
     // Intro Settings
     'PenDrawSpeed' : 3,
     // Renderer Settings
@@ -75,18 +78,23 @@ var CONFIG = {
     // Particle Settings
     'particleCount' : 2000,
     'particleTexture' : THREE.ImageUtils.loadTexture('img/Particle.png'),
+    'particleVelocityRange' : 500,
+
+    // Derezz Settings
+    'derezzTexture' : THREE.ImageUtils.loadTexture('img/LightCycle_Glow.png'),
 
     // Sound Settings
     'bgSound' : 'sounds/TronMusic1.mp3',
     'soundVolume' : 0.7,
 
     'init' : function (callback) {
-        var testFinished = function () {
+        var wrappedcallback = _.once(callback),
+            testFinished = function () {
             if (_.all(CONFIG, function (value, key) {
                     return (value !== null && value !== undefined);
                 })) {
                 console.log('finished');
-                callback();
+                wrappedcallback();
             }
         };
 

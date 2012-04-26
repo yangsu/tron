@@ -54,7 +54,7 @@ ItemManager.prototype.remove = function (i) {
 ItemManager.prototype.genRandom = function () {
     var theta, curve;
     if (CONFIG.PowerUpMesh) {
-        //var theta = -Math.PI/2;
+        //var theta = -HALFPI;
         theta = 360 * Math.random();
         curve = new THREE.QuadraticBezierCurve(
             theta, window.levelProgress - CONFIG.viewDistance,
@@ -64,7 +64,7 @@ ItemManager.prototype.genRandom = function () {
 
         this.generateItems('powerup', curve, 1);
     } else {
-        //var theta = -Math.PI/2;
+        //var theta = -HALFPI;
         theta = 2 * Math.PI * Math.random();
         curve = new THREE.QuadraticBezierCurve(
             theta, window.levelProgress - CONFIG.viewDistance,
@@ -108,7 +108,7 @@ PowerUp.prototype.remove = function () {
 // Need to refactor & decide on design
 function Credit(scene, pos) {
     this.scene = scene;
-    
+
     var COLOR1 = 0x77bbff,
         COLOR2 = 0x8ec5e5,
         //COLOR2 = 0x8ec5e5,
