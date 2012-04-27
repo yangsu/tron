@@ -57,24 +57,23 @@ function Game() {
 
 Game.prototype.newGame = function(){
     // need to reset propoerties necessary for new game??
-}
+};
 
 Game.prototype.loadView = function(){
     this.viewLoaded = true;
     // Start animation
     this.animate();
-}
+};
 
 Game.prototype.unloadView = function(){
     this.viewLoaded = false;
-}
+};
 
 Game.prototype.animate = function () {
     if(this.viewLoaded){
         if (this.started && !this.paused && this.resourcesLoaded) {
             this.update();
 
-            log('game');
             if (window.isMobileDevice) {
                 window.renderer.render(this.gameScene, this.camera);
             } else {

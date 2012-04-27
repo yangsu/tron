@@ -37,7 +37,7 @@ function ParticleEngine(scene) {
 
     this.uniforms = {
         amplitude: {type: 'f', value: 1.0 },
-        color:     {type: 'c', value: new THREE.Color(0xFFFFFF)},
+        color:     {type: 'c', value: CONFIG.white},
         texture:   {type: 't', value: 0, texture: CONFIG.particleTexture}
     };
 
@@ -82,7 +82,7 @@ function ParticleEngine(scene) {
         colors = this.attributes.ca.value;
     _.each(this.particles.vertices, function(vertex, v) {
         sizes.push(Math.random() * 10 + 5);
-        colors[v] = new THREE.Color(0xFFFFFF);
+        colors[v] = CONFIG.white;
 
         var value = Math.abs(vertex.position.z)/(CONFIG.viewDistance * 20);
         colors[v].setHSV(0.55, 0.75, 1.0);
