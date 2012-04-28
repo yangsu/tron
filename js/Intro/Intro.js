@@ -33,41 +33,17 @@ function Intro() {
     var pointLight = new THREE.PointLight(0xFFFFFF);
 
     // set its position
-    pointLight.position.x = 10;
-    pointLight.position.y = 50;
-    pointLight.position.z = 130;
+    pointLight.position = CONFIG.introLightPosition;
 
     // add to the scene
     this.introScene.add(pointLight);
 
     // Wrap the function to be called while preserving the context
     CONFIG.init(UTIL.wrap(this, function () {
-        // Objects
-        // YES! Hard-coded code!
-        var tronPath = [UTIL.v2(-500, 0),
-                        UTIL.v2(-250, 0), UTIL.v2(-250, 75), // ***** T *****
-                        UTIL.v2(-300, 75), UTIL.v2(-300, 100), UTIL.v2(-175, 100),
-                        UTIL.v2(-175, 75), UTIL.v2(-225, 75), UTIL.v2(-225, 0),
-
-                        //space = -75
-                        UTIL.v2(-100, 0), UTIL.v2(-100, 100), UTIL.v2(-25, 100), UTIL.v2(-25, 50), // ***** R *****
-                        UTIL.v2(-60, 50), UTIL.v2(-25, 0),
-
-                        UTIL.v2(50, 0), UTIL.v2(50, 100), UTIL.v2(125, 100), UTIL.v2(125, 0), // **** O *****
-
-                        UTIL.v2(200, 0), UTIL.v2(200, 100), UTIL.v2(225, 100), UTIL.v2(275, 0),// **** N *****
-                        UTIL.v2(275, 100), UTIL.v2(300, 100), UTIL.v2(300, 0),
-
-                        UTIL.v2(500, 0)];
-
-        var tronRotations = [
-            0, HALFPI, HALFPI, -HALFPI, -HALFPI, -HALFPI, -HALFPI, HALFPI, HALFPI, // *** T Turns ***
-            HALFPI, -HALFPI, -HALFPI, -HALFPI, HALFPI, HALFPI, // ***** R Turns
-            HALFPI, -HALFPI, -HALFPI, HALFPI, // **** O Turns
-            HALFPI, -HALFPI, -HALFPI, Math.PI, -HALFPI, HALFPI
-        ];
-        //0, 0, 0, 0, 0, 0, 0, 0];
-
+        var tronPath = _.map(CONFIG.penPath, function (val) {
+            return UTIL.v2(val[0], val[1]);
+        }),
+            tronRotations = _.pluck(CONFIG.penPath, '2');
         this.tronPen = new Pen(this.introScene, tronPath, tronRotations);
         this.resourcesLoaded = true;
     }));
@@ -90,7 +66,6 @@ Intro.prototype.animate = function () {
 
             window.renderer.render(this.introScene, this.camera);
         }
-
         // Preserve context
         var callback = (function (ctx) {
                 return function () {

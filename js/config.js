@@ -88,6 +88,27 @@ var CONFIG = {
     'bgSound' : 'sounds/TronMusic1.mp3',
     'soundVolume' : 0.7,
 
+    // Intro Settings
+    'penPath' : [
+        [-500, 0, 0], // Starting Point
+
+        [-250, 0, HALFPI], [-250, 75, HALFPI], [-300, 75, -HALFPI], // T
+        [-300, 100, -HALFPI], [-175, 100, -HALFPI], [-175, 75, -HALFPI],
+        [-225, 75, HALFPI], [-225, 0, HALFPI],
+
+        [-100, 0, HALFPI], [-100, 100, -HALFPI], [-25, 100, -HALFPI], // R
+        [-25, 50, -HALFPI], [-60, 50, HALFPI], [-25, 0, HALFPI],
+
+        [50, 0, HALFPI], [50, 100, -HALFPI], [125, 100, -HALFPI], [125, 0, HALFPI], // O
+
+        [200, 0, HALFPI], [200, 100, -HALFPI], [225, 100, -HALFPI], [275, 0, PI],// N
+        [275, 100, -HALFPI], [300, 100, HALFPI], [300, 0, HALFPI],
+
+        [500, 0, HALFPI] // Ending Point
+    ],
+    'PenDrawSpeed' : 3,
+    'introLightPosition' : UTIL.v3(10, 50, 130),
+
     'init' : function (callback) {
         var wrappedcallback = _.once(callback),
             testFinished = function () {

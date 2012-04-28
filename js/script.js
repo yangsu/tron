@@ -7,10 +7,6 @@ var introScene, gameScene, glowscene,
     renderer,
     myGame;
 
-// CONSTANTS
-var TWOPI = 2 * Math.PI,
-    HALFPI = Math.PI / 2;
-
 $(document).ready(function () {
     var mouseX = window.innerWidth / 2,
         mouseY = window.innerHeight / 2,
