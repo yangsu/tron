@@ -48,24 +48,27 @@ function Game() {
         this.collisionManager = new CollisionManager();
 
         this.resourcesLoaded = true;
+        this.playing = true;
     }));
 
     this.initPostProcessing();
 }
 
 Game.prototype.newGame = function(){
-    // Reset Game Parameters
-    this.playing = true;
-    this.lastUpdate = UTIL.now();
-    
-    // Reset Game Components
-    this.player.reset();
-    this.tunnel.reset();
-    this.itemManager.reset();
-    this.particleManager.reset();
-    this.skybox.reset();
-    
-    this.camera.position = CONFIG.cameraPos.clone();
+    if(this.resourcesLoaded){
+        // Reset Game Parameters
+        this.playing = true;
+        this.lastUpdate = UTIL.now();
+        
+        // Reset Game Components
+        this.player.reset();
+        this.tunnel.reset();
+        this.itemManager.reset();
+        this.particleManager.reset();
+        this.skybox.reset();
+        
+        this.camera.position = CONFIG.cameraPos.clone();
+    }
 };
 
 Game.prototype.gameOver = function(){

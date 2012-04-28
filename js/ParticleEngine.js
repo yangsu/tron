@@ -4,30 +4,10 @@
 
 function ParticleEngine(scene) {
     this.scene = scene;
-    this.particles = new THREE.Geometry();
-    /*
-    pMaterial = new THREE.ParticleBasicMaterial({
-        color: 0xFFFFFF,
-        size: 5,
-        //map: THREE.ImageUtils.loadTexture('),
-        blending: THREE.AdditiveBlending,
-        transparent: true
-    });
-    */
-    var theta, radius, pX, pY, pZ, particle;
-    _.times(CONFIG.particleCount, UTIL.wrap(this, function () {
-        theta = Math.random() * TWOPI;
-        radius = Math.random() * 75 + CONFIG.tunnelRadius + 125;
-
-        pX = radius * Math.cos(theta);
-        pY = radius * Math.sin(theta);
-        pZ = Math.random() * (-CONFIG.viewDistance * 20);
-
-        particle = UTIL.vtx3(pX, pY, pZ);
-        particle.velocity = UTIL.v3(0, 0, Math.random());
-
-        this.particles.vertices.push(particle);
-    }));
+    this.particles = null;
+    
+    // Generate all particles
+    this.generateParticles();
 
     // Set Shader Material Parameters
     this.attributes = {
@@ -97,6 +77,54 @@ function ParticleEngine(scene) {
     this.loadMusic();
 }
 
+ParticleEngine.prototype.reset = function(){
+    this.scene.remove(this.particleSystem);
+    this.particleSystem = null;
+    
+    this.generateParticles();
+    
+    // remove all attributes from shaders????
+    
+    // Modify attributes of shader on per-particle basis
+    var sizes = this.attributes.size.value,
+        colors = this.attributes.ca.value;
+    _.each(this.particles.vertices, function(vertex, v) {
+        sizes[v] = 3;
+        colors[v] = CONFIG.white;
+        var value = Math.abs(vertex.position.z)/(CONFIG.viewDistance * 20);
+        colors[v].setHSV(0.55, 0.75, 1.0);
+        //colors[v].setHSV(Math.random(), Math.random(), Math.random());
+    });
+    
+    this.particleSystem = new THREE.ParticleSystem(this.particles, this.shaderMaterial);
+    this.particleSystem.sortParticles = true;
+    this.particleSystem.dynamic = true;
+
+    this.scene.add(this.particleSystem);   
+    
+    this.loadMusic();
+}
+
+ParticleEngine.prototype.generateParticles = function(){
+     this.particles = new THREE.Geometry();
+
+    var theta, radius, pX, pY, pZ, particle;
+    _.times(CONFIG.particleCount, UTIL.wrap(this, function () {
+        theta = Math.random() * TWOPI;
+        radius = Math.random() * 75 + CONFIG.tunnelRadius + 125;
+
+        pX = radius * Math.cos(theta);
+        pY = radius * Math.sin(theta);
+        pZ = Math.random() * (-CONFIG.viewDistance * 20);
+
+        particle = UTIL.vtx3(pX, pY, pZ);
+        particle.velocity = UTIL.v3(0, 0, Math.random());
+
+        this.particles.vertices.push(particle);
+    }));
+   
+}
+
 ParticleEngine.prototype.loadMusic = function(){
     if(!window.isMobileDevice){
         // Initialize BgMusic
@@ -115,7 +143,6 @@ ParticleEngine.prototype.loadMusic = function(){
            _.each(__self.particles.vertices, function (vertex, i) {
                percentage = (Math.abs(vertex.position.z) - Math.abs(window.levelProgress))/Math.abs(CONFIG.viewDistance*20);
                //(Math.abs(window.levelProgress - CONFIG.viewDistance*20) - Math.abs(window.levelProgress));
-               
                index = bars - 1 - Math.floor(percentage * bars);
 
                __self.attributes.size.value[i] = input[index]/100 + 3;
@@ -131,7 +158,7 @@ ParticleEngine.prototype.loadMusic = function(){
     }
 };
 
-// NEed to refactor code
+// Need to refactor code
 ParticleEngine.prototype.update = function () {
     var pCount = CONFIG.particleCount,
         particle;

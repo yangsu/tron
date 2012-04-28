@@ -34,8 +34,10 @@ function SkyBox(scene) {
     this.scene.add(this.skyboxMesh);
 }
 
+SkyBox.prototype.reset = function(){
+    this.skyboxMesh.position.z = 0;
+};
+
 SkyBox.prototype.update = function () {
-    // need to move box to keep up with position of player???
-    
     this.skyboxMesh.position.z = window.levelProgress;
 };

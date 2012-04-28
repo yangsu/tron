@@ -2,9 +2,6 @@ var CONFIG = {
     // Color Presets
     'white' : new THREE.Color(0xFFFFFF),
 
-    // Intro Settings
-    'PenDrawSpeed' : 500,
-    
     // Renderer Settings
     'renderer' : {
         antialias: true,
@@ -106,7 +103,7 @@ var CONFIG = {
 
         [500, 0, HALFPI] // Ending Point
     ],
-    'PenDrawSpeed' : 3,
+    'PenDrawSpeed' : 1000,
     'introLightPosition' : UTIL.v3(10, 50, 130),
 
     'init' : function (callback) {

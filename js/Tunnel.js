@@ -8,6 +8,7 @@ function Tunnel(scene) {
 
     this.segments = [];
     this.sections = [];
+    
     // Index used to delete segments from the scene
     this.oldestLiveSection = 0;
     this.imagePosition = 0;
@@ -22,7 +23,6 @@ function Tunnel(scene) {
     this.width = this.imageData.height;
 
     this.material = [
-        // new THREE.MeshLambertMaterial(CONFIG.tunnelMaterial),
         new THREE.MeshLambertMaterial({
             map: texture_1,
             transparent : true
@@ -35,14 +35,38 @@ function Tunnel(scene) {
         new THREE.MeshFaceMaterial()
     ];
 
-    // this.generateSection(0);
-
     this.lights = [];
     startZ = -CONFIG.tunnelSegmentPerSection * CONFIG.tunnelSegmentDepth;
     for (j = 0; j < 3; j += 1) {
         tunnelRing = new LightRing(this.scene,startZ - CONFIG.viewDistance * j);
         this.lights.push(tunnelRing);
     }
+}
+
+Tunnel.prototype.reset = function(){
+    // remove all stuff from scenes
+    _.each(this.sections, function (section) {
+        this.scene.remove(section);
+    });
+    
+    _.each(this.lights, function(light){
+       light.removeAllLights(); 
+    });
+    
+    // Clear arrays
+    this.segments = [];
+    this.sections = [];
+    this.lights = [];
+    
+    var startZ = -CONFIG.tunnelSegmentPerSection * CONFIG.tunnelSegmentDepth;
+    for (j = 0; j < 3; j += 1) {
+        tunnelRing = new LightRing(this.scene,startZ - CONFIG.viewDistance * j);
+        this.lights.push(tunnelRing);
+    }
+    
+    // Index used to delete segments from the scene
+    this.oldestLiveSection = 0;
+    this.imagePosition = 0;
 }
 
 Tunnel.prototype.update = function () {
@@ -59,9 +83,6 @@ Tunnel.prototype.update = function () {
             this.oldestLiveSection += 1;
         }
     }
-
-    // can't dynamically add lights to scene???
-    // maybe instead of splicing array up everytime
 
     var firstLightRing = this.lights[0],
         lastLightRing = this.lights[this.lights.length - 1];
@@ -110,6 +131,7 @@ Tunnel.prototype.generateSection = function (startZ) {
         // End level here, wrap map for now
         this.imagePosition = 0;
     }
+
 
     // TODO avoid using globals. Probably need to implement an event system
     if (Math.abs(startZ) >= CONFIG.viewDistance * 0.9 &&

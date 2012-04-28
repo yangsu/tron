@@ -34,7 +34,6 @@ function Pen(scene, path, rotations) {
     this.currentEdgeDist = startVec3.distanceTo(endVec3);
     this.curve = new THREE.LineCurve(this.penPath[0], this.penPath[this.pathIndex]);
     
-    
     this.penMesh = new THREE.Mesh(CONFIG.playerGeometry, this.material);
     this.penMesh.position = startVec3;
     //this.penMesh.scale.set(1.25,1.25,1.25);
@@ -59,6 +58,7 @@ function Pen(scene, path, rotations) {
 // TODO: need to include trail drawing
 
 Pen.prototype.update = function (dt) {
+    log(CONFIG.PenDrawSpeed);
     if (!this.isDone) {
         var pos;
         if (this.dist + dt * CONFIG.PenDrawSpeed > this.currentEdgeDist) {
@@ -72,7 +72,7 @@ Pen.prototype.update = function (dt) {
             var startVec3 = this.penPath[this.pathIndex],
                 endVec3 = this.penPath[this.pathIndex + 1];
             
-            this.curve = new THREE.LineCurve(this.penPath[this.pathIndex], this.penPath[this.pathIndex + 1]); 
+            this.curve = new THREE.LineCurve(startVec3, endVec3); 
 
             this.penMesh.rotation.y += this.penRotations[this.pathIndex];
 

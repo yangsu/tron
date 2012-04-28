@@ -9,10 +9,16 @@ function ItemManager(scene) {
         'credit' : Credit,
         'powerup' : PowerUp
     };
-    // Item - super class???
-    // Booster portals
-    // tron disk power-ups -> different colors
-    // Credit(W/ Curves)
+}
+
+ItemManager.prototype.reset = function(){
+    // Clear all current items from scene
+    for(var i = 0; i < this.gameItems.length; i += 1){
+        this.gameItems.remove(i);
+    }
+    
+    // Ensure array is cleared
+    this.gameItems = [];
 }
 
 ItemManager.prototype.generateItems = function (type, curve, numOfItems) {
