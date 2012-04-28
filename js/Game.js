@@ -5,11 +5,10 @@
 function Game() {
 
     // Game Initalization
-    this.started = false;
+    this.playing = false;
     this.paused = false;
     this.resourceLoaded = false;
     this.viewLoaded = false;
-    this.lastUpdate = UTIL.now();
 
     // Init
     this.lastUpdate = UTIL.now();
@@ -27,8 +26,7 @@ function Game() {
         CONFIG.cameraNear,
         CONFIG.cameraFar
     );
-    this.camera.position = CONFIG.cameraPos;
-    //this.camera.position.z = 300;
+    this.camera.position = CONFIG.cameraPos.clone();
 
     // Scene setup
     this.gameScene = new THREE.Scene();
@@ -56,8 +54,23 @@ function Game() {
 }
 
 Game.prototype.newGame = function(){
-    // need to reset propoerties necessary for new game??
+    // Reset Game Parameters
+    this.playing = true;
+    this.lastUpdate = UTIL.now();
+    
+    // Reset Game Components
+    this.player.reset();
+    this.tunnel.reset();
+    this.itemManager.reset();
+    this.particleManager.reset();
+    this.skybox.reset();
+    
+    this.camera.position = CONFIG.cameraPos.clone();
 };
+
+Game.prototype.gameOver = function(){
+    $('#gameovermenu').fadeIn();
+}
 
 Game.prototype.loadView = function(){
     this.viewLoaded = true;
@@ -71,7 +84,7 @@ Game.prototype.unloadView = function(){
 
 Game.prototype.animate = function () {
     if(this.viewLoaded){
-        if (this.started && !this.paused && this.resourcesLoaded) {
+        if (!this.paused && this.resourcesLoaded) {
             this.update();
 
             if (window.isMobileDevice) {
@@ -100,18 +113,27 @@ Game.prototype.update = function () {
     window.levelProgress = this.player.getPosition().z;
 
     // Call update methods to produce animation
-    this.tunnel.update();
     this.player.update(dt);
-    this.itemManager.update();
+    
+    if(!this.player.isAlive){
+        if(this.playing){
+            this.gameOver();
+            this.playing = false;
+        }
+    }
+    else{
+        this.tunnel.update();
+        this.itemManager.update();
+        this.skybox.update();
+        this.checkCollisions();
+    }
+    
     this.particleManager.update();
-
-    this.skybox.update();
-
-    this.checkCollisions();
 
     // camera.position.z += CONFIG.cameraVel.z * dt;
     // TODO: Temp solution by placing camera with an offset from player
 
+    // Use mouse to rotate camera around
     //this.camera.rotation.x = (window.innerHeight / 2 - this.mouseY) / 1000;
     //this.camera.rotation.y = (window.innerWidth / 2 - this.mouseX) / 1000;
 
@@ -178,17 +200,15 @@ Game.prototype.keyDown = function (key) {
 Game.prototype.keyUp = function (key) {
     switch (key) {
     case 27: /* esc */
-        // TODO: figure out how to handle pausing???
-        /*
-        paused = !paused;
-        if (paused) {
-            ingamemenu.fadeIn();
+        this.paused = !this.paused;
+        if (this.paused) {
+            $('#ingamemenu').fadeIn();
         } else {
-            ingamemenu.fadeOut();
+            $('#ingamemenu').fadeOut();
         }
         // Update lastUpdate timestamp to so dt will be 0 during the pause
-        lastUpdate = UTIL.now();
-        */
+        this.lastUpdate = UTIL.now();
+        
         break;
     case 32: /* SPACE */
         this.player.jump();

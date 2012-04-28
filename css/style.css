@@ -76,15 +76,15 @@ canvas {
 .menu {
     position: absolute;
     width: 30%;
-    height: 30%;
-    top: 37.5%;
-    left: 35%;
+    height: 100px;
+    top: 67.5%;
+    left: 30%;
 
     text-align: center;
-    /*
+    
     border: 3px solid white;
     border-radius: 15px;
-    */
+    
     color: #47C5D8;
 
     z-index: 5;

@@ -96,13 +96,32 @@ $(document).ready(function () {
             // switch to my game
             myIntro.unloadView();
             myGame.loadView();
-            myGame.started = true;
+            myGame.newGame();
         });
     });
     $('#resume').click(function () {
         myGame.paused = false;
         ingamemenu.fadeOut();
     });
+    
+    $('#mainmenu').click(function () {
+        $('#gameovermenu').fadeOut('fast', function () {
+            
+            $('#startmenu').fadeIn();
+            
+            // unload game view & load intro view
+            myGame.unloadView();
+            myIntro.loadView();
+        });
+    });   
+    
+    $('#newgame').click(function () {
+        $('#gameovermenu').fadeOut('fast', function () {
+            //start new game here
+            // mygame.restart();
+        });
+    });
+    
 
 // mousemove
     $(document).mouseup(function (e) {

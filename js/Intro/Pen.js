@@ -12,14 +12,10 @@ function Pen(scene, path, rotations) {
     this.scene = scene;
 
     // Pen Parameter Intialization
-    this.timer = 0;
     this.isDone = false;
 
     this.penPath = path;
     this.penRotations = rotations;
-
-    this.pathIndex = 1;
-    this.curve = new THREE.LineCurve(this.penPath[0], this.penPath[this.pathIndex]);
 
     this.trailSegments = [];
 
@@ -29,22 +25,19 @@ function Pen(scene, path, rotations) {
         transparent : false
     });
 
-    // set up the sphere vars
-    var radius = 25,
-        segments = 16,
-        rings = 16,
-        sphereMaterial = new THREE.MeshLambertMaterial({
-          // a gorgeous red.
-          color: 0xCC0000
-        });
-    //this.penMesh= new THREE.Mesh(new THREE.SphereGeometry(radius, segments,rings),
-    //                                  sphereMaterial);
-
-    var startVec3 = new THREE.Vector3(this.penPath[0].x, this.penPath[0].y, 0);
-    // error using playerGeometry - need to call config.init
+    this.dist = 0;
+    this.pathIndex = 1;
+    
+    var startVec3 = UTIL.v3(this.penPath[0].x, this.penPath[0].y, 0);
+    var endVec3 = UTIL.v3(this.penPath[this.pathIndex].x, this.penPath[this.pathIndex].y, 0);
+    
+    this.currentEdgeDist = startVec3.distanceTo(endVec3);
+    this.curve = new THREE.LineCurve(this.penPath[0], this.penPath[this.pathIndex]);
+    
+    
     this.penMesh = new THREE.Mesh(CONFIG.playerGeometry, this.material);
     this.penMesh.position = startVec3;
-   //this.penMesh.scale.set(1.25,1.25,1.25);
+    //this.penMesh.scale.set(1.25,1.25,1.25);
     this.penMesh.rotation.x = HALFPI;
     this.penMesh.rotation.y = HALFPI;
 
@@ -59,23 +52,16 @@ function Pen(scene, path, rotations) {
         //linewidth:
         //vertexColors: array
     });
-    //this.lineGeo = new THREE.Geometry();
-    //this.lineGeo.vertices.push(new THREE.Vertex(startVec3));
-    //this.line = new THREE.Line(this.lineGeo, this.lineMaterial);
-    //this.line.dynamic = true;
-    //scene.add(this.line);
 
     this.scene.add(this.penMesh);
-
 }
 
 // TODO: need to include trail drawing
 
 Pen.prototype.update = function (dt) {
-
     if (!this.isDone) {
         var pos;
-        if (this.timer + dt * CONFIG.PenDrawSpeed > 1) {
+        if (this.dist + dt * CONFIG.PenDrawSpeed > this.currentEdgeDist) {
             pos = this.curve.getPoint(1);
 
             if (this.pathIndex === this.penPath.length - 1) {
@@ -83,15 +69,19 @@ Pen.prototype.update = function (dt) {
                 return;
             }
 
-            this.curve = new THREE.LineCurve(this.penPath[this.pathIndex], this.penPath[this.pathIndex + 1]);
+            var startVec3 = this.penPath[this.pathIndex],
+                endVec3 = this.penPath[this.pathIndex + 1];
+            
+            this.curve = new THREE.LineCurve(this.penPath[this.pathIndex], this.penPath[this.pathIndex + 1]); 
 
             this.penMesh.rotation.y += this.penRotations[this.pathIndex];
 
             this.pathIndex += 1;
-            this.timer = 0;
+            this.dist = 0;
+            this.currentEdgeDist = startVec3.distanceTo(endVec3);
         } else {
-            this.timer += dt * CONFIG.PenDrawSpeed;
-            pos = this.curve.getPoint(this.timer);
+            this.dist += dt * CONFIG.PenDrawSpeed;
+            pos = this.curve.getPoint(this.dist/this.currentEdgeDist);
         }
 
         this.penMesh.position = new THREE.Vector3(pos.x, pos.y, 0);

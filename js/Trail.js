@@ -6,7 +6,6 @@ function Trail(scene, glowscene) {
     this.scene = scene;
     this.glowScene = glowscene;
     
-    this.segments = [];
     this.segmentMeshes = [];
     this.glowSegmentMeshes = [];
     this.oldestLiveSection = 0;
@@ -37,7 +36,6 @@ function Trail(scene, glowscene) {
         color: 0x000000
     });
 
-    this.segments.push(startTunnelSegment);
     this.lastSegment = startTunnelSegment;
 }
 
@@ -61,6 +59,38 @@ Trail.prototype.update = function (playerPosition) {
     }
 };
 
+Trail.prototype.reset = function(){
+    
+    // Remove any old mesh data from scenes
+    _.each(this.segmentMeshes, function (mesh) {
+        this.scene.remove(mesh);
+    });
+     _.each(this.glowSegmentMeshes, function (glowMesh) {
+        this.glowScene.remove(glowMesh);
+    });
+    
+    // Empty arrays for trail
+    this.segmentMeshes = [];
+    this.glowSegmentMeshes = [];
+    this.oldestLiveSection = 0;
+
+    var theta = CONFIG.playerPos.theta,
+        z = CONFIG.playerPos.z,
+        startBottomVertex = UTIL.vtx3(
+            (CONFIG.playerPos.radius + CONFIG.trailHeight) * Math.cos(theta),
+            (CONFIG.playerPos.radius + CONFIG.trailHeight) * Math.sin(theta),
+            z
+        ),
+        startTopVertex = UTIL.vtx3(
+            (CONFIG.playerPos.radius - CONFIG.trailHeight) * Math.cos(theta),
+            (CONFIG.playerPos.radius - CONFIG.trailHeight) * Math.sin(theta),
+            z
+        ),
+        startTunnelSegment = new TrailSegment(startTopVertex, startBottomVertex, CONFIG.playerPos);
+        
+    this.lastSegment = startTunnelSegment;
+}
+
 Trail.prototype.generateSegment = function (playerPosition) {
     // Add offset so the trail originates from the back
     playerPosition.z += CONFIG.trailMeshOffest;
@@ -70,8 +100,6 @@ Trail.prototype.generateSegment = function (playerPosition) {
             playerPosition
         ),
         newMesh;
-
-    this.segments.push(newSegment);
     this.lastSegment = newSegment;
 
     newMesh = new THREE.Mesh(newSegment.geometry, this.material);
@@ -128,6 +156,7 @@ function TrailSegment(lastVertexTop, lastVertexBottom, playerPosition) {
         new THREE.UV(1, 0),
         new THREE.UV(1, 1)
     ];
+    
     // TODO: This is kind of a hack. fix later?
     this.geometry.faceUvs[0].push(new THREE.UV(0, 1));
     this.geometry.faceUvs[0].push(new THREE.UV(0, 1));

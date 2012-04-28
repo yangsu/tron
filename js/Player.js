@@ -30,6 +30,7 @@ function Player(scene, glowscene) {
     this.boundingBox = this.mesh.geometry.boundingBox;
     // this.mesh.geometry.computeBoundingSphere();
     // this.boundingSphere = this.mesh.geometry.boundingSphere;
+    
     var box = this.boundingBox,
         temp = box.max.clone().subSelf(box.min),
         radius = Math.max(temp.x, temp.y) / 2;
@@ -54,10 +55,31 @@ function Player(scene, glowscene) {
     this.updatePosition();
 }
 
-Player.prototype.Derezz = function () {
+Player.prototype.reset = function(){
+    this.isAlive = true;
+    this.score = 0;
+    this.DerezzEffect = null;
+    
+    this.position = CONFIG.playerPos.clone();
+    this.velocity = CONFIG.playerDefaulVel.clone();
+    this.targetVelocity = CONFIG.playerDefaulVel.clone();
+    this.targetRotation = 0;
+    
+    this.updatePosition();
+    
+    this.trail.reset();
+    
+    //Ensure scenes have only one copy of meshes
+    this.scene.remove(this.mesh);
+    this.glowScene.remove(this.glowMesh);
+    
+    this.scene.add(this.mesh);
+    this.glowScene.add(this.glowMesh);
+}
 
+Player.prototype.Derezz = function () {
     if (this.isAlive) {
-        // remove mesh & glow mesh from respective scenes
+        // Remove mesh & glow mesh from respective scenes
         this.scene.remove(this.mesh);
         this.glowScene.remove(this.glowMesh);
 
@@ -109,11 +131,6 @@ Player.prototype.move = function (dt) {
     this.targetRotation += this.velocity.theta * dt;
     this.mesh.rotation.z += (this.targetRotation - this.mesh.rotation.z) * CONFIG.playerRotationMultiplier;
 
-	// use x rotation for jump??
-	// use y for laterial motion???
-	//this.mesh.rotation.y += (this.targetRotation - this.mesh.rotation.y) * CONFIG.playerRotationalMultiplier;
-
-
     this.updatePosition();
 };
 
@@ -129,14 +146,10 @@ Player.prototype.updatePosition = function () {
 
 Player.prototype.accelerateLeft = function () {
     this.targetVelocity.theta = -CONFIG.playerMaxLateralVel;
-
-    //this.mesh.rotation.y = Math.PI/12;
 };
 
 Player.prototype.accelerateRight = function () {
     this.targetVelocity.theta = CONFIG.playerMaxLateralVel;
-
-    //this.mesh.rotation.y = -Math.PI/12;
 };
 
 Player.prototype.accelerate = function () {

@@ -88,7 +88,6 @@ Intro.prototype.animate = function () {
         if (this.resourcesLoaded) {
             this.update();
 
-            log('test');
             window.renderer.render(this.introScene, this.camera);
         }
 

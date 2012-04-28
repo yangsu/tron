@@ -3,7 +3,8 @@ var CONFIG = {
     'white' : new THREE.Color(0xFFFFFF),
 
     // Intro Settings
-    'PenDrawSpeed' : 3,
+    'PenDrawSpeed' : 500,
+    
     // Renderer Settings
     'renderer' : {
         antialias: true,
@@ -78,7 +79,7 @@ var CONFIG = {
     // Particle Settings
     'particleCount' : 2000,
     'particleTexture' : THREE.ImageUtils.loadTexture('img/Particle.png'),
-    'particleVelocityRange' : 500,
+    'particleVelocityRange' : 1000,
 
     // Derezz Settings
     'derezzTexture' : THREE.ImageUtils.loadTexture('img/LightCycle_Glow.png'),
