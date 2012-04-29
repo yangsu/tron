@@ -73,8 +73,6 @@ function ParticleEngine(scene) {
     this.particleSystem.dynamic = true;
 
     this.scene.add(this.particleSystem);
-
-    this.loadMusic();
 }
 
 ParticleEngine.prototype.reset = function(){
@@ -101,8 +99,6 @@ ParticleEngine.prototype.reset = function(){
     this.particleSystem.dynamic = true;
 
     this.scene.add(this.particleSystem);   
-    
-    this.loadMusic();
 }
 
 ParticleEngine.prototype.generateParticles = function(){
@@ -125,44 +121,17 @@ ParticleEngine.prototype.generateParticles = function(){
    
 }
 
-ParticleEngine.prototype.loadMusic = function(){
-    if(!window.isMobileDevice){
-        // Initialize BgMusic
-        var __self = this;
-
-        var bgMusic = new Sound(CONFIG.bgSound);
-        bgMusic.volume(CONFIG.soundVolume);
-        bgMusic.on('load', function(){
-            // set intialized sound
-        });
-
-        bgMusic.on('audioprocess', function(input){
-            var bars = input.length,
-                index,
-                percentage;
-           _.each(__self.particles.vertices, function (vertex, i) {
-               percentage = (Math.abs(vertex.position.z) - Math.abs(window.levelProgress))/Math.abs(CONFIG.viewDistance*20);
-               //(Math.abs(window.levelProgress - CONFIG.viewDistance*20) - Math.abs(window.levelProgress));
-               index = bars - 1 - Math.floor(percentage * bars);
-
-               __self.attributes.size.value[i] = input[index]/100 + 3;
-           });
-           __self.attributes.size.needsUpdate = true;
-        });
-
-        bgMusic.on('progress', function(loaded, total){
-            var progress = loaded / total;
-        });
-
-        bgMusic.play();
-    }
-};
-
 // Need to refactor code
-ParticleEngine.prototype.update = function () {
+ParticleEngine.prototype.update = function (particleSize) {
     var pCount = CONFIG.particleCount,
         particle;
-    _.each(this.particles.vertices, function (particle) {
+        
+   log(particleSize);
+        
+    _.each(this.particles.vertices, function (particle, i) {
+    	// Adjust particle size
+    	this.attributes.size.value[i] = particleSize;
+    	
         // check if we need to reset
         if (Math.abs(particle.position.z) < Math.abs(window.levelProgress)) {
             particle.position.z = window.levelProgress - CONFIG.viewDistance * 20;
@@ -174,9 +143,10 @@ ParticleEngine.prototype.update = function () {
 
         // and the position
         particle.position.addSelf(particle.velocity);
-    });
+    }, this);
 
     // flag to the particle system
     // that we've changed its vertices.
     this.particleSystem.geometry.__dirtyVertices = true;
+    this.attributes.size.needsUpdate = true;
 };

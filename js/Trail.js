@@ -64,10 +64,11 @@ Trail.prototype.reset = function(){
     // Remove any old mesh data from scenes
     _.each(this.segmentMeshes, function (mesh) {
         this.scene.remove(mesh);
-    });
+    }, this);
+    
      _.each(this.glowSegmentMeshes, function (glowMesh) {
         this.glowScene.remove(glowMesh);
-    });
+    }, this);
     
     // Empty arrays for trail
     this.segmentMeshes = [];

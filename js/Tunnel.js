@@ -47,11 +47,11 @@ Tunnel.prototype.reset = function(){
     // remove all stuff from scenes
     _.each(this.sections, function (section) {
         this.scene.remove(section);
-    });
+    }, this);
     
     _.each(this.lights, function(light){
        light.removeAllLights(); 
-    });
+    }, this);
     
     // Clear arrays
     this.segments = [];

@@ -37,6 +37,9 @@ function Game() {
     this.glowScene = new THREE.Scene();
     this.glowScene.add(new THREE.AmbientLight(0xFFFFFF));
 
+    this.collisionManager = new CollisionManager();
+	this.soundManager = new SoundManager();
+
     // Wrap the function to be called while preserving the context
     CONFIG.init(UTIL.wrap(this, function () {
         // Objects
@@ -45,8 +48,9 @@ function Game() {
         this.itemManager = new ItemManager(this.gameScene);
         this.particleManager = new ParticleEngine(this.gameScene);
         this.skybox = new SkyBox(this.gameScene);
-        this.collisionManager = new CollisionManager();
-
+        
+		this.soundManager.playMusic();
+		
         this.resourcesLoaded = true;
         this.playing = true;
     }));
@@ -67,7 +71,12 @@ Game.prototype.newGame = function(){
         this.particleManager.reset();
         this.skybox.reset();
         
+        this.soundManager.playMusic();
+        
         this.camera.position = CONFIG.cameraPos.clone();
+        
+        // update timer
+        $('#score').html(this.player.score);
     }
 };
 
@@ -83,6 +92,7 @@ Game.prototype.loadView = function(){
 
 Game.prototype.unloadView = function(){
     this.viewLoaded = false;
+    this.soundManager.pauseMusic();
 };
 
 Game.prototype.animate = function () {
@@ -131,7 +141,7 @@ Game.prototype.update = function () {
         this.checkCollisions();
     }
     
-    this.particleManager.update();
+    this.particleManager.update(this.soundManager.bgMusicGain/20);
 
     // camera.position.z += CONFIG.cameraVel.z * dt;
     // TODO: Temp solution by placing camera with an offset from player
@@ -150,18 +160,25 @@ Game.prototype.checkCollisions = function () {
     // Check collisions for all items
     _.each(this.itemManager.gameItems, function (item) {
         if (this.collisionManager.checkPlayerItemCollision(this.player, item)) {
+        	
+        	// React to item collision based on type of item
+        	if(this.itemManager.getItemType(item.id) == PowerUp ){
+        		// booster
+        		this.player.boost();
+        	}
+        	else if(this.itemManager.getItemType(item.id) == Credit){
+        		// Update player score
+            	this.player.score += 200;
+            	$('#score').html(this.player.score);
+        	}
+        	
             // Remove Item from view
             this.itemManager.remove(item.id);
-
-            // Update player score
-            this.player.score += 200;
-            $('#score').html(this.player.score);
         }
     }, this);
 
     // Check that player is still on track
     if (!this.collisionManager.checkPlayerTunnelCollision(this.player, this.tunnel)) {
-        // Possible error: need to make sure tunnel is intialized before checking collisions
         // KILL PLAYER AMAHAHAAHAH!!!
         this.player.Derezz();
     }

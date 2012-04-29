@@ -29,6 +29,7 @@ var CONFIG = {
     'playerRotationalMultiplier' : 0.25,
     'playerRotationMultiplier' : 0.25,
     'playerMaxLateralVel' : Math.PI,
+    'playerBoosterLimit' : 3,
     'playerPos' : UTIL.v3c(75, 1.5 * Math.PI, 0),
     'playerDefaulVel' : UTIL.v3c(1, 0, 0),
     'playerDefaulTargetVel' : UTIL.v3c(0, 0, -150),

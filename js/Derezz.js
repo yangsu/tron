@@ -72,6 +72,10 @@ function Derezz(scene, geometry) {
     this.scene.add(this.particleSystem);
 }
 
+Derezz.prototype.remove = function(){
+	this.scene.remove(this.particleSystem);
+}
+
 Derezz.prototype.update = function (dt) {
     _.each(this.particleGeo.vertices, function (particle) {
         particle.position.z += Math.random() * CONFIG.particleVelocityRange * dt;

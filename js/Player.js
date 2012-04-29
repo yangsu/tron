@@ -3,11 +3,10 @@
  */
 
 function Player(scene, glowscene) {
-
     this.scene = scene;
     this.glowScene = glowscene;
 
-    this.trail = new Trail(scene, glowscene);
+    this.trail = new Trail(this.scene, this.glowScene);
 
     this.position = CONFIG.playerPos.clone();
     this.velocity = CONFIG.playerDefaulVel.clone();
@@ -16,6 +15,7 @@ function Player(scene, glowscene) {
 
     this.isAlive = true;
     this.score = 0;
+    this.boosterMultiplier = 1;
     this.DerezzEffect = null;
 
     this.material = new THREE.MeshLambertMaterial({
@@ -58,7 +58,7 @@ function Player(scene, glowscene) {
 Player.prototype.reset = function(){
     this.isAlive = true;
     this.score = 0;
-    this.DerezzEffect = null;
+    this.boosterMultiplier = 1;
     
     this.position = CONFIG.playerPos.clone();
     this.velocity = CONFIG.playerDefaulVel.clone();
@@ -68,6 +68,11 @@ Player.prototype.reset = function(){
     this.updatePosition();
     
     this.trail.reset();
+       
+    if(this.DerezzEffect != null){
+    	this.DerezzEffect.remove();
+    }
+    this.DerezzEffect = null;
     
     //Ensure scenes have only one copy of meshes
     this.scene.remove(this.mesh);
@@ -153,12 +158,20 @@ Player.prototype.accelerateRight = function () {
 };
 
 Player.prototype.accelerate = function () {
-    this.targetVelocity.z = CONFIG.playerMaxForwardVel;
+    this.targetVelocity.z = this.boosterMultiplier * CONFIG.playerMaxForwardVel;
 };
 
 Player.prototype.decelerate = function () {
-    this.targetVelocity.z = CONFIG.playerMinForwardVel;
+    this.targetVelocity.z = this.boosterMultiplier * CONFIG.playerMinForwardVel;
 };
+
+Player.prototype.boost = function(){
+	if(this.boosterMultiplier < CONFIG.playerBoosterLimit){
+		this.boosterMultiplier += 1;
+	}
+	
+	this.accelerate();
+}
 
 Player.prototype.jump = function () {
     this.velocity.radius = CONFIG.defaultPlayerJumpVel;

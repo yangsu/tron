@@ -27,7 +27,7 @@ function LightRing (scene, startZ) {
 LightRing.prototype.removeAllLights = function(){
     _.each(this.lights, function(light){
         this.scene.remove(light);
-    });
+    }, this);
 }
 
 LightRing.prototype.update = function () {

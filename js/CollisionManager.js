@@ -1,12 +1,18 @@
 function CollisionManager() {}
 
 CollisionManager.prototype.checkPlayerTunnelCollision = function (player, tunnel) {
-    var ppos = player.position,
+    var ppos = player.getPosition(),
         pposcart = ppos.convertToCartesian(),
+        offset = 3,
         theta = Math.abs(ppos.theta) % TWOPI,
         face = null,
         i,
         j;
+
+	// If player is in air, don't attempt to test collision with tunnel
+	if(ppos.radius < CONFIG.playerPos.radius - offset){
+		return true;
+	}
 
     // If actual theta is negative, convert to corresponding postive angle value
     if (ppos.theta < 0) {
