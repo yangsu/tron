@@ -52,9 +52,7 @@ $(document).ready(function () {
         var stats = new Stats(),
             statsdom = stats.getDomElement();
         // Align top-left
-        statsdom.style.position = 'absolute';
-        statsdom.style.left = '0px';
-        statsdom.style.top = '0px';
+        statsdom.id = 'stats';
         document.body.appendChild(statsdom);
 
         setInterval(function () {

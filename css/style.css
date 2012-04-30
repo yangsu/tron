@@ -81,10 +81,10 @@ canvas {
     left: 30%;
 
     text-align: center;
-    
+
     border: 3px solid white;
     border-radius: 15px;
-    
+
     color: #47C5D8;
 
     z-index: 5;
@@ -121,6 +121,11 @@ canvas {
 	z-index: 5;
 }
 
+#stats {
+    position : absolute;
+    left : 0px;
+    top : 0px;
+}
 
 @media only screen and (min-width: 35em) {
 
