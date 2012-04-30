@@ -50,15 +50,6 @@ ItemManager.prototype.update = function () {
     }
 };
 
-ItemManager.prototype.getItemType = function (i) {
-    if (i >= 0 && i < this.gameItems.length) {
-        if (this.gameItems[i]) {
-            return this.gameItems[i].constructor;
-        }
-    }
-
-    return null;
-};
 ItemManager.prototype.remove = function (i) {
     if (i >= 0 && i < this.gameItems.length) {
         if (this.gameItems[i]) {
@@ -70,31 +61,35 @@ ItemManager.prototype.remove = function (i) {
 
 ItemManager.prototype.genRandom = function () {
     var theta, curve;
-    if (CONFIG.PowerUpMesh) {
-        //var theta = -HALFPI;
-        theta = 360 * Math.random();
-        curve = new THREE.QuadraticBezierCurve(
-            theta, window.levelProgress - CONFIG.viewDistance,
-            theta, window.levelProgress - CONFIG.viewDistance * 1.5,
-            theta, window.levelProgress - CONFIG.viewDistance * 2
-        );
+    if (Math.random() <= CONFIG.itemProbability) {
+        // 50 50 split between the two types
+        if (Math.random() > 0.5 && CONFIG.PowerUpMesh) {
+            //var theta = -HALFPI;
+            theta = 360 * Math.random();
+            curve = new THREE.QuadraticBezierCurve(
+                theta, window.levelProgress - CONFIG.viewDistance,
+                theta, window.levelProgress - CONFIG.viewDistance * 1.5,
+                theta, window.levelProgress - CONFIG.viewDistance * 2
+            );
 
-        this.generateItems('powerup', curve, 1);
-    } else {
-        //var theta = -HALFPI;
-        theta = 2 * Math.PI * Math.random();
-        curve = new THREE.QuadraticBezierCurve(
-            theta, window.levelProgress - CONFIG.viewDistance,
-            theta + Math.PI / 2, window.levelProgress - CONFIG.viewDistance * 1.5,
-            theta + Math.PI, window.levelProgress - CONFIG.viewDistance * 2
-        );
+            this.generateItems('powerup', curve, 1);
+        } else {
+            //var theta = -HALFPI;
+            theta = 2 * Math.PI * Math.random();
+            curve = new THREE.QuadraticBezierCurve(
+                theta, window.levelProgress - CONFIG.viewDistance,
+                theta + Math.PI / 2, window.levelProgress - CONFIG.viewDistance * 1.5,
+                theta + Math.PI, window.levelProgress - CONFIG.viewDistance * 2
+            );
 
-        this.generateItems('credit', curve, 10);
+            this.generateItems('credit', curve, 10);
+        }
     }
 };
 
 function PowerUp(scene, pos) {
     this.scene = scene;
+    this.type = 'powerup';
     this.mesh = null;
     this.position = pos;
 
@@ -125,6 +120,7 @@ PowerUp.prototype.remove = function () {
 // Need to refactor & decide on design
 function Credit(scene, pos) {
     this.scene = scene;
+    this.type = 'credit';
 
     var COLOR1 = 0x77bbff,
         COLOR2 = 0x8ec5e5,

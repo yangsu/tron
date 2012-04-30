@@ -133,12 +133,12 @@ Game.prototype.checkCollisions = function () {
         if (this.collisionManager.checkPlayerItemCollision(this.player, item)) {
 
             // React to item collision based on type of item
-            if (this.itemManager.getItemType(item.id) == PowerUp) {
+            if (item.type === 'powerup') {
                 // booster
                 this.player.boost();
-            } else if (this.itemManager.getItemType(item.id) == Credit) {
+            } else if (item.type === 'credit') {
                 // Update player score
-                this.player.score += 200;
+                this.player.score += CONFIG.CreditValue;
                 $('#score').html(this.player.score);
             }
 
@@ -149,7 +149,6 @@ Game.prototype.checkCollisions = function () {
 
     // Check that player is still on track
     if (!this.collisionManager.checkPlayerTunnelCollision(this.player, this.tunnel)) {
-        // KILL PLAYER AMAHAHAAHAH!!!
         this.player.Derezz();
     }
 
