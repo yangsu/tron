@@ -30,7 +30,7 @@ function Player(scene, glowscene) {
     this.boundingBox = this.mesh.geometry.boundingBox;
     // this.mesh.geometry.computeBoundingSphere();
     // this.boundingSphere = this.mesh.geometry.boundingSphere;
-    
+
     var box = this.boundingBox,
         temp = box.max.clone().subSelf(box.min),
         radius = Math.max(temp.x, temp.y) / 2;
@@ -55,32 +55,32 @@ function Player(scene, glowscene) {
     this.updatePosition();
 }
 
-Player.prototype.reset = function(){
+Player.prototype.reset = function () {
     this.isAlive = true;
     this.score = 0;
     this.boosterMultiplier = 1;
-    
+
     this.position = CONFIG.playerPos.clone();
     this.velocity = CONFIG.playerDefaulVel.clone();
     this.targetVelocity = CONFIG.playerDefaulVel.clone();
     this.targetRotation = 0;
-    
+
     this.updatePosition();
-    
+
     this.trail.reset();
-       
-    if(this.DerezzEffect != null){
-    	this.DerezzEffect.remove();
+
+    if (this.DerezzEffect) {
+        this.DerezzEffect.remove();
     }
     this.DerezzEffect = null;
-    
+
     //Ensure scenes have only one copy of meshes
     this.scene.remove(this.mesh);
     this.glowScene.remove(this.glowMesh);
-    
+
     this.scene.add(this.mesh);
     this.glowScene.add(this.glowMesh);
-}
+};
 
 Player.prototype.Derezz = function () {
     if (this.isAlive) {
@@ -165,13 +165,13 @@ Player.prototype.decelerate = function () {
     this.targetVelocity.z = this.boosterMultiplier * CONFIG.playerMinForwardVel;
 };
 
-Player.prototype.boost = function(){
-	if(this.boosterMultiplier < CONFIG.playerBoosterLimit){
-		this.boosterMultiplier += 1;
-	}
-	
-	this.accelerate();
-}
+Player.prototype.boost = function () {
+    if (this.boosterMultiplier < CONFIG.playerBoosterLimit) {
+        this.boosterMultiplier += 1;
+    }
+
+    this.accelerate();
+};
 
 Player.prototype.jump = function () {
     this.velocity.radius = CONFIG.defaultPlayerJumpVel;

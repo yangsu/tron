@@ -25,7 +25,7 @@ function Game() {
         this.ASPECT,
         CONFIG.cameraNear,
         CONFIG.cameraFar
-    );
+);
     this.camera.position = CONFIG.cameraPos.clone();
 
     // Scene setup
@@ -38,7 +38,7 @@ function Game() {
     this.glowScene.add(new THREE.AmbientLight(0xFFFFFF));
 
     this.collisionManager = new CollisionManager();
-	this.soundManager = new SoundManager();
+    this.soundManager = new SoundManager();
 
     // Wrap the function to be called while preserving the context
     CONFIG.init(UTIL.wrap(this, function () {
@@ -49,9 +49,9 @@ function Game() {
         this.itemManager = new ItemManager(this.gameScene);
         this.particleManager = new ParticleEngine(this.gameScene);
         this.skybox = new SkyBox(this.gameScene);
-        
-		this.soundManager.playMusic();
-		
+
+        this.soundManager.playMusic();
+
         this.resourcesLoaded = true;
         this.playing = true;
     }));
@@ -60,22 +60,22 @@ function Game() {
 }
 
 Game.prototype.newGame = function(){
-    if(this.resourcesLoaded){
+    if (this.resourcesLoaded){
         // Reset Game Parameters
         this.playing = true;
         this.lastUpdate = UTIL.now();
-        
+
         // Reset Game Components
         this.player.reset();
         this.tunnel.reset();
         this.itemManager.reset();
         this.particleManager.reset();
         this.skybox.reset();
-        
+
         this.soundManager.playMusic();
-        
+
         this.camera.position = CONFIG.cameraPos.clone();
-        
+
         // update timer
         $('#score').html(this.player.score);
     }
@@ -97,7 +97,7 @@ Game.prototype.unloadView = function(){
 };
 
 Game.prototype.animate = function () {
-    if(this.viewLoaded){
+    if (this.viewLoaded){
         if (!this.paused && this.resourcesLoaded) {
             this.update();
 
@@ -128,9 +128,9 @@ Game.prototype.update = function () {
 
     // Call update methods to produce animation
     this.player.update(dt);
-    
-    if(!this.player.isAlive){
-        if(this.playing){
+
+    if (!this.player.isAlive){
+        if (this.playing){
             this.gameOver();
             this.playing = false;
         }
@@ -141,7 +141,7 @@ Game.prototype.update = function () {
         this.skybox.update();
         this.checkCollisions();
     }
-    
+
     this.particleManager.update(this.soundManager.bgMusicGain/20);
 
     // camera.position.z += CONFIG.cameraVel.z * dt;
@@ -161,18 +161,18 @@ Game.prototype.checkCollisions = function () {
     // Check collisions for all items
     _.each(this.itemManager.gameItems, function (item) {
         if (this.collisionManager.checkPlayerItemCollision(this.player, item)) {
-        	
-        	// React to item collision based on type of item
-        	if(this.itemManager.getItemType(item.id) == PowerUp ){
-        		// booster
-        		this.player.boost();
-        	}
-        	else if(this.itemManager.getItemType(item.id) == Credit){
-        		// Update player score
-            	this.player.score += 200;
-            	$('#score').html(this.player.score);
-        	}
-        	
+
+            // React to item collision based on type of item
+            if (this.itemManager.getItemType(item.id) == PowerUp){
+                // booster
+                this.player.boost();
+            }
+            else if (this.itemManager.getItemType(item.id) == Credit){
+                // Update player score
+                this.player.score += 200;
+                $('#score').html(this.player.score);
+            }
+
             // Remove Item from view
             this.itemManager.remove(item.id);
         }
@@ -187,7 +187,6 @@ Game.prototype.checkCollisions = function () {
     // check collisions for all obstacles
     // TODO: write code here
 };
-
 
 Game.prototype.mouseMoved = function (mx, my) {
     this.mouseX = mx;
@@ -229,7 +228,7 @@ Game.prototype.keyUp = function (key) {
         }
         // Update lastUpdate timestamp to so dt will be 0 during the pause
         this.lastUpdate = UTIL.now();
-        
+
         break;
     case 32: /* SPACE */
         this.player.jump();
@@ -265,7 +264,7 @@ Game.prototype.initPostProcessing = function () {
             this.WIDTH,
             this.HEIGHT,
             renderTargetParameters
-        );
+    );
 
     var effectFXAA = new THREE.ShaderPass(THREE.ShaderExtras.fxaa);
     effectFXAA.uniforms.resolution.value.set(1 / this.WIDTH, 1 / this.HEIGHT);
@@ -324,7 +323,7 @@ Game.prototype.initPostProcessing = function () {
     this.finalcomposer = new THREE.EffectComposer(
         window.renderer,
         new THREE.WebGLRenderTarget(this.WIDTH, this.HEIGHT, renderTargetParameters)
-    );
+);
 
     this.finalcomposer.addPass(renderModel);
     this.finalcomposer.addPass(effectFXAA);

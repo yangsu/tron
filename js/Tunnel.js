@@ -9,7 +9,7 @@ function Tunnel(scene, obstacles) {
 
     this.segments = [];
     this.sections = [];
-    
+
     // Index used to delete segments from the scene
     this.oldestLiveSection = 0;
     this.imagePosition = 0;
@@ -44,31 +44,32 @@ function Tunnel(scene, obstacles) {
     }
 }
 
-Tunnel.prototype.reset = function(){
+Tunnel.prototype.reset = function () {
     // remove all stuff from scenes
     _.each(this.sections, function (section) {
         this.scene.remove(section);
     }, this);
-    
-    _.each(this.lights, function(light){
-       light.removeAllLights(); 
+
+    _.each(this.lights, function (lightring) {
+        lightring.removeAllLights();
     }, this);
-    
+
     // Clear arrays
     this.segments = [];
     this.sections = [];
     this.lights = [];
-    
-    var startZ = -CONFIG.tunnelSegmentPerSection * CONFIG.tunnelSegmentDepth;
+
+    var startZ = -CONFIG.tunnelSegmentPerSection * CONFIG.tunnelSegmentDepth,
+        j;
     for (j = 0; j < 3; j += 1) {
-        tunnelRing = new LightRing(this.scene,startZ - CONFIG.viewDistance * j);
+        tunnelRing = new LightRing(this.scene, startZ - CONFIG.viewDistance * j);
         this.lights.push(tunnelRing);
     }
-    
+
     // Index used to delete segments from the scene
     this.oldestLiveSection = 0;
     this.imagePosition = 0;
-}
+};
 
 Tunnel.prototype.update = function () {
     // Dynamic tunnel generation based on player position

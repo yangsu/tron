@@ -74,7 +74,7 @@ function Derezz(scene, geometry) {
 
 Derezz.prototype.remove = function(){
 	this.scene.remove(this.particleSystem);
-}
+};
 
 Derezz.prototype.update = function (dt) {
     _.each(this.particleGeo.vertices, function (particle) {

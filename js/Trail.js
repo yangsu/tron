@@ -2,10 +2,10 @@
  * @author Troy Ferrell & Yang Su
  */
 function Trail(scene, glowscene) {
-    
+
     this.scene = scene;
     this.glowScene = glowscene;
-    
+
     this.segmentMeshes = [];
     this.glowSegmentMeshes = [];
     this.oldestLiveSection = 0;
@@ -59,17 +59,17 @@ Trail.prototype.update = function (playerPosition) {
     }
 };
 
-Trail.prototype.reset = function(){
-    
+Trail.prototype.reset = function () {
+
     // Remove any old mesh data from scenes
     _.each(this.segmentMeshes, function (mesh) {
         this.scene.remove(mesh);
     }, this);
-    
-     _.each(this.glowSegmentMeshes, function (glowMesh) {
+
+    _.each(this.glowSegmentMeshes, function (glowMesh) {
         this.glowScene.remove(glowMesh);
     }, this);
-    
+
     // Empty arrays for trail
     this.segmentMeshes = [];
     this.glowSegmentMeshes = [];
@@ -88,9 +88,9 @@ Trail.prototype.reset = function(){
             z
         ),
         startTunnelSegment = new TrailSegment(startTopVertex, startBottomVertex, CONFIG.playerPos);
-        
+
     this.lastSegment = startTunnelSegment;
-}
+};
 
 Trail.prototype.generateSegment = function (playerPosition) {
     // Add offset so the trail originates from the back
@@ -157,7 +157,7 @@ function TrailSegment(lastVertexTop, lastVertexBottom, playerPosition) {
         new THREE.UV(1, 0),
         new THREE.UV(1, 1)
     ];
-    
+
     // TODO: This is kind of a hack. fix later?
     this.geometry.faceUvs[0].push(new THREE.UV(0, 1));
     this.geometry.faceUvs[0].push(new THREE.UV(0, 1));

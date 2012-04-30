@@ -5,7 +5,7 @@
 function ParticleEngine(scene) {
     this.scene = scene;
     this.particles = null;
-    
+
     // Generate all particles
     this.generateParticles();
 
@@ -28,7 +28,7 @@ function ParticleEngine(scene) {
             'attribute float size;',
             'attribute vec3 ca;',
             'varying vec3 vColor;',
-            'void main(){',
+            'void main() {',
                 'vColor = ca;',
                 'vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);',
                 'gl_PointSize = size;',
@@ -40,7 +40,7 @@ function ParticleEngine(scene) {
             'uniform vec3 color;',
             'uniform sampler2D texture;',
             'varying vec3 vColor;',
-            'void main(){',
+            'void main() {',
                 //'gl_FragColor = vec4(color, 1.0);',
                 'gl_FragColor = vec4(color*vColor, 1.0);',
                 'gl_FragColor = gl_FragColor * texture2D(texture, gl_PointCoord);',
@@ -57,13 +57,26 @@ function ParticleEngine(scene) {
         transparent: true
     });
 
+    this.reset();
+}
+
+ParticleEngine.prototype.reset = function () {
+    if (this.particleSystem) {
+        this.scene.remove(this.particleSystem);
+        this.particleSystem = null;
+    }
+
+    this.generateParticles();
+
+    // remove all attributes from shaders????
+
     // Modify attributes of shader on per-particle basis
     var sizes = this.attributes.size.value,
         colors = this.attributes.ca.value;
-    _.each(this.particles.vertices, function(vertex, v) {
-        sizes.push(3);
-        colors[v] =CONFIG.white;
-        var value = Math.abs(vertex.position.z)/(CONFIG.viewDistance * 20);
+    _.each(this.particles.vertices, function (vertex, v) {
+        sizes[v] = 3;
+        colors[v] = CONFIG.white;
+        var value = Math.abs(vertex.position.z) / (CONFIG.viewDistance * 20);
         colors[v].setHSV(0.55, 0.75, 1.0);
         //colors[v].setHSV(Math.random(), Math.random(), Math.random());
     });
@@ -73,35 +86,9 @@ function ParticleEngine(scene) {
     this.particleSystem.dynamic = true;
 
     this.scene.add(this.particleSystem);
-}
+};
 
-ParticleEngine.prototype.reset = function(){
-    this.scene.remove(this.particleSystem);
-    this.particleSystem = null;
-    
-    this.generateParticles();
-    
-    // remove all attributes from shaders????
-    
-    // Modify attributes of shader on per-particle basis
-    var sizes = this.attributes.size.value,
-        colors = this.attributes.ca.value;
-    _.each(this.particles.vertices, function(vertex, v) {
-        sizes[v] = 3;
-        colors[v] = CONFIG.white;
-        var value = Math.abs(vertex.position.z)/(CONFIG.viewDistance * 20);
-        colors[v].setHSV(0.55, 0.75, 1.0);
-        //colors[v].setHSV(Math.random(), Math.random(), Math.random());
-    });
-    
-    this.particleSystem = new THREE.ParticleSystem(this.particles, this.shaderMaterial);
-    this.particleSystem.sortParticles = true;
-    this.particleSystem.dynamic = true;
-
-    this.scene.add(this.particleSystem);   
-}
-
-ParticleEngine.prototype.generateParticles = function(){
+ParticleEngine.prototype.generateParticles = function () {
      this.particles = new THREE.Geometry();
 
     var theta, radius, pX, pY, pZ, particle;
@@ -118,20 +105,18 @@ ParticleEngine.prototype.generateParticles = function(){
 
         this.particles.vertices.push(particle);
     }));
-   
-}
+
+};
 
 // Need to refactor code
 ParticleEngine.prototype.update = function (particleSize) {
     var pCount = CONFIG.particleCount,
         particle;
-        
-   log(particleSize);
-        
+
     _.each(this.particles.vertices, function (particle, i) {
-    	// Adjust particle size
-    	this.attributes.size.value[i] = particleSize;
-    	
+        // Adjust particle size
+        this.attributes.size.value[i] = particleSize;
+
         // check if we need to reset
         if (Math.abs(particle.position.z) < Math.abs(window.levelProgress)) {
             particle.position.z = window.levelProgress - CONFIG.viewDistance * 20;

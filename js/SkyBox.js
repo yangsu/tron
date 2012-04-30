@@ -3,9 +3,9 @@
  */
 
 function SkyBox(scene) {
-    
+
     this.scene = scene;
-    
+
     // http://learningthreejs.com/data/lets_do_a_sky/docs/lets_do_a_sky.html
     var urlPrefix   = 'img/SpaceSkybox/',
         urls = [
@@ -34,7 +34,7 @@ function SkyBox(scene) {
     this.scene.add(this.skyboxMesh);
 }
 
-SkyBox.prototype.reset = function(){
+SkyBox.prototype.reset = function () {
     this.skyboxMesh.position.z = 0;
 };
 

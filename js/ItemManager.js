@@ -11,16 +11,19 @@ function ItemManager(scene) {
     };
 }
 
-ItemManager.prototype.reset = function(){
+ItemManager.prototype.reset = function () {
     // Clear all current items from scene
-    for(var i = 0; i < this.gameItems.length; i += 1){
-    	this.remove(i);
-        //this.gameItems.remove(i);
-    }
-    
+    _.each(this.gameItems, function (item, i) {
+        this.remove(i);
+    }, this);
+    // for (var i = 0; i < this.gameItems.length; i += 1) {
+    //     this.remove(i);
+    //     //this.gameItems.remove(i);
+    // }
+
     // Ensure array is cleared
     this.gameItems = [];
-}
+};
 
 ItemManager.prototype.generateItems = function (type, curve, numOfItems) {
     // x1,y1 to x2,y2 where x is theta and y is z
@@ -51,21 +54,21 @@ ItemManager.prototype.update = function () {
     }
 };
 
-ItemManager.prototype.getItemType = function(i){
-	 if (i >= 0 && i < this.gameItems.length) {
-    	if(this.gameItems[i] != null){
-    		return this.gameItems[i].constructor;
-       }
+ItemManager.prototype.getItemType = function (i) {
+    if (i >= 0 && i < this.gameItems.length) {
+        if (this.gameItems[i]) {
+            return this.gameItems[i].constructor;
+        }
     }
-    
+
     return null;
-}
+};
 ItemManager.prototype.remove = function (i) {
     if (i >= 0 && i < this.gameItems.length) {
-    	if(this.gameItems[i] != null){
-        	this.gameItems[i].remove();
-        	delete this.gameItems[i];
-       }
+        if (this.gameItems[i]) {
+            this.gameItems[i].remove();
+            delete this.gameItems[i];
+        }
     }
 };
 

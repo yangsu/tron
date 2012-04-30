@@ -99,27 +99,27 @@ $(document).ready(function () {
         myGame.paused = false;
         ingamemenu.fadeOut();
     });
-    
+
     $('#mainmenu').click(function () {
         $('#gameovermenu').fadeOut('fast', function () {
-            
+
             $('#startmenu').fadeIn();
-            
+
             // unload game view & load intro view
             myGame.unloadView();
             myIntro.loadView();
         });
-    });   
-    
+    });
+
     $('#newgame').click(function () {
         $('#gameovermenu').fadeOut('fast', function () {
             //start new game here
-            // mygame.restart();
+            mygame.restart();
         });
     });
-    
 
-// mousemove
+
+    // mousemove
     $(document).mouseup(function (e) {
         // store the mouseX and mouseY position
         mouseX = event.clientX;

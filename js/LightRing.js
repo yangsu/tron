@@ -1,4 +1,4 @@
-function LightRing (scene, startZ) {
+function LightRing(scene, startZ) {
     this.scene = scene;
     this.lights = [];
     this.rising = false;
@@ -24,30 +24,13 @@ function LightRing (scene, startZ) {
     }
 }
 
-LightRing.prototype.removeAllLights = function(){
-    _.each(this.lights, function(light){
+LightRing.prototype.removeAllLights = function () {
+    _.each(this.lights, function (light) {
         this.scene.remove(light);
     }, this);
-}
-
-LightRing.prototype.update = function () {
-    var step = CONFIG.lightIntensityStep;
-    /*
-     * I'm a fucking idiot. Just use sin funciton
-     * EX: light.intensity = (MaxIntensity-MinIntensity)*sin(t) + MinIntensity;
-
-    _.each(this.lights, function (light) {
-        if (light.intensity >= step*10) this.rising = false;
-        else if (light.intensity <= step*2) this.rising = true;
-
-        if (this.rising) {
-            light.intensity += step;
-        }
-        else{
-            light.intensity -= step;
-        }
-    });*/
 };
+
+LightRing.prototype.update = function () {};
 
 LightRing.prototype.repositionLightRing = function (newZ) {
     this.z = newZ;
