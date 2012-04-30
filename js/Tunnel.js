@@ -180,7 +180,6 @@ function TunnelSegment(startZ, materials, imageData, obstacles) {
     for (i = 0, theta = 0; theta < 2 * Math.PI; theta += deltaTheta, i += 1) {
         color = imageData[i];
         // TODO: temporary hack need to add in structure to create different tiles
-        console.log(color);
         if (color.r + color.g + color.b > 10) {
             rcos = radius * Math.cos(theta);
             rsin = radius * Math.sin(theta);

@@ -2,14 +2,16 @@
  * @author Troy Ferrell & Yang Su
  */
 
-var levelProgress, isMobileDevice,
+var levelProgress,
+    isMobileDevice,
     renderer,
     myGame;
 
 $(document).ready(function () {
     var startmenu = $('#startmenu'),
         ingamemenu = $('#ingamemenu'),
-        myIntro;
+        myIntro,
+        renderManager;
 
     function init() {
 
@@ -20,15 +22,10 @@ $(document).ready(function () {
 
         window.isMobileDevice = navigator.userAgent.search(/iPhone|iPod|iPad/) !== -1;
 
-
-        // TODO: to fix multiple scenes solution
-        // http://demo.bkcore.com/threejs/webgl_rendermanager.html
         // Scene Initialization
         var OFFSET = 6,
             WIDTH = window.innerWidth - OFFSET,
-            HEIGHT = window.innerHeight - OFFSET,
-            ASPECT = WIDTH / HEIGHT;
-
+            HEIGHT = window.innerHeight - OFFSET;
         // Renderer Initialization
         window.renderer = new THREE.WebGLRenderer(CONFIG.renderer);
         window.renderer.autoClear = window.isMobileDevice;
@@ -39,11 +36,13 @@ $(document).ready(function () {
 
         document.body.appendChild(window.renderer.domElement);
 
-        // INIT Game.js or intro.js
-        myIntro = new Intro();
+        renderManager = new THREE.Extras.RenderManager(renderer);
 
-        // Load initial view
-        myIntro.loadView();
+        myIntro = new Intro(renderManager);
+        myGame = new Game(renderManager);
+
+        // Load intro view
+        renderManager.setCurrent('Intro');
 
         // Stats Initialization
         var stats = new Stats(),
@@ -55,11 +54,16 @@ $(document).ready(function () {
         setInterval(function () {
             stats.update();
         }, 1000 / 60);
+    }
 
+    function animate() {
+        requestAnimationFrame(animate);
+        renderManager.renderCurrent();
     }
 
     // Initialization
     init();
+    animate();
 
     // Event handlers
     window.ondevicemotion = function (event) {
@@ -80,14 +84,8 @@ $(document).ready(function () {
     $('#play').click(function () {
         lastUpdate = UTIL.now();
         startmenu.fadeOut('fast', function () {
-            if (!myGame) {
-                myGame = new Game();
-            }
-
-            // switch to my game
-            myIntro.unloadView();
-            myGame.loadView();
             myGame.newGame();
+            renderManager.setCurrent('Game');
         });
     });
     $('#resume').click(function () {
@@ -97,12 +95,8 @@ $(document).ready(function () {
 
     $('#mainmenu').click(function () {
         $('#gameovermenu').fadeOut('fast', function () {
-
             $('#startmenu').fadeIn();
-
-            // unload game view & load intro view
-            myGame.unloadView();
-            myIntro.loadView();
+            renderManager.setCurrent('Intro');
         });
     });
 
@@ -131,7 +125,7 @@ $(document).ready(function () {
         switch (event.which) {
         case 82: /* R */ // testing restart
             //myGame = new Game();
-            //myGame.loadView();
+            //myGame.load();
             break;
         default:
             if (myGame) {

@@ -2,23 +2,18 @@
  * @author Troy Ferrell & Yang Su
  */
 
-function Intro() {
-
+function Intro(rendermanager) {
     // Init
-    this.lastUpdate = UTIL.now();
     this.resourceLoaded = false;
-    this.viewLoaded = false;
 
     // Scene Initialization
-    var OFFSET = 6,
-        WIDTH = window.innerWidth - OFFSET,
-        HEIGHT = window.innerHeight - OFFSET,
-        ASPECT = WIDTH / HEIGHT;
+    var offset = 6,
+        aspectRatio = (window.innerWidth - offset) / (window.innerHeight - offset);
 
     // Camera Setup
     this.camera = new THREE.PerspectiveCamera(
         CONFIG.cameraAngle,
-        ASPECT,
+        aspectRatio,
         CONFIG.cameraNear,
         CONFIG.cameraFar
     );
@@ -47,42 +42,16 @@ function Intro() {
         this.tronPen = new Pen(this.scene, tronPath, tronRotations);
         this.resourcesLoaded = true;
     }));
+
+    rendermanager.add('Intro', this, function (delta, renderer) {
+        if (this.resourcesLoaded) {
+            this.update(delta);
+
+            renderer.render(this.scene, this.camera);
+        }
+    });
 }
 
-
-Intro.prototype.loadView = function () {
-    this.viewLoaded = true;
-    this.animate();
-};
-
-Intro.prototype.unloadView = function () {
-    this.viewLoaded = false;
-};
-
-Intro.prototype.animate = function () {
-    if (this.viewLoaded) {
-        if (this.resourcesLoaded) {
-            this.update();
-
-            window.renderer.render(this.scene, this.camera);
-        }
-        // Preserve context
-        var callback = (function (ctx) {
-                return function () {
-                    ctx.animate();
-                };
-            }(this));
-
-        // note: three.js includes requestAnimationFrame shim
-        requestAnimationFrame(callback);
-    }
-};
-
-Intro.prototype.update = function () {
-    var now = UTIL.now(),
-        dt = (now - this.lastUpdate) / 1000;
-
+Intro.prototype.update = function (dt) {
     this.tronPen.update(dt);
-
-    this.lastUpdate = now;
 };

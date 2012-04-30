@@ -2,36 +2,29 @@
  * @author Troy Ferrell & Yang Su
  */
 
-function Game() {
-
+function Game(rendermanager) {
     // Game Initalization
     this.playing = false;
     this.paused = false;
     this.resourceLoaded = false;
-    this.viewLoaded = false;
 
-    // Init
-    this.lastUpdate = UTIL.now();
-
-    // Scene Initialization
-    this.OFFSET = 6;
-    this.WIDTH = window.innerWidth - this.OFFSET;
-    this.HEIGHT = window.innerHeight - this.OFFSET;
-    this.ASPECT = this.WIDTH / this.HEIGHT;
+    var offset = 6;
+    this.WIDTH = window.innerWidth - offset;
+    this.HEIGHT = window.innerHeight - offset;
 
     // Camera Setup
     this.camera = new THREE.PerspectiveCamera(
         CONFIG.cameraAngle,
-        this.ASPECT,
+        this.WIDTH / this.HEIGHT,
         CONFIG.cameraNear,
         CONFIG.cameraFar
-);
+    );
     this.camera.position = CONFIG.cameraPos.clone();
 
-    // Scene setup
-    this.gameScene = new THREE.Scene();
-    this.gameScene.add(this.camera);
-    this.gameScene.add(new THREE.AmbientLight(0xAAAAAA));
+    // Scene Initialization
+    this.scene = new THREE.Scene();
+    this.scene.add(this.camera);
+    this.scene.add(new THREE.AmbientLight(0xAAAAAA));
 
     // Glow Scene setup
     this.glowScene = new THREE.Scene();
@@ -43,12 +36,12 @@ function Game() {
     // Wrap the function to be called while preserving the context
     CONFIG.init(UTIL.wrap(this, function () {
         // Objects
-        this.player = new Player(this.gameScene, this.glowScene);
-        this.obstacles = new Obstacles(this.gameScene);
-        this.tunnel = new Tunnel(this.gameScene, this.obstacles);
-        this.itemManager = new ItemManager(this.gameScene);
-        this.particleManager = new ParticleEngine(this.gameScene);
-        this.skybox = new SkyBox(this.gameScene);
+        this.player = new Player(this.scene, this.glowScene);
+        this.obstacles = new Obstacles(this.scene);
+        this.tunnel = new Tunnel(this.scene, this.obstacles);
+        this.itemManager = new ItemManager(this.scene);
+        this.particleManager = new ParticleEngine(this.scene);
+        this.skybox = new SkyBox(this.scene);
 
         this.soundManager.playMusic();
 
@@ -57,10 +50,23 @@ function Game() {
     }));
 
     this.initPostProcessing();
+
+    rendermanager.add('Game', this, function (delta, renderer) {
+        if (!this.paused && this.resourcesLoaded) {
+            this.update(delta);
+
+            if (window.isMobileDevice) {
+                renderer.render(this.scene, this.camera);
+            } else {
+                this.glowcomposer.render(0.1);
+                this.finalcomposer.render(0.1);
+            }
+        }
+    });
 }
 
-Game.prototype.newGame = function(){
-    if (this.resourcesLoaded){
+Game.prototype.newGame = function () {
+    if (this.resourcesLoaded) {
         // Reset Game Parameters
         this.playing = true;
         this.lastUpdate = UTIL.now();
@@ -81,68 +87,34 @@ Game.prototype.newGame = function(){
     }
 };
 
-Game.prototype.gameOver = function(){
+Game.prototype.gameOver = function () {
     $('#gameovermenu').fadeIn();
 };
 
-Game.prototype.loadView = function(){
-    this.viewLoaded = true;
-    // Start animation
-    this.animate();
-};
+// Game.prototype.unloadView = function () {
+//     this.viewLoaded = false;
+//     this.soundManager.pauseMusic();
+// };
 
-Game.prototype.unloadView = function(){
-    this.viewLoaded = false;
-    this.soundManager.pauseMusic();
-};
-
-Game.prototype.animate = function () {
-    if (this.viewLoaded){
-        if (!this.paused && this.resourcesLoaded) {
-            this.update();
-
-            if (window.isMobileDevice) {
-                window.renderer.render(this.gameScene, this.camera);
-            } else {
-                this.glowcomposer.render(0.1);
-                this.finalcomposer.render(0.1);
-            }
-        }
-
-        // Preserve context
-        var callback = (function (ctx) {
-                return function () {
-                    ctx.animate();
-                };
-            }(this));
-        // note: three.js includes requestAnimationFrame shim
-        requestAnimationFrame(callback);
-    }
-};
-
-Game.prototype.update = function () {
-    var now = UTIL.now(),
-        dt = (now - this.lastUpdate) / 1000;
-
+Game.prototype.update = function (dt) {
     window.levelProgress = this.player.getPosition().z;
 
     // Call update methods to produce animation
     this.player.update(dt);
 
-    if (!this.player.isAlive){
-        if (this.playing){
+    if (!this.player.isAlive) {
+        if (this.playing) {
             this.gameOver();
             this.playing = false;
         }
-    }
-    else{
+    } else {
         this.tunnel.update();
         this.itemManager.update();
         this.skybox.update();
         this.checkCollisions();
     }
 
-    this.particleManager.update(this.soundManager.bgMusicGain/20);
+    this.particleManager.update(this.soundManager.bgMusicGain / 20);
 
     // camera.position.z += CONFIG.cameraVel.z * dt;
     // TODO: Temp solution by placing camera with an offset from player
@@ -152,10 +124,7 @@ Game.prototype.update = function () {
     //this.camera.rotation.y = (window.innerWidth / 2 - this.mouseX) / 1000;
 
     this.camera.position.z = this.player.position.z + 200;
-
-    this.lastUpdate = now;
 };
-
 
 Game.prototype.checkCollisions = function () {
     // Check collisions for all items
@@ -163,11 +132,10 @@ Game.prototype.checkCollisions = function () {
         if (this.collisionManager.checkPlayerItemCollision(this.player, item)) {
 
             // React to item collision based on type of item
-            if (this.itemManager.getItemType(item.id) == PowerUp){
+            if (this.itemManager.getItemType(item.id) == PowerUp) {
                 // booster
                 this.player.boost();
-            }
-            else if (this.itemManager.getItemType(item.id) == Credit){
+            } else if (this.itemManager.getItemType(item.id) == Credit) {
                 // Update player score
                 this.player.score += 200;
                 $('#score').html(this.player.score);
@@ -264,7 +232,7 @@ Game.prototype.initPostProcessing = function () {
             this.WIDTH,
             this.HEIGHT,
             renderTargetParameters
-    );
+        );
 
     var effectFXAA = new THREE.ShaderPass(THREE.ShaderExtras.fxaa);
     effectFXAA.uniforms.resolution.value.set(1 / this.WIDTH, 1 / this.HEIGHT);
@@ -315,7 +283,7 @@ Game.prototype.initPostProcessing = function () {
     };
     finalshader.uniforms['tGlow'].texture = this.glowcomposer.renderTarget2;
 
-    var renderModel = new THREE.RenderPass(this.gameScene, this.camera);
+    var renderModel = new THREE.RenderPass(this.scene, this.camera);
     var finalPass = new THREE.ShaderPass(finalshader);
     finalPass.needsSwap = true;
     finalPass.renderToScreen = true;
@@ -323,7 +291,7 @@ Game.prototype.initPostProcessing = function () {
     this.finalcomposer = new THREE.EffectComposer(
         window.renderer,
         new THREE.WebGLRenderTarget(this.WIDTH, this.HEIGHT, renderTargetParameters)
-);
+    );
 
     this.finalcomposer.addPass(renderModel);
     this.finalcomposer.addPass(effectFXAA);
