@@ -11,7 +11,8 @@ $(document).ready(function () {
     var startmenu = $('#startmenu'),
         ingamemenu = $('#ingamemenu'),
         myIntro,
-        renderManager;
+        renderManager,
+        soundManager;
 
     function init() {
 
@@ -39,7 +40,8 @@ $(document).ready(function () {
         renderManager = new THREE.Extras.RenderManager(renderer);
 
         myIntro = new Intro(renderManager);
-        myGame = new Game(renderManager);
+        soundManager = new SoundManager();
+        myGame = new Game(renderManager, soundManager);
 
         // Load intro view
         renderManager.setCurrent('Intro');

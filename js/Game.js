@@ -2,7 +2,7 @@
  * @author Troy Ferrell & Yang Su
  */
 
-function Game(rendermanager) {
+function Game(rendermanager, soundManager) {
     // Game Initalization
     this.playing = false;
     this.paused = false;
@@ -31,7 +31,7 @@ function Game(rendermanager) {
     this.glowScene.add(new THREE.AmbientLight(0xFFFFFF));
 
     this.collisionManager = new CollisionManager();
-    this.soundManager = new SoundManager();
+    this.soundManager = soundManager;
 
     // Wrap the function to be called while preserving the context
     CONFIG.init(UTIL.wrap(this, function () {
@@ -43,26 +43,34 @@ function Game(rendermanager) {
         this.particleManager = new ParticleEngine(this.scene);
         this.skybox = new SkyBox(this.scene);
 
-        this.soundManager.playMusic();
-
         this.resourcesLoaded = true;
         this.playing = true;
     }));
 
     this.initPostProcessing();
 
-    rendermanager.add('Game', this, function (delta, renderer) {
-        if (!this.paused && this.resourcesLoaded) {
-            this.update(delta);
+    rendermanager.add(
+        'Game',
+        this,
+        function (delta, renderer) {
+            if (!this.paused && this.resourcesLoaded) {
+                this.update(delta);
 
-            if (window.isMobileDevice) {
-                renderer.render(this.scene, this.camera);
-            } else {
-                this.glowcomposer.render(0.1);
-                this.finalcomposer.render(0.1);
+                if (window.isMobileDevice) {
+                    renderer.render(this.scene, this.camera);
+                } else {
+                    this.glowcomposer.render(0.1);
+                    this.finalcomposer.render(0.1);
+                }
             }
+        },
+        function () {
+            this.soundManager.playMusic();
+        },
+        function () {
+            this.soundManager.pauseMusic();
         }
-    });
+    );
 }
 
 Game.prototype.newGame = function () {
@@ -78,8 +86,6 @@ Game.prototype.newGame = function () {
         this.particleManager.reset();
         this.skybox.reset();
 
-        this.soundManager.playMusic();
-
         this.camera.position = CONFIG.cameraPos.clone();
 
         // update timer
@@ -90,11 +96,6 @@ Game.prototype.newGame = function () {
 Game.prototype.gameOver = function () {
     $('#gameovermenu').fadeIn();
 };
-
-// Game.prototype.unloadView = function () {
-//     this.viewLoaded = false;
-//     this.soundManager.pauseMusic();
-// };
 
 Game.prototype.update = function (dt) {
     window.levelProgress = this.player.getPosition().z;

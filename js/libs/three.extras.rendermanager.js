@@ -1,4 +1,5 @@
 /*
+ * @author Yang Su
  * THREE.Extras.RenderManager helps handling multiple scenes, cameras and render loops.
  *
  * Based on the RenderManager created by Thibaut 'BKcore' Despoulain <http://bkcore.com>
@@ -16,11 +17,13 @@ THREE.Extras.RenderManager = function (renderer) {
     this.size = 0;
 };
 
-THREE.Extras.RenderManager.prototype.add = function (id, ctx, render) {
+THREE.Extras.RenderManager.prototype.add = function (id, ctx, render, onload, onunload) {
     this.renders[id] = {
         id: id,
         ctx: ctx,
-        render: render
+        render: render,
+        onload: onload,
+        onunload: onunload
     };
 
     if (this.size === 0) {
@@ -54,8 +57,14 @@ THREE.Extras.RenderManager.prototype.renderCurrent = function () {
 };
 
 THREE.Extras.RenderManager.prototype.setCurrent = function (id) {
+    if (this.current && this.current.onunload) {
+        this.current.onunload.call(this.current.ctx);
+    }
     if (this.renders[id]) {
         this.current = this.renders[id];
+        if (this.current.onload) {
+            this.current.onload.call(this.current.ctx);
+        }
     } else {
         console.warn('RenderManager: Render "' + id + '" not found.');
     }
