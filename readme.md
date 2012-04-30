@@ -1,4 +1,7 @@
 Open index.html with a modern browser (preferably chrome)
 
-Press A for left and D for right
-ESC for pause
+Navigation: arrow keys or WASD
+Jump: space
+Pause: ESC
+
+Collect credits and powerups
