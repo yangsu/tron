@@ -192,8 +192,10 @@ Game.prototype.keyUp = function (key) {
         this.paused = !this.paused;
         if (this.paused) {
             $('#ingamemenu').fadeIn();
+            this.soundManager.pauseMusic();
         } else {
             $('#ingamemenu').fadeOut();
+            this.soundManager.playMusic();
         }
         // Update lastUpdate timestamp to so dt will be 0 during the pause
         this.lastUpdate = UTIL.now();
