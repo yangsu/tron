@@ -2,15 +2,12 @@
  * @author Troy Ferrell & Yang Su
  */
 
-var introScene, gameScene, glowscene,
-    levelProgress, isMobileDevice,
+var levelProgress, isMobileDevice,
     renderer,
     myGame;
 
 $(document).ready(function () {
-    var mouseX = window.innerWidth / 2,
-        mouseY = window.innerHeight / 2,
-        startmenu = $('#startmenu'),
+    var startmenu = $('#startmenu'),
         ingamemenu = $('#ingamemenu'),
         myIntro;
 
@@ -119,13 +116,8 @@ $(document).ready(function () {
 
     // mousemove
     $(document).mouseup(function (e) {
-        // store the mouseX and mouseY position
-        mouseX = event.clientX;
-        mouseY = event.clientY;
-
-        //myIntro.drawMouse(mouseX, mouseY);
         if (myGame) {
-            myGame.mouseMoved(mouseX, mouseY);
+            myGame.mouseMoved(event.clientX, event.clientY);
         }
     });
 
@@ -147,10 +139,6 @@ $(document).ready(function () {
             }
             break;
         }
-    });
-    $(document).keypress(function (event) {
-        // switch (event.which) {
-        // }
     });
 
     window.onerror = function (err) {

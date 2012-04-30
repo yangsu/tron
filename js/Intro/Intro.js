@@ -25,9 +25,9 @@ function Intro() {
     this.camera.position.z = 300;
 
     // Scene setup
-    this.introScene = new THREE.Scene();
-    this.introScene.add(this.camera);
-    //window.introScene.add(new THREE.AmbientLight(0xAAAAAA));
+    this.scene = new THREE.Scene();
+    this.scene.add(this.camera);
+    //window.scene.add(new THREE.AmbientLight(0xAAAAAA));
 
     // create a point light
     var pointLight = new THREE.PointLight(0xFFFFFF);
@@ -36,7 +36,7 @@ function Intro() {
     pointLight.position = CONFIG.introLightPosition;
 
     // add to the scene
-    this.introScene.add(pointLight);
+    this.scene.add(pointLight);
 
     // Wrap the function to be called while preserving the context
     CONFIG.init(UTIL.wrap(this, function () {
@@ -44,7 +44,7 @@ function Intro() {
             return UTIL.v2(val[0], val[1]);
         }),
             tronRotations = _.pluck(CONFIG.penPath, '2');
-        this.tronPen = new Pen(this.introScene, tronPath, tronRotations);
+        this.tronPen = new Pen(this.scene, tronPath, tronRotations);
         this.resourcesLoaded = true;
     }));
 }
@@ -64,7 +64,7 @@ Intro.prototype.animate = function () {
         if (this.resourcesLoaded) {
             this.update();
 
-            window.renderer.render(this.introScene, this.camera);
+            window.renderer.render(this.scene, this.camera);
         }
         // Preserve context
         var callback = (function (ctx) {

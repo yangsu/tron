@@ -83,7 +83,7 @@ Game.prototype.newGame = function(){
 
 Game.prototype.gameOver = function(){
     $('#gameovermenu').fadeIn();
-}
+};
 
 Game.prototype.loadView = function(){
     this.viewLoaded = true;
