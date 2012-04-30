@@ -16,10 +16,6 @@ ItemManager.prototype.reset = function () {
     _.each(this.gameItems, function (item, i) {
         this.remove(i);
     }, this);
-    // for (var i = 0; i < this.gameItems.length; i += 1) {
-    //     this.remove(i);
-    //     //this.gameItems.remove(i);
-    // }
 
     // Ensure array is cleared
     this.gameItems = [];
