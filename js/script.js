@@ -109,7 +109,7 @@ $(document).ready(function () {
     $('#newgame').click(function () {
         $('#gameovermenu').fadeOut('fast', function () {
             //start new game here
-            mygame.restart();
+            myGame.newGame();
         });
     });
 
