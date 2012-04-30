@@ -184,7 +184,7 @@ function TunnelSegment(startZ, materials, imageData, obstacles) {
             rcosd = radius * Math.cos(theta + deltaTheta);
             rsind = radius * Math.sin(theta + deltaTheta);
 
-            if (color.r === 154 && color.g === 154 && color.b === 154) { //
+            if (color.r === CONFIG.GRAYVAL && color.g === CONFIG.GRAYVAL && color.b === CONFIG.GRAYVAL) { //
                 var altradius = radius - CONFIG.boxObstacleHeight / 2,
                     pos = UTIL.v3c(altradius, theta + deltaTheta / 2, startZ - depth / 2);
                 obstacles.add(pos, CONFIG.boxObstacleHeight, width, depth * 0.8);

@@ -35,7 +35,7 @@ var CONFIG = {
     'playerDefaulVel' : UTIL.v3c(1, 0, 0),
     'playerDefaulTargetVel' : UTIL.v3c(0, 0, -150),
     'defaultPlayerJumpVel' : -450,
-    'playerGravityAcceleration' : 850,
+    'playerGravityAcceleration' : 1000,
     'playerGlowMaterial' : new THREE.MeshPhongMaterial({
         map: THREE.ImageUtils.loadTexture('img/LightCycle_Glow.png'),
         ambient: 0xFFFFFF,
@@ -50,7 +50,7 @@ var CONFIG = {
     'tunnelResolution' : 16,
     'tunnelLiveSections' : 15, // should be 1 + cameraFar/(segdepth * seg/sec)
     'tunnelMapData' : null,
-
+    'GRAYVAL' : 154,
     // Trail Settings
     'trailMeshOffest' : 45,
     'trailLiveSections' : 35,
