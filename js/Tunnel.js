@@ -14,18 +14,16 @@ function Tunnel(scene, obstacles) {
     this.oldestLiveSection = 0;
     this.imagePosition = 0;
 
-    var texture_1 = THREE.ImageUtils.loadTexture('img/TunnelTexture5.png'),
-        j,
+    var j,
         tunnelRing,
         startZ;
-    //var texture_2 = THREE.ImageUtils.loadTexture('img/TrailTexture_2.png');
-    //texture.wrapT = THREE.RepeatWrapping;
+    // texture.wrapT = THREE.RepeatWrapping;
     this.imageData = CONFIG.tunnelMapData;
     this.width = this.imageData.height;
 
     this.material = [
         new THREE.MeshLambertMaterial({
-            map: texture_1,
+            map: THREE.ImageUtils.loadTexture('img/TunnelTexture5.png'),
             transparent : true
         }),
         new THREE.MeshLambertMaterial({
@@ -164,7 +162,7 @@ function TunnelSegment(startZ, materials, imageData, obstacles) {
     var deltaTheta = 2 * Math.PI / imageData.length,
         radius = CONFIG.tunnelRadius,
         depth = CONFIG.tunnelSegmentDepth,
-        width = Math.sin(deltaTheta / 2 * radius) * 2,
+        width = deltaTheta * radius,
         face,
         faceuv,
         theta,
@@ -188,8 +186,8 @@ function TunnelSegment(startZ, materials, imageData, obstacles) {
 
             if (color.r === 154 && color.g === 154 && color.b === 154) { //
                 var altradius = radius - CONFIG.boxObstacleHeight / 2,
-                    pos = UTIL.v3c(altradius, theta + deltaTheta / 2, startZ);
-                obstacles.add(pos, width, depth, CONFIG.boxObstacleHeight);
+                    pos = UTIL.v3c(altradius, theta + deltaTheta / 2, startZ - depth / 2);
+                obstacles.add(pos, CONFIG.boxObstacleHeight, width, depth * 0.8);
             }
 
             // Create vertices for current quad in cylinder segment

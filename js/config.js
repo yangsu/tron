@@ -47,11 +47,6 @@ var CONFIG = {
     'tunnelSegmentDepth' : 10,
     'tunnelSegmentPerSection' : 10,
     'tunnelResolution' : 16,
-    'tunnelMaterial' : {
-        color : 0x47C5D8,
-        ambient : 0x47C5D8,
-        wireframe : true
-    },
     'tunnelLiveSections' : 15, // should be 1 + cameraFar/(segdepth * seg/sec)
     'tunnelMapData' : null,
 
@@ -109,6 +104,12 @@ var CONFIG = {
 
     // Obstacles Settings
     'boxObstacleHeight' : 30,
+    'obstacleMaterial' : new THREE.MeshLambertMaterial({
+        color : 0x47C5D8,
+        ambient : 0x47C5D8,
+        // shading : THREE.SmoothShading,
+        wireframe : false
+    }),
 
     'init' : function (callback) {
         var wrappedcallback = _.once(callback),

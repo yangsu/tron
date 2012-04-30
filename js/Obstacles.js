@@ -10,13 +10,12 @@ Obstacles.prototype.add = function (pos, length, width, height) {
 function Block(pos, length, width, height, scene) {
     this.position = pos.convertToCartesian();
 
-    var geometry = new THREE.CubeGeometry(length, width, height),
-        material = new THREE.MeshBasicMaterial({ color: 0xAA0000, wireframe: true });
+    var geometry = new THREE.CubeGeometry(length, width, height);
 
-    this.mesh = new THREE.Mesh(geometry, material);
+    this.mesh = new THREE.Mesh(geometry, CONFIG.obstacleMaterial);
 
     this.mesh.position = this.position;
-    this.mesh.rotation.y = pos.theta;
+    this.mesh.rotation.z = pos.theta;
 
     this.mesh.geometry.computeBoundingBox();
     this.boundingBox = this.mesh.geometry.boundingBox;
