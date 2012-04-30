@@ -22,9 +22,11 @@ SoundManager.prototype.loadMusic = function () {
         var __self = this;
         this.bgMusic.on('audioprocess', function (input) {
             var bars = input.length,
-                sum = _.reduce(input, function (memo, value) {
-                    return memo + value;
-                });
+                sum = 0,
+                i;
+            for (i = 0; i < bars; i += 1) {
+                sum += input[i];
+            }
 
             __self.bgMusicGain = (sum / bars);
         });
