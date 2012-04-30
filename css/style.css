@@ -76,13 +76,13 @@ canvas {
 .menu {
     position: absolute;
     width: 30%;
-    height: 100px;
+    height: 150px;
     top: 67.5%;
-    left: 30%;
+    left: 35%;
 
     text-align: center;
 
-    border: 3px solid white;
+    /*border: 3px solid white;*/
     border-radius: 15px;
 
     color: #47C5D8;
