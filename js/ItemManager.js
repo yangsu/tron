@@ -82,7 +82,7 @@ ItemManager.prototype.genRandom = function () {
                 theta + Math.PI, window.levelProgress - CONFIG.viewDistance * 2
             );
 
-            this.generateItems('credit', curve, 10);
+            this.generateItems('credit', curve, CONFIG.CreditCountPerGen);
         }
     }
 };
@@ -217,11 +217,9 @@ Credit.prototype.remove = function () {
 };
 
 Credit.prototype.update = function () {
+    this.glyph.rotation.x += CONFIG.CreditCountRotX;
+    this.glyph.rotation.z += CONFIG.CreditCountRotZ;
 
-    this.glyph.rotation.x += 0.04;
-    this.glyph.rotation.z -= 0.03;
-
-    this.glyph2.rotation.x -= 0.04;
-    this.glyph2.rotation.z += 0.03;
-    //this.glyph2wf.rotation = this.glyph2.rotation;
+    this.glyph2.rotation.x -= CONFIG.CreditCountRotX;
+    this.glyph2.rotation.z -= CONFIG.CreditCountRotZ;
 };

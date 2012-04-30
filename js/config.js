@@ -72,6 +72,9 @@ var CONFIG = {
     }),
 
     'CreditValue' : 200,
+    'CreditCountPerGen' : 10,
+    'CreditCountRotX' : 0.04,
+    'CreditCountRotZ' : -0.03,
 
     // Particle Settings
     'particleCount' : 2000,

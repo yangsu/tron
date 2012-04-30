@@ -124,7 +124,7 @@ Game.prototype.update = function (dt) {
     //this.camera.rotation.x = (window.innerHeight / 2 - this.mouseY) / 1000;
     //this.camera.rotation.y = (window.innerWidth / 2 - this.mouseX) / 1000;
 
-    this.camera.position.z = this.player.position.z + 200;
+    this.camera.position.z = this.player.position.z + CONFIG.cameraOffset;
 };
 
 Game.prototype.checkCollisions = function () {
