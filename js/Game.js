@@ -44,7 +44,8 @@ function Game() {
     CONFIG.init(UTIL.wrap(this, function () {
         // Objects
         this.player = new Player(this.gameScene, this.glowScene);
-        this.tunnel = new Tunnel(this.gameScene);
+        this.obstacles = new Obstacles(this.gameScene);
+        this.tunnel = new Tunnel(this.gameScene, this.obstacles);
         this.itemManager = new ItemManager(this.gameScene);
         this.particleManager = new ParticleEngine(this.gameScene);
         this.skybox = new SkyBox(this.gameScene);

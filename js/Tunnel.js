@@ -2,9 +2,10 @@
  * @author Troy Ferrell & Yang Su
  */
 
-function Tunnel(scene) {
+function Tunnel(scene, obstacles) {
 
     this.scene = scene;
+    this.obstacles = obstacles;
 
     this.segments = [];
     this.sections = [];
@@ -38,7 +39,7 @@ function Tunnel(scene) {
     this.lights = [];
     startZ = -CONFIG.tunnelSegmentPerSection * CONFIG.tunnelSegmentDepth;
     for (j = 0; j < 3; j += 1) {
-        tunnelRing = new LightRing(this.scene,startZ - CONFIG.viewDistance * j);
+        tunnelRing = new LightRing(this.scene, startZ - CONFIG.viewDistance * j);
         this.lights.push(tunnelRing);
     }
 }
@@ -103,7 +104,8 @@ Tunnel.prototype.generateSection = function (startZ) {
         newSegment = new TunnelSegment(
             startZ,
             this.material,
-            UTIL.getColumn(this.imageData, column)
+            UTIL.getColumn(this.imageData, column),
+            this.obstacles
         ),
         geometry = newSegment.geometry,
         newMesh;
@@ -114,7 +116,8 @@ Tunnel.prototype.generateSection = function (startZ) {
         newSegment = new TunnelSegment(
             startZ - i * CONFIG.tunnelSegmentDepth,
             this.material,
-            UTIL.getColumn(this.imageData, column + i)
+            UTIL.getColumn(this.imageData, column + i),
+            this.obstacles
         );
         this.segments.push(newSegment);
         // Merge with geometry
@@ -150,7 +153,7 @@ Tunnel.prototype.getFace = function (i, j) {
     }
 };
 
-function TunnelSegment(startZ, materials, imageData) {
+function TunnelSegment(startZ, materials, imageData, obstacles) {
     this.geometry = new THREE.Geometry();
     this.geometry.dynamic = true;
     this.geometry.materials = materials;
@@ -160,6 +163,7 @@ function TunnelSegment(startZ, materials, imageData) {
     var deltaTheta = 2 * Math.PI / imageData.length,
         radius = CONFIG.tunnelRadius,
         depth = CONFIG.tunnelSegmentDepth,
+        width = Math.sin(deltaTheta / 2 * radius) * 2,
         face,
         faceuv,
         theta,
@@ -167,18 +171,26 @@ function TunnelSegment(startZ, materials, imageData) {
         rsin,
         rcosd,
         rsind,
+        color,
         temp,
         i;
 
     // dynamically create quads for tunnel segment
     for (i = 0, theta = 0; theta < 2 * Math.PI; theta += deltaTheta, i += 1) {
-        temp = imageData[i];
-        // TODO: Temporary hack need to add in structure to create different tiles
-        if (temp.r + temp.g + temp.b > 10) {
+        color = imageData[i];
+        // TODO: temporary hack need to add in structure to create different tiles
+        console.log(color);
+        if (color.r + color.g + color.b > 10) {
             rcos = radius * Math.cos(theta);
             rsin = radius * Math.sin(theta);
             rcosd = radius * Math.cos(theta + deltaTheta);
             rsind = radius * Math.sin(theta + deltaTheta);
+
+            if (color.r === 154 && color.g === 154 && color.b === 154) { //
+                var altradius = radius - CONFIG.boxObstacleHeight / 2,
+                    pos = UTIL.v3c(altradius, theta + deltaTheta / 2, startZ);
+                obstacles.add(pos, width, depth, CONFIG.boxObstacleHeight);
+            }
 
             // Create vertices for current quad in cylinder segment
             this.geometry.vertices.push(

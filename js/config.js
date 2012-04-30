@@ -107,6 +107,9 @@ var CONFIG = {
     'PenDrawSpeed' : 1000,
     'introLightPosition' : UTIL.v3(10, 50, 130),
 
+    // Obstacles Settings
+    'boxObstacleHeight' : 30,
+
     'init' : function (callback) {
         var wrappedcallback = _.once(callback),
             testFinished = function () {
@@ -126,7 +129,7 @@ var CONFIG = {
             CONFIG.playerGeometry = geometry;
             testFinished();
         });
-        THREE.ImageUtils.loadTexture('img/TunnelMap.png', {}, function (data) {
+        THREE.ImageUtils.loadTexture('img/tunnelmap2.png', {}, function (data) {
             CONFIG.tunnelMapData = UTIL.getImageData(data);
             testFinished();
         });
