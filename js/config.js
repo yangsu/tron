@@ -137,7 +137,7 @@ var CONFIG = {
             CONFIG.playerGeometry = geometry;
             testFinished();
         });
-        THREE.ImageUtils.loadTexture('img/tunnelmap2.png', {}, function (data) {
+        THREE.ImageUtils.loadTexture('img/Levels/TunnelMapSprial.png', {}, function (data) {
             CONFIG.tunnelMapData = UTIL.getImageData(data);
             testFinished();
         });
