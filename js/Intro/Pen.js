@@ -20,10 +20,7 @@ function Pen(scene, path, rotations) {
     this.trailSegments = [];
 
     // Object Initialization
-    this.material = new THREE.MeshLambertMaterial({
-        map: THREE.ImageUtils.loadTexture('img/LightCycle_TextureTest1.png'),
-        transparent : false
-    });
+    this.material = CONFIG.playerMaterial;
 
     this.dist = 0;
     this.pathIndex = 1;

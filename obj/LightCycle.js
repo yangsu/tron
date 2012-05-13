@@ -22,7 +22,7 @@
 	"colorAmbient" : [0.0, 0.0, 0.0],
 	"colorDiffuse" : [0.0, 0.0, 0.0],
 	"illumination" : 4,
-	"mapDiffuse" : "LightCycle_TextureTest1.psd",
+	"mapDiffuse" : "../../img/LightCycle_TextureTest1.png",
 	"opticalDensity" : 1.0
 	}],
 

@@ -36,6 +36,10 @@ var CONFIG = {
     'playerDefaulTargetVel' : UTIL.v3c(0, 0, -150),
     'defaultPlayerJumpVel' : -450,
     'playerGravityAcceleration' : 1000,
+    'playerMaterial' : new THREE.MeshLambertMaterial({
+        map: THREE.ImageUtils.loadTexture('../img/LightCycle_TextureTest1.png'),
+        transparent : false
+    }),
     'playerGlowMaterial' : new THREE.MeshPhongMaterial({
         map: THREE.ImageUtils.loadTexture('img/LightCycle_Glow.png'),
         ambient: 0xFFFFFF,
@@ -67,7 +71,7 @@ var CONFIG = {
     'itemProbability' : 0.3,
     'PowerUpMesh' : null,
     'PowerUpMaterial' : new THREE.MeshLambertMaterial({
-        map: THREE.ImageUtils.loadTexture('img/LightDisk.png'),
+        map: THREE.ImageUtils.loadTexture('../img/LightDisk.png'),
         transparent : false
     }),
 
@@ -137,7 +141,7 @@ var CONFIG = {
             CONFIG.playerGeometry = geometry;
             testFinished();
         });
-        THREE.ImageUtils.loadTexture('img/Levels/TunnelMapSprial.png', {}, function (data) {
+        THREE.ImageUtils.loadTexture('img/Levels/TunnelMapSpiral.png', {}, function (data) {
             CONFIG.tunnelMapData = UTIL.getImageData(data);
             testFinished();
         });

@@ -23,7 +23,7 @@
 	"colorDiffuse" : [0.0, 0.0, 0.0],
 	"colorSpecular" : [0.5, 0.5, 0.5],
 	"illumination" : 4,
-	"mapDiffuse" : "LightDisk.png",
+	"mapDiffuse" : "../../img/LightDisk.png",
 	"opticalDensity" : 1.0,
 	"specularCoef" : 18.0
 	}],

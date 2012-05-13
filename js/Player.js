@@ -18,10 +18,7 @@ function Player(scene, glowscene) {
     this.boosterMultiplier = 1;
     this.DerezzEffect = null;
 
-    this.material = new THREE.MeshLambertMaterial({
-        map: THREE.ImageUtils.loadTexture('img/LightCycle_TextureTest1.png'),
-        transparent : false
-    });
+    this.material = CONFIG.playerMaterial;
     this.glowMaterial = CONFIG.playerGlowMaterial;
 
     this.mesh = new THREE.Mesh(CONFIG.playerGeometry, this.material);
