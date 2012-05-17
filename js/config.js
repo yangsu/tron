@@ -71,7 +71,7 @@ var CONFIG = {
     'itemProbability' : 0.3,
     'PowerUpMesh' : null,
     'PowerUpMaterial' : new THREE.MeshLambertMaterial({
-        map: THREE.ImageUtils.loadTexture('../img/LightDisk.png'),
+        map: THREE.ImageUtils.loadTexture('img/LightDisk.png'),
         transparent : false
     }),
 
@@ -147,7 +147,7 @@ var CONFIG = {
         });
         
         // Load Texture to define level configuration
-        THREE.ImageUtils.loadTexture('img/Levels/TunnelMapSpiral.png', {}, function (data) {
+        THREE.ImageUtils.loadTexture('img/Levels/TunnelMap.png', {}, function (data) {
             CONFIG.tunnelMapData = UTIL.getImageData(data);
             gameLoading.loadFinished();
         });
