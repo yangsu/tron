@@ -37,7 +37,7 @@ var CONFIG = {
     'defaultPlayerJumpVel' : -450,
     'playerGravityAcceleration' : 1000,
     'playerMaterial' : new THREE.MeshLambertMaterial({
-        map: THREE.ImageUtils.loadTexture('../img/LightCycle_TextureTest1.png'),
+        map: THREE.ImageUtils.loadTexture('img/LightCycle_TextureTest1.png'),
         transparent : false
     }),
     'playerGlowMaterial' : new THREE.MeshPhongMaterial({
@@ -122,28 +122,49 @@ var CONFIG = {
         wireframe : false
     }),
 
-    'init' : function (callback) {
-        var wrappedcallback = _.once(callback),
-            testFinished = function () {
-            if (_.all(CONFIG, function (value, key) {
-                    return (value !== null && value !== undefined);
-                })) {
-                console.log('finished');
-                wrappedcallback();
-            }
-        };
-
-        new THREE.JSONLoader().load('obj/LightDisk.js', function (geometry) {
-            CONFIG.PowerUpMesh = geometry;
-            testFinished();
-        });
-        new THREE.JSONLoader().load('obj/LightCycle.js', function (geometry) {
+    'initIntroResources' : function(callback){
+        // Load .js (aka .obj geometry) files for game
+        var geometryLoader = new THREE.JSONLoader();
+        geometryLoader.load('obj/LightCycle.js', function (geometry) {
             CONFIG.playerGeometry = geometry;
-            testFinished();
+            callback();
         });
+    },
+    
+    'initGameResources' : function (callback) {
+        var numOfItemsToLoad = 4, 
+            gameLoading = UTIL.load(numOfItemsToLoad, callback);
+            
+        // Load .js (aka .obj geometry) files for game
+        var geometryLoader = new THREE.JSONLoader();
+        geometryLoader.load('obj/LightDisk.js', function (geometry) {
+            CONFIG.PowerUpMesh = geometry;
+            gameLoading.loadFinished();
+        });
+        geometryLoader.load('obj/LightCycle.js', function (geometry) {
+            CONFIG.playerGeometry = geometry;
+            gameLoading.loadFinished();
+        });
+        
+        // Load Texture to define level configuration
         THREE.ImageUtils.loadTexture('img/Levels/TunnelMapSpiral.png', {}, function (data) {
             CONFIG.tunnelMapData = UTIL.getImageData(data);
-            testFinished();
+            gameLoading.loadFinished();
+        });
+        
+        // Load textures for Skybox
+        var urlPrefix   = 'img/SpaceSkybox/',
+            urls = [
+                urlPrefix + 'PosX.png',
+                urlPrefix + 'NegX.png',
+                urlPrefix + 'PosY.png',
+                urlPrefix + 'NegY.png',
+                urlPrefix + 'PosZ.png',
+                urlPrefix + 'NegZ.png'
+            ];
+        CONFIG.skyboxTextureCube = THREE.ImageUtils.loadTextureCube(urls, {}, function(data){
+            //CONFIG.skyboxTextureCube = data;//UTIL.getImageData(data);
+            gameLoading.loadFinished();
         });
     }
 };

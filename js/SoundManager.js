@@ -38,7 +38,7 @@ SoundManager.prototype.loadMusic = function () {
 };
 
 SoundManager.prototype.playMusic = function () {
-    this.bgMusic.play();
+   this.bgMusic.play();
 };
 
 SoundManager.prototype.pauseMusic = function () {

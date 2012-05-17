@@ -2,7 +2,7 @@
  * @author Troy Ferrell & Yang Su
  */
 
-function Game(rendermanager, soundManager) {
+function Game(rendermanager, soundManager, initCallback) {
     // Game Initalization
     this.playing = false;
     this.paused = false;
@@ -34,7 +34,7 @@ function Game(rendermanager, soundManager) {
     this.soundManager = soundManager;
 
     // Wrap the function to be called while preserving the context
-    CONFIG.init(UTIL.wrap(this, function () {
+    CONFIG.initGameResources(UTIL.wrap(this, function () {
         // Objects
         this.player = new Player(this.scene, this.glowScene);
         this.obstacles = new Obstacles(this.scene);
@@ -45,6 +45,8 @@ function Game(rendermanager, soundManager) {
 
         this.resourcesLoaded = true;
         this.playing = true;
+        
+        initCallback();
     }));
 
     this.initPostProcessing();
@@ -55,7 +57,8 @@ function Game(rendermanager, soundManager) {
         function (delta, renderer) {
             if (!this.paused && this.resourcesLoaded) {
                 this.update(delta);
-
+                log('drawing');
+                
                 if (window.isMobileDevice) {
                     renderer.render(this.scene, this.camera);
                 } else {

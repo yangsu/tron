@@ -30,6 +30,22 @@ var UTIL = {
         return new Date().getTime();
     },
 
+    load : function(loadCount, callback){
+        var LOAD = function(_loadCount, _callback){
+            this.numOfLoads = _loadCount;
+            this.wrappedCallback = _.once(_callback);
+        };
+        
+        LOAD.prototype.loadFinished = function(){
+            this.numOfLoads--;
+            if(this.numOfLoads == 0){
+                this.wrappedCallback();
+            }
+        };
+        
+        return new LOAD(loadCount, callback);
+    },
+    
     /*
     Image Utils
     var imagedata = getImageData(imgTexture.image);

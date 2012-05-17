@@ -21,12 +21,14 @@ $(document).ready(function () {
             return;
         }
 
+        // Find out if user is on mobile device
         window.isMobileDevice = navigator.userAgent.search(/iPhone|iPod|iPad/) !== -1;
 
         // Scene Initialization
         var OFFSET = 6,
             WIDTH = window.innerWidth - OFFSET,
             HEIGHT = window.innerHeight - OFFSET;
+            
         // Renderer Initialization
         window.renderer = new THREE.WebGLRenderer(CONFIG.renderer);
         window.renderer.autoClear = window.isMobileDevice;
@@ -41,7 +43,6 @@ $(document).ready(function () {
 
         myIntro = new Intro(renderManager);
         soundManager = new SoundManager();
-        myGame = new Game(renderManager, soundManager);
 
         // Load intro view
         renderManager.setCurrent('Intro');
@@ -61,6 +62,11 @@ $(document).ready(function () {
     function animate() {
         requestAnimationFrame(animate);
         renderManager.renderCurrent();
+    }
+    
+    function launchGame(){
+         myGame.newGame();
+         renderManager.setCurrent('Game');
     }
 
     // Initialization
@@ -85,10 +91,19 @@ $(document).ready(function () {
 
     $('#play').click(function () {
         lastUpdate = UTIL.now();
+        
         startmenu.fadeOut('fast', function () {
-            myGame.newGame();
-            renderManager.setCurrent('Game');
-        });
+            // If game not initalized, create game object & when initalized launch
+            // If already initialized, then proceed to launch game
+            if(myGame == null){
+                myGame = new Game(renderManager, soundManager, function(){
+                    launchGame()
+                });
+            }
+            else{
+                launchGame();
+            }
+            });
     });
     $('#resume').click(function () {
         myGame.paused = false;
@@ -108,7 +123,6 @@ $(document).ready(function () {
             myGame.newGame();
         });
     });
-
 
     // mousemove
     $(document).mouseup(function (e) {

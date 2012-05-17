@@ -34,7 +34,7 @@ function Intro(rendermanager) {
     this.scene.add(pointLight);
 
     // Wrap the function to be called while preserving the context
-    CONFIG.init(UTIL.wrap(this, function () {
+    CONFIG.initIntroResources(UTIL.wrap(this, function () {
         var tronPath = _.map(CONFIG.penPath, function (val) {
             return UTIL.v2(val[0], val[1]);
         }),
