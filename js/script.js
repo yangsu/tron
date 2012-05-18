@@ -65,6 +65,7 @@ $(document).ready(function () {
     }
     
     function launchGame(){
+        //sdfsdf
          myGame.newGame();
          renderManager.setCurrent('Game');
     }
